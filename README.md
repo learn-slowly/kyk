@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 대선 후보자 페이지
 
-## Getting Started
+Next.js와 Sanity.io를 사용한 대선 후보자 프로필 및 공약 페이지입니다.
 
-First, run the development server:
+## 기술 스택
 
+- Next.js 15.3.1
+- Sanity.io
+- TypeScript
+- Tailwind CSS
+- Vercel (배포)
+
+## 시작하기
+
+### 필수 요구사항
+
+- Node.js 18.17.0 이상
+- npm 또는 yarn
+- Git
+
+### 설치 방법
+
+1. 저장소 클론
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/learn-slowly/kyk.git
+cd kyk
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. 의존성 패키지 설치
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+필요한 주요 패키지들:
+```json
+{
+  "dependencies": {
+    "@sanity/image-url": "^1.1.0",
+    "@sanity/vision": "^3.87.0",
+    "next": "15.3.1",
+    "next-sanity": "^9.10.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sanity": "^3.87.0",
+    "styled-components": "^6.1.17"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.1",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. 환경 변수 설정
+`.env.local` 파일을 생성하고 다음 내용을 추가:
+```
+NEXT_PUBLIC_SANITY_PROJECT_ID=qpvtzhxq
+NEXT_PUBLIC_SANITY_DATASET=kyk
+```
 
-## Learn More
+4. 개발 서버 실행
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 프로젝트 구조
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+kyk/
+├── app/                    # Next.js 앱 디렉토리
+│   ├── page.tsx           # 메인 페이지
+│   ├── profile/           # 후보자 프로필 페이지
+│   ├── policies/          # 공약 페이지
+│   └── studio/            # Sanity Studio
+├── sanity/                # Sanity 설정
+│   └── schemas/           # Sanity 스키마
+│       ├── candidate.ts   # 후보자 프로필 스키마
+│       ├── policy.ts      # 공약 스키마
+│       └── index.ts       # 스키마 인덱스
+└── public/                # 정적 파일
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 주요 기능
 
-## Deploy on Vercel
+- 후보자 프로필 관리
+- 공약 관리
+- 게시판 기능
+- 정적 페이지 관리
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 배포
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+이 프로젝트는 Vercel을 통해 배포됩니다. GitHub 저장소와 Vercel을 연결하면 자동으로 배포됩니다.
+
+## Sanity Studio
+
+Sanity Studio는 `/studio` 경로에서 접근할 수 있습니다. 콘텐츠 관리를 위해 다음 항목들을 관리할 수 있습니다:
+
+- 후보자 프로필
+- 공약
+- 게시글
+- 정적 페이지
+
+## 라이선스
+
+MIT
