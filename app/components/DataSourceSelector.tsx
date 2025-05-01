@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 type DataSource = 'all' | 'sanity' | 'google';
 
 type DataSourceSelectorProps = {

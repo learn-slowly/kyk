@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Calendar, Views, View, momentLocalizer, NavigateAction } from 'react-big-calendar';
+import { Calendar, Views, View, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
 import 'moment/locale/ko';
@@ -29,6 +29,28 @@ type CustomCalendarProps = {
   events: CalendarEvent[];
   onSelectEvent?: (event: CalendarEvent) => void;
 };
+
+// 툴바 컴포넌트 타입 정의
+interface ToolbarProps {
+  date: Date;
+  onNavigate: (action: 'PREV' | 'NEXT' | 'TODAY', date?: Date) => void;
+  onView: (view: View) => void;
+}
+
+// 헤더 컴포넌트 타입 정의
+interface HeaderProps {
+  date?: Date;
+  label: string;
+  localizer?: {
+    format: (date: Date, format: string) => string;
+  };
+}
+
+// 날짜 셀 컴포넌트 타입 정의
+interface DateCellProps {
+  children: React.ReactNode;
+  value: Date | { toDate(): Date };
+}
 
 export default function CustomCalendar({ events, onSelectEvent }: CustomCalendarProps) {
   // 뷰 설정
@@ -93,7 +115,7 @@ export default function CustomCalendar({ events, onSelectEvent }: CustomCalendar
   };
 
   // 툴바 커스터마이징
-  const CustomToolbar = (toolbar: any) => {
+  const CustomToolbar = (toolbar: ToolbarProps) => {
     const goToBack = () => {
       toolbar.onNavigate('PREV');
     };
@@ -112,14 +134,8 @@ export default function CustomCalendar({ events, onSelectEvent }: CustomCalendar
     const buttonClass = "bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity";
     const todayButtonClass = "bg-white text-gray-800 border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-100 transition-colors ml-2";
 
-    // 현재 선택된 뷰 표시
-    const viewLabel = 
-      view === Views.MONTH ? '월간' : 
-      view === Views.WEEK ? '주간' : 
-      view === Views.DAY ? '일간' : '일정';
-
     // 날짜 범위 표시
-    let dateRangeLabel = 
+    const dateRangeLabel = 
       view === Views.DAY ? moment(toolbar.date).format('YYYY년 MM월 DD일 (ddd)') :
       view === Views.WEEK ? `${moment(toolbar.date).startOf('week').format('YYYY년 MM월 DD일')} - ${moment(toolbar.date).endOf('week').format('MM월 DD일')}` :
       moment(toolbar.date).format('YYYY년 MM월');
@@ -178,9 +194,11 @@ export default function CustomCalendar({ events, onSelectEvent }: CustomCalendar
   };
 
   // 주간 헤더 컴포넌트 커스터마이징
-  const CustomWeekHeader = (props: any) => {
+  const CustomWeekHeader = (props: HeaderProps) => {
     const { date, localizer } = props;
     
+    if (!date || !localizer) return null;
+
     // 오늘 날짜와 비교
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -234,14 +252,16 @@ export default function CustomCalendar({ events, onSelectEvent }: CustomCalendar
   };
 
   // 날짜 셀 커스터마이징
-  const CustomDateCell = (props: any) => {
+  const CustomDateCell = (props: DateCellProps) => {
     // react-big-calendar에서 dateCellWrapper 컴포넌트의 props 구조
     const { children, value } = props;
     const today = new Date();
     
     // value는 moment 객체이므로 toDate()로 Date 객체로 변환
     // 혹은 value가 Date 객체인 경우를 대비하여 안전하게 처리
-    const cellDate = value && typeof value.toDate === 'function' ? value.toDate() : value;
+    const cellDate = typeof (value as any).toDate === 'function' 
+      ? (value as { toDate(): Date }).toDate() 
+      : value as Date;
     
     // 날짜가 유효한지 확인
     const isValidDate = cellDate instanceof Date && !isNaN(cellDate.getTime());
@@ -292,7 +312,7 @@ export default function CustomCalendar({ events, onSelectEvent }: CustomCalendar
       event: '일정',
       noEventsInRange: '이 기간에 일정이 없습니다.',
     },
-  }), [view, startDate]);
+  }), []); // 불필요한 의존성 제거
 
   return (
     <div className="custom-calendar-container bg-white rounded-xl shadow-lg p-4 md:p-6">

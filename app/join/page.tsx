@@ -15,19 +15,16 @@ export default function JoinPage() {
             title="자원봉사 신청" 
             description="캠페인 자원봉사자로 참여하여 새로운 미래를 함께 만들어가세요." 
             buttonText="자원봉사 신청하기"
-            icon="volunteer"
           />
           <JoinCard 
             title="정책 제안하기" 
             description="더 나은 대한민국을 위한 정책 아이디어를 제안해 주세요." 
             buttonText="정책 제안하기"
-            icon="policy"
           />
           <JoinCard 
             title="지지 서명하기" 
             description="권영국 후보를 지지하는 온라인 서명에 동참해 주세요." 
             buttonText="서명하기"
-            icon="signature"
           />
         </div>
         
@@ -106,7 +103,7 @@ export default function JoinPage() {
   )
 }
 
-function JoinCard({ title, description, buttonText, icon }: { title: string; description: string; buttonText: string; icon: string }) {
+function JoinCard({ title, description, buttonText }: { title: string; description: string; buttonText: string }) {
   return (
     <div className="bg-white rounded-xl shadow-sm p-8 text-center hover:shadow-md transition-shadow">
       <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-6">

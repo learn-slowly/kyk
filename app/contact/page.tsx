@@ -17,22 +17,18 @@ export default function ContactPage() {
               
               <div className="space-y-6">
                 <ContactInfo 
-                  icon="location" 
                   title="주소" 
                   info={["서울특별시 종로구 1번지", "권영국 선거 캠페인 본부"]}
                 />
                 <ContactInfo 
-                  icon="phone" 
                   title="전화번호" 
                   info={["02-123-4567", "평일 09:00 - 18:00"]}
                 />
                 <ContactInfo 
-                  icon="email" 
                   title="이메일" 
                   info={["contact@kyk2027.kr", "24시간 접수 가능"]}
                 />
                 <ContactInfo 
-                  icon="fax" 
                   title="팩스" 
                   info={["02-123-4568"]}
                 />
@@ -137,7 +133,7 @@ export default function ContactPage() {
   )
 }
 
-function ContactInfo({ icon, title, info }: { icon: string; title: string; info: string[] }) {
+function ContactInfo({ title, info }: { title: string; info: string[] }) {
   return (
     <div className="flex">
       <div className="w-10 h-10 bg-gray-200 rounded-full flex-shrink-0">

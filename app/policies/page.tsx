@@ -14,38 +14,32 @@ export default function PoliciesPage() {
           <PolicyCard 
             id="economy"
             title="경제 정책" 
-            summary="경제 성장과 일자리 창출을 위한 정책" 
-            iconPath="/icons/economy.png"
+            summary="경제 성장과 일자리 창출을 위한 정책"
           />
           <PolicyCard 
             id="education"
             title="교육 정책" 
-            summary="미래 인재 양성을 위한 교육 혁신" 
-            iconPath="/icons/education.png"
+            summary="미래 인재 양성을 위한 교육 혁신"
           />
           <PolicyCard 
             id="welfare"
             title="복지 정책" 
-            summary="모두가 행복한 사회 안전망 구축" 
-            iconPath="/icons/welfare.png"
+            summary="모두가 행복한 사회 안전망 구축"
           />
           <PolicyCard 
             id="environment"
             title="환경 정책" 
-            summary="지속가능한 발전과 환경 보전" 
-            iconPath="/icons/environment.png"
+            summary="지속가능한 발전과 환경 보전"
           />
           <PolicyCard 
             id="diplomacy"
             title="외교 안보 정책" 
-            summary="평화로운 국제 관계와 국가 안보 강화" 
-            iconPath="/icons/diplomacy.png"
+            summary="평화로운 국제 관계와 국가 안보 강화"
           />
           <PolicyCard 
             id="culture"
             title="문화 정책" 
-            summary="문화 다양성과 창의성 증진" 
-            iconPath="/icons/culture.png"
+            summary="문화 다양성과 창의성 증진"
           />
         </div>
         
@@ -91,7 +85,7 @@ export default function PoliciesPage() {
   )
 }
 
-function PolicyCard({ id, title, summary, iconPath }: { id: string; title: string; summary: string; iconPath: string }) {
+function PolicyCard({ id, title, summary }: { id: string; title: string; summary: string }) {
   return (
     <a href={`#${id}`} className="block bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6">
       <div className="flex items-start gap-4">

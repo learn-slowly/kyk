@@ -1,5 +1,3 @@
-import { CalendarEvent } from '../components/CustomCalendar';
-
 // 클라이언트에서는 이 파일을 직접 사용하지 않습니다.
 // API 라우트를 통해 서버에서만 Google Calendar API를 호출합니다.
 

@@ -16,20 +16,17 @@ export default function NewsPage() {
             <NewsCard 
               title="후보 출마 선언" 
               date="2025.04.15" 
-              summary="권영국 후보가 대선 출마를 공식 선언했습니다." 
-              imagePath="/images/news1.jpg"
+              summary="권영국 후보가 대선 출마를 공식 선언했습니다."
             />
             <NewsCard 
               title="정책 발표회 개최" 
               date="2025.04.10" 
-              summary="주요 정책 발표회를 성황리에 개최했습니다." 
-              imagePath="/images/news2.jpg"
+              summary="주요 정책 발표회를 성황리에 개최했습니다."
             />
             <NewsCard 
               title="전국 순회 캠페인 시작" 
               date="2025.04.05" 
-              summary="전국 주요 도시 순회 캠페인을 시작했습니다." 
-              imagePath="/images/news3.jpg"
+              summary="전국 주요 도시 순회 캠페인을 시작했습니다."
             />
           </div>
         </div>
@@ -87,7 +84,7 @@ export default function NewsPage() {
   )
 }
 
-function NewsCard({ title, date, summary, imagePath }: { title: string; date: string; summary: string; imagePath: string }) {
+function NewsCard({ title, date, summary }: { title: string; date: string; summary: string }) {
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
       <div className="h-48 bg-gray-200">
