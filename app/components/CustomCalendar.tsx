@@ -259,7 +259,7 @@ export default function CustomCalendar({ events, onSelectEvent }: CustomCalendar
     
     // value는 moment 객체이므로 toDate()로 Date 객체로 변환
     // 혹은 value가 Date 객체인 경우를 대비하여 안전하게 처리
-    const cellDate = typeof (value as any).toDate === 'function' 
+    const cellDate = typeof (value as { toDate?: () => Date }).toDate === 'function' 
       ? (value as { toDate(): Date }).toDate() 
       : value as Date;
     
@@ -312,7 +312,7 @@ export default function CustomCalendar({ events, onSelectEvent }: CustomCalendar
       event: '일정',
       noEventsInRange: '이 기간에 일정이 없습니다.',
     },
-  }), []); // 불필요한 의존성 제거
+  }), [view]); // view에 따라 포맷이 달라질 수 있으므로 view 의존성 추가, startDate는 실제로 사용되지 않으므로 제거
 
   return (
     <div className="custom-calendar-container bg-white rounded-xl shadow-lg p-4 md:p-6">
