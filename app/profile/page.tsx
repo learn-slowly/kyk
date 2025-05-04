@@ -290,10 +290,10 @@ export default function ProfilePage() {
           <div className={`tab-content ${activeTab !== 'bio' && activeTab !== 'vision' ? 'd-block' : 'd-none'}`}>
             <div className="text-center py-5">
               <h2 className="display-5 fw-bold mb-4">준비 중입니다</h2>
-              <p className="lead">선택한 "{activeTab === 'values' ? '가치관' : 
+              <p className="lead">선택한 &ldquo;{activeTab === 'values' ? '가치관' : 
                                   activeTab === 'education' ? '학력' : 
                                   activeTab === 'career' ? '경력' : 
-                                  '주요 성과'}" 정보는 현재 준비 중입니다.</p>
+                                  '주요 성과'}&rdquo; 정보는 현재 준비 중입니다.</p>
               <div className="spinner-border text-primary mt-4" role="status">
                 <span className="visually-hidden">로딩중...</span>
               </div>
@@ -348,6 +348,16 @@ export default function ProfilePage() {
           </div>
         </div>
       </section>
+
+      {/* 기자 간담회 인용구 */}
+      <div className="col-md-6 mb-5 mb-md-0">
+        <blockquote className="blockquote text-muted fs-5 p-4 mb-0 bg-light text-center rounded-3 border-start border-5 border-primary">
+          &ldquo;저는 청년들의 목소리를 듣고 그들의 꿈을 지원하기 위해 항상 노력할 것입니다. 우리 청년들은 대한민국의 미래입니다.&rdquo;
+          <footer className="blockquote-footer mt-3">
+            <cite title="Source Title">권영국, 청년 정책 기자 간담회 중</cite>
+          </footer>
+        </blockquote>
+      </div>
 
       {/* CSS 스타일 */}
       <style jsx>{`

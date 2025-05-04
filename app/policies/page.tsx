@@ -201,7 +201,7 @@ export default function PoliciesPage() {
         <div className="container py-4">
           <div className="row g-4">
             {filteredPolicies.length > 0 ? (
-              filteredPolicies.map((policy, index) => (
+              filteredPolicies.map((policy) => (
                 <div 
                   className="col-md-6 col-lg-4" 
                   key={policy.id}

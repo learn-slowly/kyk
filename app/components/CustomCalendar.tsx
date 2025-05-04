@@ -5,6 +5,7 @@ import { Calendar, Views, View, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
 import 'moment/locale/ko';
+import { useMediaQuery } from 'react-responsive';
 
 // 한국어 설정
 moment.locale('ko');
@@ -53,18 +54,15 @@ interface DateCellProps {
 }
 
 export default function CustomCalendar({ events, onSelectEvent }: CustomCalendarProps) {
-  // 뷰 설정
   const [view, setView] = useState<View>(Views.DAY);
   const [date, setDate] = useState(new Date());
-  const [startDate, setStartDate] = useState<Date>(new Date()); // 현재 보여지는 시작일
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
   // 화면 크기에 따라 뷰 변경 및 날짜 초기화
   useEffect(() => {
     const handleResize = () => {
-      const isMobile = window.innerWidth < 768;
       // 모바일에서는 일간 뷰, 데스크탑에서는 주간 뷰
       setView(isMobile ? Views.DAY : Views.WEEK);
-      resetStartDate(new Date()); // 오늘 날짜로 시작 날짜 재설정
     };
 
     // 초기 실행 및 리사이즈 이벤트 리스너 등록
@@ -74,19 +72,7 @@ export default function CustomCalendar({ events, onSelectEvent }: CustomCalendar
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
-
-  // 추가: 컴포넌트 마운트 시 항상 오늘 날짜로 초기화
-  useEffect(() => {
-    resetStartDate(new Date());
-  }, []);
-
-  // 시작 날짜 설정 함수
-  const resetStartDate = (date: Date) => {
-    const newStartDate = new Date(date);
-    setStartDate(newStartDate);
-    setDate(newStartDate);
-  };
+  }, [isMobile]);
 
   // 이벤트 스타일 적용
   const eventStyleGetter = (event: CalendarEvent) => {
@@ -126,7 +112,6 @@ export default function CustomCalendar({ events, onSelectEvent }: CustomCalendar
 
     const goToCurrent = () => {
       const today = new Date();
-      resetStartDate(today);
       toolbar.onNavigate('TODAY', today);
     };
 
@@ -312,7 +297,7 @@ export default function CustomCalendar({ events, onSelectEvent }: CustomCalendar
       event: '일정',
       noEventsInRange: '이 기간에 일정이 없습니다.',
     },
-  }), [view]); // view에 따라 포맷이 달라질 수 있으므로 view 의존성 추가, startDate는 실제로 사용되지 않으므로 제거
+  }), []);
 
   return (
     <div className="custom-calendar-container bg-white rounded-xl shadow-lg p-4 md:p-6">
@@ -417,7 +402,6 @@ export default function CustomCalendar({ events, onSelectEvent }: CustomCalendar
         onView={(newView) => setView(newView)}
         onNavigate={(newDate) => {
           setDate(newDate);
-          setStartDate(newDate);
         }}
         min={new Date(new Date().setHours(5, 0, 0))}
         max={new Date(new Date().setHours(23, 59, 59))}
