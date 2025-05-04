@@ -2,10 +2,10 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { Schedule } from '../app/page';
+import Image from 'next/image';
 
 // 정적 데이터와 동적 데이터를 처리하기 위한 클라이언트 컴포넌트
-export default function HomeClient({ schedules }: { schedules: Schedule[] }) {
+export default function HomeClient() {
   const [scrollY, setScrollY] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -173,7 +173,8 @@ export default function HomeClient({ schedules }: { schedules: Schedule[] }) {
             ? currentTransform.replace(/translateX\([^)]*\)/g, '') 
             : currentTransform;
           
-          circle.style.transform = `${baseTransform} translateX(${moveX}px)`;
+          // moveY 변수도 활용하여 Y축 움직임 추가
+          circle.style.transform = `${baseTransform} translateX(${moveX}px) translateY(${moveY}px)`;
         }
       });
       
@@ -320,15 +321,14 @@ export default function HomeClient({ schedules }: { schedules: Schedule[] }) {
         }}
       >
         {/* 오버레이 내부에 배경 이미지 추가 */}
-        <img 
-          ref={overlayImageRef}
+        <Image 
+          ref={overlayImageRef as any}
           src="/images/6.png" 
           alt="권영국 후보" 
           className="overlay-image"
+          fill
           style={{
             position: 'absolute',
-            width: '100%',
-            height: '100%',
             objectFit: 'cover',
             objectPosition: 'center',
             transition: 'transform 0.5s ease, opacity 0.5s ease',
