@@ -344,10 +344,15 @@ export default function HomeClient({ schedules }: HomeClientProps) {
         
         {/* 오버레이 내부 텍스트 내용 */}
         <div className="overlay-content">
-          <div className="container h-100 d-flex flex-column justify-content-end align-items-center" style={{ paddingBottom: '15vh' }}>
-            <h2 className="overlay-title">정권교체를 넘어 사회대개혁으로</h2>
-            <p className="overlay-subtitle">불평등을 넘어 함께 사는 사회로!</p>
-            <p className="overlay-scroll-hint">아래로 스크롤하여 더 알아보세요</p>
+          <div className="container h-100" style={{ position: 'relative' }}>
+            <div className="text-content" style={{ position: 'absolute', top: '75%', left: '0', right: '0', transform: 'translateY(-50%)', textAlign: 'center' }}>
+              <h2 className="overlay-title">
+                <span className="first-part">정권교체를 넘어</span>
+                <span className="second-part">사회대개혁으로</span>
+              </h2>
+              <p className="overlay-subtitle">불평등을 넘어 함께 사는 사회로!</p>
+              <p className="overlay-scroll-hint">아래로 스크롤하여 더 알아보세요</p>
+            </div>
           </div>
         </div>
       </div>
@@ -926,6 +931,20 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           .cursor-effect {
             display: none;
           }
+          
+          .container .overlay-title {
+            font-size: 2.5rem;
+          }
+          
+          .container .overlay-title .first-part,
+          .container .overlay-title .second-part {
+            display: block;
+          }
+          
+          .container .overlay-subtitle {
+            font-size: 1.3rem;
+            white-space: nowrap;
+          }
         }
 
         /* 오버레이 콘텐츠 스타일 */
@@ -935,7 +954,6 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           width: 100%;
           z-index: 2;
           color: white;
-          text-align: center;
         }
         
         .overlay-title {
@@ -945,31 +963,34 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
         
+        .overlay-title .first-part,
+        .overlay-title .second-part {
+          display: inline;
+        }
+        
         .overlay-subtitle {
           font-size: 2rem;
-          margin-bottom: 2rem;
+          margin-bottom: 2.5rem;
           text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+          white-space: nowrap;
         }
         
         .overlay-scroll-hint {
-          position: absolute;
-          bottom: 2rem;
-          left: 50%;
-          transform: translateX(-50%);
           font-size: 1rem;
           opacity: 0.8;
           animation: bounce 2s infinite;
+          margin-top: 2rem;
         }
         
         @keyframes bounce {
           0%, 20%, 50%, 80%, 100% {
-            transform: translateY(0) translateX(-50%);
+            transform: translateY(0);
           }
           40% {
-            transform: translateY(-20px) translateX(-50%);
+            transform: translateY(-10px);
           }
           60% {
-            transform: translateY(-10px) translateX(-50%);
+            transform: translateY(-5px);
           }
         }
       `}</style>
