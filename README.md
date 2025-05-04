@@ -7,7 +7,8 @@ Next.js와 Sanity.io를 사용한 대선 후보자 프로필 및 공약 페이�
 - Next.js 15.3.1
 - Sanity.io
 - TypeScript
-- Tailwind CSS
+- Bootstrap 5
+- Mustache 템플릿 엔진
 - Vercel (배포)
 
 ## 시작하기
@@ -35,14 +36,19 @@ npm install
 ```json
 {
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "@sanity/client": "^7.0.0",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.87.0",
+    "bootstrap": "^5.3.2",
     "next": "15.3.1",
-    "next-sanity": "^9.10.2",
+    "next-sanity": "^9.10.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sanity": "^3.87.0",
     "styled-components": "^6.1.17",
+    "mustache": "^4.2.0",
+    "sass": "^1.69.5",
     
     // 캘린더 기능을 위한 패키지
     "react-big-calendar": "^1.18.0",
@@ -54,13 +60,12 @@ npm install
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
+    "@types/mustache": "^4.2.5",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
-    "tailwindcss": "^4",
     "typescript": "^5"
   }
 }
@@ -109,6 +114,7 @@ kyk/
 - 캘린더 및 일정 관리 기능
   - 일간/주간/월간 뷰 지원
   - 반응형 레이아웃 (모바일/데스크탑)
+  - 주요 일정 강조 표시
   - 구글 캘린더 연동 준비 중
 
 ## 배포
