@@ -1,112 +1,270 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { fetchSanityData } from '../lib/sanity';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
+
+interface NewsItem {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  type: 'news' | 'press' | 'speech' | 'media';
+  publishedAt: string;
+  mainImage?: { 
+    asset: { 
+      _ref: string;
+      url: string;
+    } 
+  };
+  summary?: string;
+}
+
 export default function NewsPage() {
-  return (
-    <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-center">뉴스 & 미디어</h1>
-        
-        <div className="bg-white rounded-xl shadow-sm p-8 mb-10">
-          <p className="text-xl text-center text-gray-700 mb-4">
-            권영국 후보의 최신 뉴스와 미디어 자료를 확인하세요.
-          </p>
-        </div>
-        
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">최신 뉴스</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <NewsCard 
-              title="후보 출마 선언" 
-              date="2025.04.15" 
-              summary="권영국 후보가 대선 출마를 공식 선언했습니다."
-            />
-            <NewsCard 
-              title="정책 발표회 개최" 
-              date="2025.04.10" 
-              summary="주요 정책 발표회를 성황리에 개최했습니다."
-            />
-            <NewsCard 
-              title="전국 순회 캠페인 시작" 
-              date="2025.04.05" 
-              summary="전국 주요 도시 순회 캠페인을 시작했습니다."
-            />
-          </div>
-        </div>
-        
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">보도자료</h2>
-          <div className="bg-white rounded-xl shadow-sm divide-y">
-            <PressRelease 
-              title="권영국 후보, 청년 일자리 창출 방안 발표" 
-              date="2025.04.12" 
-              summary="청년 실업 문제 해결을 위한 구체적인 정책 방안을 제시했습니다."
-            />
-            <PressRelease 
-              title="권영국 후보, 저출산 대책 종합계획 발표" 
-              date="2025.04.08" 
-              summary="저출산 문제 해결을 위한 종합적인 정책 방안을 제시했습니다."
-            />
-            <PressRelease 
-              title="권영국 후보, 지역 경제 활성화 방안 발표" 
-              date="2025.04.03" 
-              summary="지역 균형 발전을 위한 경제 활성화 정책을 발표했습니다."
-            />
-          </div>
-        </div>
-        
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">연설문</h2>
-          <div className="bg-white rounded-xl shadow-sm p-8">
-            <div className="mb-8 pb-8 border-b">
-              <h3 className="text-xl font-bold mb-2">대선 출마 선언 연설문</h3>
-              <p className="text-gray-500 mb-4">2025년 4월 15일</p>
-              <p className="text-gray-700">
-                [연설문 내용 일부]
-              </p>
-              <button className="mt-4 text-blue-600 font-medium">전체 연설문 읽기 &rarr;</button>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold mb-2">정책 발표회 기조연설</h3>
-              <p className="text-gray-500 mb-4">2025년 4월 10일</p>
-              <p className="text-gray-700">
-                [연설문 내용 일부]
-              </p>
-              <button className="mt-4 text-blue-600 font-medium">전체 연설문 읽기 &rarr;</button>
-            </div>
-          </div>
-        </div>
-        
-        <div className="text-center mt-12">
-          <button className="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 text-white px-8 py-3 rounded-full font-bold text-lg hover:opacity-90">
-            더 많은 뉴스 보기
-          </button>
-        </div>
-      </div>
-    </main>
-  )
-}
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [pressItems, setPressItems] = useState<NewsItem[]>([]);
+  const [speechItems, setSpeechItems] = useState<NewsItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('all');
 
-function NewsCard({ title, date, summary }: { title: string; date: string; summary: string }) {
-  return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-      <div className="h-48 bg-gray-200">
-        {/* 뉴스 이미지 */}
-      </div>
-      <div className="p-6">
-        <p className="text-gray-500 text-sm mb-2">{date}</p>
-        <h3 className="text-xl font-bold mb-2">{title}</h3>
-        <p className="text-gray-600 mb-4">{summary}</p>
-        <button className="text-blue-600 font-medium">자세히 보기 &rarr;</button>
-      </div>
-    </div>
-  )
-}
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const query = `*[_type == "news"] | order(publishedAt desc) {
+          _id,
+          title,
+          slug,
+          type,
+          publishedAt,
+          mainImage {
+            asset-> {
+              _ref,
+              url
+            }
+          },
+          summary
+        }`;
+        
+        const data = await fetchSanityData<NewsItem[]>(query);
+        
+        if (data && Array.isArray(data)) {
+          // 뉴스 타입별로 분류
+          setNewsItems(data.filter(item => item && item.type === 'news') || []);
+          setPressItems(data.filter(item => item && item.type === 'press') || []);
+          setSpeechItems(data.filter(item => item && item.type === 'speech') || []);
+        } else {
+          console.error('Sanity에서 받은 데이터가 배열 형식이 아닙니다:', data);
+        }
+        
+        setIsLoading(false);
+      } catch (error) {
+        console.error('뉴스를 불러오는데 실패했습니다:', error);
+        setIsLoading(false);
+      }
+    }
+    
+    fetchData();
+  }, []);
+  
+  // 현재 탭에 따라 표시할 뉴스 아이템 필터링
+  const displayItems = () => {
+    switch(activeTab) {
+      case 'news':
+        return newsItems;
+      case 'press':
+        return pressItems;
+      case 'speech':
+        return speechItems;
+      default:
+        // 모든 아이템을 최신순으로 정렬
+        return [...newsItems, ...pressItems, ...speechItems]
+          .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+    }
+  };
+  
+  // 날짜 포맷 함수
+  const formatDate = (dateString: string) => {
+    return format(new Date(dateString), 'yyyy년 MM월 dd일', { locale: ko });
+  };
+  
+  // 아이템 타입에 따른 라벨 반환
+  const getTypeLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      news: '뉴스',
+      press: '보도자료',
+      speech: '연설문',
+      media: '미디어 출연'
+    };
+    return labels[type] || type;
+  };
 
-function PressRelease({ title, date, summary }: { title: string; date: string; summary: string }) {
   return (
-    <div className="p-6 hover:bg-gray-50 transition-colors">
-      <p className="text-gray-500 text-sm mb-2">{date}</p>
-      <h3 className="text-xl font-bold mb-2">{title}</h3>
-      <p className="text-gray-600 mb-4">{summary}</p>
-      <button className="text-blue-600 font-medium">자세히 보기 &rarr;</button>
+    <div className="min-vh-100 py-5">
+      <div className="container">
+        {/* 헤더 섹션 */}
+        <div className="row mb-5">
+          <div className="col-lg-8 mx-auto text-center">
+            <h1 className="display-4 fw-bold mb-4">뉴스 & 미디어</h1>
+            <p className="lead text-muted">
+              권영국 후보의 최신 뉴스와 미디어 자료를 확인하세요.
+            </p>
+          </div>
+        </div>
+        
+        {/* 필터 탭 */}
+        <div className="row mb-4">
+          <div className="col-12">
+            <ul className="nav nav-pills justify-content-center">
+              <li className="nav-item mx-1">
+                <button 
+                  className={`nav-link px-4 ${activeTab === 'all' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('all')}
+                >
+                  전체
+                </button>
+              </li>
+              <li className="nav-item mx-1">
+                <button 
+                  className={`nav-link px-4 ${activeTab === 'news' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('news')}
+                >
+                  뉴스
+                </button>
+              </li>
+              <li className="nav-item mx-1">
+                <button 
+                  className={`nav-link px-4 ${activeTab === 'press' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('press')}
+                >
+                  보도자료
+                </button>
+              </li>
+              <li className="nav-item mx-1">
+                <button 
+                  className={`nav-link px-4 ${activeTab === 'speech' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('speech')}
+                >
+                  연설문
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        {/* 콘텐츠 영역 */}
+        <div className="row g-4">
+          {isLoading ? (
+            // 로딩 상태 표시
+            <div className="col-12 text-center py-5">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">로딩 중...</span>
+              </div>
+              <p className="mt-3">뉴스를 불러오는 중입니다...</p>
+            </div>
+          ) : displayItems().length > 0 ? (
+            // 뉴스 아이템 목록
+            displayItems().map(item => (
+              <div className="col-md-6 col-lg-4" key={item._id}>
+                <div className="card h-100 shadow-sm border-0 hover-translate-up">
+                  {/* 대표 이미지 */}
+                  <div className="card-img-top position-relative overflow-hidden" style={{ height: '200px' }}>
+                    {item.mainImage?.asset?.url ? (
+                      <Image 
+                        src={item.mainImage.asset.url} 
+                        alt={item.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-fit-cover"
+                      />
+                    ) : (
+                      <div className="bg-light w-100 h-100 d-flex align-items-center justify-content-center">
+                        <i className="bi bi-image text-muted" style={{ fontSize: '2rem' }}></i>
+                      </div>
+                    )}
+                    <div className="position-absolute top-0 start-0 m-3">
+                      <span className="badge bg-primary">{getTypeLabel(item.type)}</span>
+                    </div>
+                  </div>
+                  
+                  {/* 콘텐츠 */}
+                  <div className="card-body d-flex flex-column">
+                    <div className="small text-muted mb-2">{formatDate(item.publishedAt)}</div>
+                    <h3 className="card-title h5 fw-bold">{item.title}</h3>
+                    <p className="card-text text-muted flex-grow-1">
+                      {item.summary ? 
+                        (item.summary.length > 100 ? `${item.summary.substring(0, 100)}...` : item.summary) 
+                        : '내용 없음'}
+                    </p>
+                    <Link 
+                      href={`/news/${item.slug.current}`} 
+                      className="btn btn-outline-primary mt-3"
+                    >
+                      자세히 보기 <i className="bi bi-arrow-right ms-1"></i>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            // 데이터가 없는 경우
+            <div className="col-12 text-center py-5">
+              <div className="py-5 my-5">
+                <i className="bi bi-inbox text-muted" style={{ fontSize: '3rem' }}></i>
+                <h4 className="mt-3">게시된 콘텐츠가 없습니다</h4>
+                <p className="text-muted">곧 새로운 소식으로 찾아뵙겠습니다.</p>
+              </div>
+            </div>
+          )}
+        </div>
+        
+        {/* 인터랙티브 CMS 배너 */}
+        <div className="row mt-5">
+          <div className="col-12">
+            <div className="card bg-gradient-primary text-white shadow rounded-3 border-0 overflow-hidden">
+              <div className="card-body p-0">
+                <div className="row g-0">
+                  <div className="col-lg-8 p-5">
+                    <h3 className="card-title mb-3">콘텐츠 관리 시스템</h3>
+                    <p className="card-text mb-4">
+                      권영국 캠페인 관계자를 위한 편리한 콘텐츠 관리 시스템을 이용해보세요.
+                      쉽고 간편하게 뉴스와 미디어 자료를 업로드하고 관리할 수 있습니다.
+                    </p>
+                    <Link href="/studio" className="btn btn-light">
+                      CMS 관리자 페이지 <i className="bi bi-box-arrow-up-right ms-1"></i>
+                    </Link>
+                  </div>
+                  <div className="col-lg-4 d-none d-lg-block">
+                    <div className="position-relative h-100">
+                      <div 
+                        className="position-absolute top-0 end-0 w-100 h-100 bg-dark opacity-10"
+                        style={{ 
+                          backgroundImage: 'url("https://images.unsplash.com/photo-1554774853-aae0a22c8aa4")', 
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center'
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <style jsx>{`
+        .hover-translate-up {
+          transition: transform 0.3s ease;
+        }
+        .hover-translate-up:hover {
+          transform: translateY(-5px);
+        }
+        .bg-gradient-primary {
+          background: linear-gradient(90deg, #FF0000 0%, #FFFF00 50%, #00FF00 100%);
+        }
+      `}</style>
     </div>
-  )
+  );
 } 

@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap-icons/font/bootstrap-icons.css'
 import './globals.css'
-import { useEffect } from 'react'
+import ClientBootstrap from './components/ClientBootstrap'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,14 +18,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // 클라이언트 측에서만 부트스트랩 JS 로드 (Next.js SSR과 호환되도록)
-  useEffect(() => {
-    import('bootstrap/dist/js/bootstrap.bundle.min.js');
-  }, []);
-
   return (
     <html lang="ko">
       <body className={inter.className}>
+        <ClientBootstrap />
         <header className="sticky-top bg-white shadow-sm">
           <div className="container">
             <nav className="navbar navbar-expand-lg navbar-light">
