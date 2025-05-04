@@ -350,7 +350,7 @@ export default function ProfilePage() {
                         </div>
                         <h3 className="h5 mb-0">노래 실력</h3>
                       </div>
-                      <p>3월 19일 광화문 '파면을 부르는 광장 노래자랑'에 참여해 '행복의 나라로'를 열창하는 등 음악적 재능도 갖추고 있습니다.</p>
+                      <p>3월 19일 광화문 &apos;파면을 부르는 광장 노래자랑&apos;에 참여해 &apos;행복의 나라로&apos;를 열창하는 등 음악적 재능도 갖추고 있습니다.</p>
                     </div>
                   </div>
                 </div>

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function PoliciesPage() {
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -160,9 +161,11 @@ export default function PoliciesPage() {
               </p>
             </div>
             <div className="col-lg-6 text-center d-none d-lg-block">
-              <img 
+              <Image 
                 src="/images/7.png" 
                 alt="권영국 후보" 
+                width={300}
+                height={300}
                 className="img-fluid rounded-3"
                 style={{ 
                   maxHeight: '300px',
@@ -298,9 +301,11 @@ export default function PoliciesPage() {
                 }}
               >
                 <div className="policy-book shadow-lg">
-                  <img 
+                  <Image 
                     src="/images/7.png" 
                     alt="권영국 대선 공약집" 
+                    width={500}
+                    height={700}
                     className="img-fluid rounded-3 shadow-lg"
                     style={{ width: '100%', height: 'auto' }}
                   />

@@ -3,9 +3,14 @@
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Schedule } from '../app/page';
 
 // 정적 데이터와 동적 데이터를 처리하기 위한 클라이언트 컴포넌트
-export default function HomeClient() {
+interface HomeClientProps {
+  schedules: Schedule[];
+}
+
+export default function HomeClient({ schedules }: HomeClientProps) {
   const [scrollY, setScrollY] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
