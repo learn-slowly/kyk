@@ -82,7 +82,7 @@ export default function ContactPage() {
         <div 
           className="container py-5"
           style={{
-            background: 'linear-gradient(90deg, #FF0000 0%, #FFFF00 50%, #00FF00 100%)'
+            background: 'linear-gradient(90deg, #FF0000 0%, #FFed00 50%, #00a366 100%)'
           }}
         >
           <div className="row justify-content-center">

@@ -35,73 +35,73 @@ export default function PoliciesPage() {
   const policies = [
     {
       id: 1,
-      title: '일자리 창출 정책',
+      title: '정책1',
       category: 'economy',
-      summary: '청년과 중장년을 위한 양질의 일자리 창출과 기업 혁신 지원',
+      summary: '정책1 세부내용',
       icon: '💼',
       color: 'primary',
     },
     {
       id: 2,
-      title: '그린 뉴딜 정책',
+      title: '정책2',
       category: 'environment',
-      summary: '탄소중립과 지속가능한 미래를 위한 친환경 정책',
+      summary: '정책2 세부내용',
       icon: '🌱',
       color: 'success',
     },
     {
       id: 3,
-      title: '교육 혁신',
+      title: '정책3',
       category: 'education',
-      summary: '미래 인재 양성을 위한 교육 시스템 혁신과 평생교육 지원',
+      summary: '정책3 세부내용',
       icon: '🎓',
       color: 'info',
     },
     {
       id: 4,
-      title: '디지털 전환 가속화',
+      title: '정책4',
       category: 'tech',
-      summary: '4차 산업혁명 시대 경쟁력 확보를 위한 디지털 혁신',
+      summary: '정책4 세부내용',
       icon: '💻',
       color: 'warning',
     },
     {
       id: 5,
-      title: '사회 안전망 강화',
+      title: '정책5',
       category: 'welfare',
-      summary: '모든 국민이 안심하고 살 수 있는 복지 시스템 구축',
+      summary: '정책5 세부내용',
       icon: '🛡️',
       color: 'danger',
     },
     {
       id: 6,
-      title: '문화예술 진흥',
+      title: '정책6',
       category: 'culture',
-      summary: '문화 다양성 존중과 예술인 지원을 통한 문화 강국 실현',
+      summary: '정책6 세부내용',
       icon: '🎨',
       color: 'secondary',
     },
     {
       id: 7,
-      title: '평화 외교 강화',
+      title: '정책7',
       category: 'diplomacy',
-      summary: '국제 협력 강화와 한반도 평화 체제 구축을 위한 외교 정책',
+      summary: '정책7 세부내용',
       icon: '🕊️',
       color: 'primary',
     },
     {
       id: 8,
-      title: '중소기업 육성',
+      title: '정책8',
       category: 'economy',
-      summary: '혁신 중소기업 지원 및 대-중소기업 상생 협력 체계 구축',
+      summary: '정책8 세부내용',
       icon: '🏭',
       color: 'success',
     },
     {
       id: 9,
-      title: '주거 안정화',
+      title: '정책9',
       category: 'welfare',
-      summary: '모든 국민의 주거권 보장을 위한 부동산 안정화 정책',
+      summary: '정책9 세부내용',
       icon: '🏠',
       color: 'info',
     }
@@ -131,7 +131,7 @@ export default function PoliciesPage() {
       <section 
         className="position-relative py-5 text-white"
         style={{
-          background: 'linear-gradient(90deg, #FF0000 0%, #FFFF00 50%, #00FF00 100%)',
+          background: 'linear-gradient(90deg, #FF0000 0%, #FFed00 50%, #00a366 100%)',
           overflow: 'hidden'
         }}
       >
@@ -147,12 +147,30 @@ export default function PoliciesPage() {
         ></div>
         
         <div className="container py-5">
-          <div className="row justify-content-center">
-            <div className="col-lg-8 text-center">
-              <h1 className="display-3 fw-bold mb-4">정책 공약</h1>
-              <p className="lead fs-4 mb-0">
-                권영국 후보가 대한민국의 미래를 위해 준비한 정책 공약을 소개합니다
+          <div className="row justify-content-center align-items-center">
+            <div className="col-lg-6 text-lg-start text-center">
+              <h1 className="display-3 fw-bold mb-4 position-relative">정책 공약</h1>
+              <p className="lead fs-4 mb-0 d-inline-block" style={{ 
+                fontWeight: 500,
+                backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                padding: '5px 15px',
+                borderRadius: '4px'
+              }}>
+                권영국 후보가 사회대전환을 위해 준비한 정책 공약을 소개합니다
               </p>
+            </div>
+            <div className="col-lg-6 text-center d-none d-lg-block">
+              <img 
+                src="/images/7.png" 
+                alt="권영국 후보" 
+                className="img-fluid rounded-3"
+                style={{ 
+                  maxHeight: '300px',
+                  filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))',
+                  transform: `translateY(${scrollY * 0.05}px)`,
+                  transition: 'transform 0.1s ease-out'
+                }}
+              />
             </div>
           </div>
         </div>
@@ -260,7 +278,7 @@ export default function PoliciesPage() {
               <h2 className="display-5 fw-bold mb-4">권영국 대선 공약집</h2>
               <p className="lead mb-4">
                 권영국 후보의 모든 공약을 담은 공약집을 다운로드하여 자세히 살펴보세요.
-                대한민국의 미래를 위한 구체적이고 실현 가능한 정책들이 담겨있습니다.
+                사회대전환을 위한 구체적이고 실현 가능한 정책들이 담겨있습니다.
               </p>
               <div className="d-flex gap-3">
                 <button className="btn btn-primary btn-lg">
@@ -280,11 +298,12 @@ export default function PoliciesPage() {
                 }}
               >
                 <div className="policy-book shadow-lg">
-                  <div className="policy-book-cover gradient-bg p-5 text-white text-center rounded-3">
-                    <h3 className="h2 mb-3">2024 권영국<br />대선 공약집</h3>
-                    <div className="display-3 mb-3">📚</div>
-                    <p className="mb-0">더 나은 대한민국을 위한<br />청사진</p>
-                  </div>
+                  <img 
+                    src="/images/7.png" 
+                    alt="권영국 대선 공약집" 
+                    className="img-fluid rounded-3 shadow-lg"
+                    style={{ width: '100%', height: 'auto' }}
+                  />
                 </div>
               </div>
             </div>
@@ -344,7 +363,15 @@ export default function PoliciesPage() {
         }
         
         .gradient-bg {
-          background: linear-gradient(135deg, #FF0000 0%, #FFFF00 50%, #00FF00 100%);
+          background: linear-gradient(135deg, #FF0000 0%, #FFed00 50%, #00a366 100%);
+        }
+        
+        .policies-page .lead {
+          font-weight: 500;
+        }
+        
+        .position-relative {
+          z-index: 1;
         }
       `}</style>
     </div>

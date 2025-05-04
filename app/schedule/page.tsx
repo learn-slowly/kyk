@@ -157,7 +157,15 @@ export default async function SchedulePage() {
             href="https://calendar.google.com/calendar/render?action=TEMPLATE&dates=20250501%2F20250831&text=권영국%20후보%20캠페인%20일정&details=권영국%20후보의%20주요%20선거%20캠페인%20일정을%20구글%20캘린더에서%20확인하세요.&location=대한민국" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 text-white px-8 py-3 rounded-full font-bold text-lg hover:opacity-90"
+            style={{
+              background: 'linear-gradient(90deg, #FF0000 0%, #FFed00 50%, #00a366 100%)',
+              color: 'white',
+              padding: '0.75rem 2rem',
+              borderRadius: '9999px',
+              fontWeight: 'bold',
+              fontSize: '1.125rem',
+            }}
+            className="hover:opacity-90"
           >
             전체 일정 구글 캘린더에서 보기
           </a>

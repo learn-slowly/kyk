@@ -37,7 +37,7 @@ export default function ProfilePage() {
       <section 
         className="position-relative py-5 bg-gradient-primary overflow-hidden"
         style={{
-          background: 'linear-gradient(90deg, #FF0000 0%, #FFFF00 50%, #00FF00 100%)',
+          background: 'linear-gradient(90deg, #FF0000 0%, #FFed00 50%, #00a366 100%)',
           minHeight: '40vh',
         }}
       >
@@ -72,13 +72,12 @@ export default function ProfilePage() {
                   transition: 'opacity 0.5s ease'
                 }}
               >
-                국민의 삶을 바꾸는 진정한 변화를 이끌 차기 대통령 후보
+                사회대전환을 위한 거리의 변호사, 정의당 제8대 당대표
               </p>
               <div className="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start">
-                <span className="badge bg-white text-primary fs-6 px-3 py-2 me-2 mb-2">정치인</span>
-                <span className="badge bg-white text-primary fs-6 px-3 py-2 me-2 mb-2">법률가</span>
-                <span className="badge bg-white text-primary fs-6 px-3 py-2 me-2 mb-2">경제 전문가</span>
-                <span className="badge bg-white text-primary fs-6 px-3 py-2 mb-2">교육 개혁가</span>
+                <span className="badge bg-white text-primary fs-6 px-3 py-2 me-2 mb-2">거리의 변호사</span>
+                <span className="badge bg-white text-primary fs-6 px-3 py-2 me-2 mb-2">거리의 당대표</span>
+                <span className="badge bg-white text-primary fs-6 px-3 py-2 me-2 mb-2">물구나무 대장</span>
               </div>
             </div>
             <div className="col-lg-6 text-center">
@@ -109,7 +108,7 @@ export default function ProfilePage() {
                 <div 
                   className="position-absolute top-0 start-0 w-100 h-100 bg-gradient-to-tr"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(255,0,0,0.2) 0%, rgba(255,255,0,0.1) 50%, rgba(0,255,0,0.2) 100%)',
+                    background: 'linear-gradient(135deg, rgba(255,0,0,0.2) 0%, rgba(255,237,0,0.1) 50%, rgba(0,163,102,0.2) 100%)',
                     borderRadius: 'inherit',
                     pointerEvents: 'none'
                   }}
@@ -123,20 +122,18 @@ export default function ProfilePage() {
       {/* 메인 콘텐츠 */}
       <section className="py-5 bg-light">
         <div className="container py-4">
-          {/* 네비게이션 탭 */}
-          <div className="nav-tabs-wrapper mb-5 border-bottom sticky-top bg-light py-2 px-2 rounded shadow-sm">
-            <ul className="nav nav-pills gap-1 flex-nowrap overflow-auto">
+          {/* 탭 네비게이션 */}
+          <div className="profile-tabs mb-5">
+            <ul className="nav nav-pills nav-fill flex-column flex-sm-row mb-4">
               {[
-                { id: 'bio', label: '약력' },
+                { id: 'bio', label: '소개' },
+                { id: 'timeline', label: '약력' },
                 { id: 'vision', label: '비전' },
-                { id: 'values', label: '가치관' },
-                { id: 'education', label: '학력' },
-                { id: 'career', label: '경력' },
-                { id: 'achievements', label: '주요 성과' }
+                { id: 'trivia', label: '여담' }
               ].map(tab => (
-                <li className="nav-item" key={tab.id}>
-                  <button
-                    className={`nav-link px-4 py-2 ${activeTab === tab.id ? 'active' : ''}`}
+                <li key={tab.id} className="nav-item" role="presentation">
+                  <button 
+                    className={`nav-link w-100 ${activeTab === tab.id ? 'active' : ''}`} 
                     onClick={() => setActiveTab(tab.id)}
                   >
                     {tab.label}
@@ -144,158 +141,219 @@ export default function ProfilePage() {
                 </li>
               ))}
             </ul>
-          </div>
-
-          {/* 약력 */}
-          <div className={`tab-content ${activeTab === 'bio' ? 'd-block' : 'd-none'}`}>
-            <div className="row">
-              <div className="col-lg-8 mx-auto">
-                <h2 className="display-5 fw-bold mb-4 text-center">권영국 약력</h2>
-                <p className="lead mb-5 text-center">
-                  대한민국의 미래를 위해 힘쓰는 정치인, 법률가, 경제 전문가
-                </p>
-                
-                {/* 타임라인 */}
-                <div className="timeline-wrapper position-relative">
-                  {[
-                    { 
-                      year: '1970', 
-                      title: '서울 출생',
-                      content: '서울특별시 종로구에서 3남 1녀 중 둘째로 출생'
-                    },
-                    { 
-                      year: '1993', 
-                      title: '서울대학교 법학과 졸업',
-                      content: '법학사 학위 취득 및 동대학원 진학'
-                    },
-                    { 
-                      year: '1996', 
-                      title: '변호사 자격 취득',
-                      content: '제38회 사법시험 합격 및 사법연수원 28기 수료'
-                    },
-                    { 
-                      year: '2000', 
-                      title: '법무법인 정의 설립',
-                      content: '시민의 권리 보호를 위한 법무법인 설립 및 대표변호사 취임'
-                    },
-                    { 
-                      year: '2008', 
-                      title: '국회의원 당선',
-                      content: '제18대 국회의원 선거 당선 (서울 종로구)'
-                    },
-                    { 
-                      year: '2012', 
-                      title: '재선 성공',
-                      content: '제19대 국회의원 재선 성공 및 법제사법위원회 활동'
-                    },
-                    { 
-                      year: '2016', 
-                      title: '경제정의특별위원회 위원장',
-                      content: '경제정의 실현과 서민경제 활성화를 위한 특별위원회 위원장 역임'
-                    },
-                    { 
-                      year: '2020', 
-                      title: '민생당 원내대표',
-                      content: '민생당 원내대표 및 정책위원회 의장 역임'
-                    },
-                    { 
-                      year: '2023', 
-                      title: '대선 출마 선언',
-                      content: '더 나은 대한민국을 위한 대통령 선거 출마 선언'
-                    }
-                  ].map((item, index) => (
-                    <div 
-                      key={index} 
-                      className="timeline-item position-relative mb-5 ps-5"
-                      style={{
-                        opacity: isScrolled ? 1 : 0.8,
-                        transform: isScrolled ? 'translateY(0)' : 'translateY(10px)',
-                        transition: `all 0.5s ease ${index * 0.1}s`
-                      }}
-                    >
-                      <div className="timeline-badge position-absolute start-0 top-0 rounded-circle bg-primary text-white fw-bold d-flex align-items-center justify-content-center">
-                        {item.year}
-                      </div>
-                      <div className="timeline-content bg-white p-4 rounded shadow-sm border-start border-5 border-primary hover-lift">
-                        <h3 className="h4 mb-2">{item.title}</h3>
-                        <p className="mb-0 text-muted">{item.content}</p>
-                      </div>
+            
+            {/* 소개 탭 */}
+            <div className={`tab-content ${activeTab === 'bio' ? 'd-block' : 'd-none'}`}>
+              <div className="row">
+                <div className="col-lg-8 mx-auto">
+                  <h2 className="display-5 fw-bold mb-4 text-center">권영국 약력</h2>
+                  <p className="lead mb-5 text-center">
+                    가난한 광부의 아들이 거리의 변호사가 되고, 정의당 당대표를 거쳐 사회대전환 대통령 후보가 되기까지
+                  </p>
+                  
+                  <div className="card shadow mb-5">
+                    <div className="card-body p-4">
+                      <h3 className="h4 mb-3">거리의 변호사, 권영국</h3>
+                      <p className="mb-0">
+                        "SPC 노조파괴 의혹, 쿠팡 블랙리스트 의혹, 고 김용균 노동자 사망사건, 구의역 김군 사망사건···. 이들 사건에서 빼지지 않고 등장하는 이가 있다. '거리의 변호사' 권영국이다." - 한겨레 기사
+                      </p>
+                      <hr className="my-4" />
+                      <p>
+                        권영국은 1963년 강원도 태백에서 광부의 아들로 태어났습니다. 가난한 가정 형편 속에서도 배움에 대한 열정으로 포항제철공업고등학교를 거쳐 서울대학교 공과대학 금속공학과에 진학했습니다.
+                      </p>
+                      <p>
+                        엔지니어로 근무하던 중 노동운동에 참여하며 노동자의 권리를 위해 싸우다 해고됐고, 4년간의 복직투쟁 이후 사법시험에 합격해 변호사가 되었습니다. 
+                      </p>
+                      <p>
+                        "헌법 12조에는 국민 누구나 평등하게 변호인의 조력을 받을 권리를 명시하고 있습니다. 돈이 없다는 이유로 그 억울함을 주장할 수 있는 권리를 박탈당해선 안 되지 않겠습니까. 돈은 있는 사람에게 벌면 됩니다."
+                      </p>
+                      <p>
+                        쌍용자동차 정리해고, 용산 참사, 구의역 참사, 세월호 참사, 태안화력발전소 사고 등 굵직한 산업재해와 사회적 참사의 현장에서 변호사로 활동해왔습니다. 특히 해고노동자나 기초생활수급자 등 돈이 없는 이들에게 무료 변론을 제공하며 '거리의 변호사'라는 별명을 얻었습니다.
+                      </p>
+                      <p>
+                        2015년 정계에 입문하여 시민혁명당 창당추진위원장, 2019년 정의당 입당 후 2024년 정의당 제8대 당대표로 선출되었습니다. 윤석열 대통령 탄핵으로 열린 제21대 대선에서 사회대전환 연대회의 후보로 나서 노동자와 시민의 권리를 지키고 불평등한 사회구조를 바꾸기 위해 출마했습니다.
+                      </p>
                     </div>
-                  ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* 비전 */}
-          <div className={`tab-content ${activeTab === 'vision' ? 'd-block' : 'd-none'}`}>
-            <div className="row">
-              <div className="col-lg-8 mx-auto text-center mb-5">
-                <h2 className="display-5 fw-bold mb-4">국민과 함께하는 비전</h2>
-                <p className="lead">
-                  변화와 혁신, 그리고 포용과 통합의 정신으로 국민과 함께 만드는 미래
-                </p>
+            
+            {/* 약력 타임라인 탭 */}
+            <div className={`tab-content ${activeTab === 'timeline' ? 'd-block' : 'd-none'}`}>
+              <div className="row">
+                <div className="col-lg-8 mx-auto">
+                  <h2 className="display-5 fw-bold mb-4 text-center">권영국의 약력 타임라인</h2>
+                  <p className="lead mb-5 text-center">
+                    권영국의 삶과 활동의 주요 이벤트와 중요한 경력
+                  </p>
+                  
+                  <div className="timeline-wrapper">
+                    <div className="timeline-badge">
+                      <i className="bi bi-person-fill"></i>
+                    </div>
+                    <div className="timeline-item">
+                      <div className="timeline-content">
+                        <h3>거리의 변호사</h3>
+                        <p>권영국이 거리의 변호사로 활동하기 시작한 시기</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="timeline-wrapper">
+                    <div className="timeline-badge">
+                      <i className="bi bi-briefcase-fill"></i>
+                    </div>
+                    <div className="timeline-item">
+                      <div className="timeline-content">
+                        <h3>정의당 당대표</h3>
+                        <p>2019년 정의당 입당 후 2024년까지 당대표로 활동</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="timeline-wrapper">
+                    <div className="timeline-badge">
+                      <i className="bi bi-megaphone-fill"></i>
+                    </div>
+                    <div className="timeline-item">
+                      <div className="timeline-content">
+                        <h3>대통령 후보</h3>
+                        <p>윤석열 대통령 탄핵으로 열린 제21대 대선에서 사회대전환 연대회의 후보로 나서기</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* 비전 탭 */}
+            <div className={`tab-content ${activeTab === 'vision' ? 'd-block' : 'd-none'}`}>
+              <div className="row">
+                <div className="col-lg-8 mx-auto text-center mb-5">
+                  <h2 className="display-5 fw-bold mb-4">시민과 함께하는 사회대전환</h2>
+                  <p className="lead">
+                    노동자와 시민의 권리를 지키며 평등하고 정의로운 대한민국을 위한 진정한 변화
+                  </p>
+                </div>
               </div>
 
-              <div className="col-lg-10 mx-auto">
-                <div className="row g-4">
-                  {[
-                    {
-                      title: '경제 민주화',
-                      icon: '💰',
-                      content: '기업과 중소상공인이 상생하는 경제 생태계를 구축하고, 양극화 해소를 위한 경제 정책을 실현합니다.'
-                    },
-                    {
-                      title: '일자리 창출',
-                      icon: '👔',
-                      content: '4차 산업혁명 시대에 맞는 미래 일자리 창출과 안정적인 고용 환경 조성에 힘쓰겠습니다.'
-                    },
-                    {
-                      title: '복지 강화',
-                      icon: '👪',
-                      content: '아동부터 노인까지 생애주기별 맞춤형 복지 정책으로 모든 국민이 안심하고 살 수 있는 사회를 만들겠습니다.'
-                    },
-                    {
-                      title: '교육 혁신',
-                      icon: '🎓',
-                      content: '창의적 인재 양성을 위한 교육 시스템 혁신과 평생학습 체계 구축을 통해 미래 사회에 대비합니다.'
-                    },
-                    {
-                      title: '디지털 전환',
-                      icon: '🌐',
-                      content: '디지털 경제로의 전환을 가속화하고, 디지털 격차 해소를 위한 정책적 지원을 강화하겠습니다.'
-                    },
-                    {
-                      title: '환경과 지속가능성',
-                      icon: '🌱',
-                      content: '탄소중립 사회로의 전환을 위한 정책을 추진하고, 미래 세대를 위한 지속가능한 발전을 추구합니다.'
-                    }
-                  ].map((vision, index) => (
-                    <div className="col-md-6 col-lg-4" key={index}>
-                      <div className="card h-100 border-0 shadow-sm hover-float">
-                        <div className="card-body p-4 text-center">
-                          <div className="display-4 mb-3">{vision.icon}</div>
-                          <h3 className="h4 card-title mb-3">{vision.title}</h3>
-                          <p className="card-text">{vision.content}</p>
+              <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+                {[
+                  {
+                    title: '노동권 보장',
+                    icon: '✊',
+                    content: '모든 노동자의 단결권, 단체교섭권, 단체행동권을 보장하고, 일하는 모든 시민에게 노동권을 확대하겠습니다.'
+                  },
+                  {
+                    title: '산업안전 확대',
+                    icon: '🛡️',
+                    content: '중대재해처벌법 강화와 산업안전보건법 철저한 시행으로 노동자의 생명과 안전을 최우선으로 하는 사회를 구축하겠습니다.'
+                  },
+                  {
+                    title: '차별과 불평등 해소',
+                    icon: '⚖️',
+                    content: '재벌 대기업의 경제력 집중을 해소하고, 모든 국민이 차별 없이 존중받는 사회를 만들겠습니다.'
+                  },
+                  {
+                    title: '기후위기 대응',
+                    icon: '🌱',
+                    content: '탈핵과 정의로운 에너지 전환을 통해 미래세대가 살아갈 지속가능한 지구를 지키겠습니다.'
+                  },
+                  {
+                    title: '정치 민주주의 확대',
+                    icon: '✊',
+                    content: '광장의 민주주의, 시민이 주인되는 정치로 권력기관 개혁과 정치혁신을 이루겠습니다.'
+                  },
+                  {
+                    title: '사회 안전망 강화',
+                    icon: '🏥',
+                    content: '모든 시민이 건강하고 안전하게 살 수 있도록 의료, 주거, 교육의 공공성을 강화하고 보편적 복지 체계를 구축하겠습니다.'
+                  },
+                  {
+                    title: '인권과 연대의 가치',
+                    icon: '🤝',
+                    content: '약자와 소수자의 인권을 보호하고, 국내외 모든 시민과의 연대로 더 나은 세상을 만들어가겠습니다.'
+                  }
+                ].map((item, index) => (
+                  <div className="col-md-6 col-lg-4" key={index}>
+                    <div className="card h-100 border-0 shadow-sm hover-float">
+                      <div className="card-body p-4 text-center">
+                        <div className="display-4 mb-3">{item.icon}</div>
+                        <h3 className="h4 card-title mb-3">{item.title}</h3>
+                        <p className="card-text">{item.content}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* 여담 탭 */}
+            <div className={`tab-content ${activeTab === 'trivia' ? 'd-block' : 'd-none'}`}>
+              <div className="row">
+                <div className="col-lg-8 mx-auto text-center mb-5">
+                  <h2 className="display-5 fw-bold mb-4">권영국의 다양한 모습</h2>
+                  <p className="lead">
+                    대선 후보의 인간적인 면모와 특별한 이야기들
+                  </p>
+                </div>
+              </div>
+              
+              <div className="row g-4">
+                <div className="col-md-6">
+                  <div className="card h-100 shadow-sm hover-lift">
+                    <div className="card-body p-4">
+                      <div className="d-flex align-items-center mb-3">
+                        <div className="bg-light rounded-circle p-3 me-3">
+                          <span className="fs-4">🤸</span>
                         </div>
+                        <h3 className="h5 mb-0">물구나무 대장</h3>
                       </div>
+                      <p>물구나무를 특별히 잘 서는 것으로 알려져 있으며, 다양한 행사에서 물구나무 서기를 선보이기도 합니다.</p>
                     </div>
-                  ))}
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 다른 탭 콘텐츠 (간략히 표시) */}
-          <div className={`tab-content ${activeTab !== 'bio' && activeTab !== 'vision' ? 'd-block' : 'd-none'}`}>
-            <div className="text-center py-5">
-              <h2 className="display-5 fw-bold mb-4">준비 중입니다</h2>
-              <p className="lead">선택한 &ldquo;{activeTab === 'values' ? '가치관' : 
-                                  activeTab === 'education' ? '학력' : 
-                                  activeTab === 'career' ? '경력' : 
-                                  '주요 성과'}&rdquo; 정보는 현재 준비 중입니다.</p>
-              <div className="spinner-border text-primary mt-4" role="status">
-                <span className="visually-hidden">로딩중...</span>
+                
+                <div className="col-md-6">
+                  <div className="card h-100 shadow-sm hover-lift">
+                    <div className="card-body p-4">
+                      <div className="d-flex align-items-center mb-3">
+                        <div className="bg-light rounded-circle p-3 me-3">
+                          <span className="fs-4">🎵</span>
+                        </div>
+                        <h3 className="h5 mb-0">K-POP 팬</h3>
+                      </div>
+                      <p>탄핵정국에서 이어진 집회에서 K-POP에 많은 관심을 보였으며, 거리 집회의 문화예술에 높은 흥미를 가지고 있습니다.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="col-md-6">
+                  <div className="card h-100 shadow-sm hover-lift">
+                    <div className="card-body p-4">
+                      <div className="d-flex align-items-center mb-3">
+                        <div className="bg-light rounded-circle p-3 me-3">
+                          <span className="fs-4">🗣️</span>
+                        </div>
+                        <h3 className="h5 mb-0">일본어 능통</h3>
+                      </div>
+                      <p>일본 도쿠시마대학에서 유학하며 일본어를 익혔고, 재일교포 후손들에게 한국어를 가르치는 봉사활동을 하기도 했습니다.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="col-md-6">
+                  <div className="card h-100 shadow-sm hover-lift">
+                    <div className="card-body p-4">
+                      <div className="d-flex align-items-center mb-3">
+                        <div className="bg-light rounded-circle p-3 me-3">
+                          <span className="fs-4">🎤</span>
+                        </div>
+                        <h3 className="h5 mb-0">노래 실력</h3>
+                      </div>
+                      <p>3월 19일 광화문 '파면을 부르는 광장 노래자랑'에 참여해 '행복의 나라로'를 열창하는 등 음악적 재능도 갖추고 있습니다.</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
