@@ -1,14 +1,14 @@
 export default {
-  name: 'news',
-  title: '뉴스&미디어',
+  name: 'brief',
+  title: '브리핑룸',
   type: 'document',
-  description: '뉴스, 보도자료, 연설문 등을 관리합니다.',
+  description: '브리핑, 기자회견, 성명서 등 공식 브리핑 자료를 관리합니다.',
   fields: [
     {
       name: 'title',
       title: '제목',
       type: 'string',
-      description: '뉴스/보도자료의 제목을 입력하세요',
+      description: '브리핑 제목을 입력하세요',
       validation: (Rule: any) => Rule.required().max(80).warning('제목은 간결하게 작성하세요'),
     },
     {
@@ -23,16 +23,17 @@ export default {
       validation: (Rule: any) => Rule.required(),
     },
     {
-      name: 'type',
-      title: '유형',
-      description: '콘텐츠 유형을 선택하세요',
+      name: 'briefType',
+      title: '브리핑 유형',
+      description: '브리핑 유형을 선택하세요',
       type: 'string',
       options: {
         list: [
-          { title: '뉴스', value: 'news' },
-          { title: '보도자료', value: 'press' },
-          { title: '연설문', value: 'speech' },
-          { title: '미디어 출연', value: 'media' },
+          { title: '기자회견', value: 'press_conference' },
+          { title: '성명서', value: 'statement' },
+          { title: '입장문', value: 'position' },
+          { title: '브리핑 자료', value: 'briefing' },
+          { title: '기타', value: 'other' },
         ],
         layout: 'radio',
       },
@@ -41,7 +42,7 @@ export default {
     {
       name: 'publishedAt',
       title: '발행일',
-      description: '발행 날짜를 선택하세요',
+      description: '브리핑 날짜를 선택하세요',
       type: 'date',
       options: {
         dateFormat: 'YYYY-MM-DD',
@@ -49,9 +50,15 @@ export default {
       validation: (Rule: any) => Rule.required(),
     },
     {
+      name: 'location',
+      title: '장소',
+      description: '브리핑이 진행된 장소 (예: 당사 1층 브리핑룸)',
+      type: 'string',
+    },
+    {
       name: 'mainImage',
       title: '대표 이미지',
-      description: '뉴스에 표시될 대표 이미지를 업로드하세요 (권장 비율: 16:9)',
+      description: '브리핑에 표시될 대표 이미지를 업로드하세요 (권장 비율: 16:9)',
       type: 'image',
       options: {
         hotspot: true,
@@ -60,7 +67,7 @@ export default {
     {
       name: 'summary',
       title: '요약',
-      description: '뉴스의 간략한 요약을 입력하세요 (최대 300자)',
+      description: '브리핑 내용의 간략한 요약을 입력하세요 (최대 300자)',
       type: 'text',
       rows: 3,
       validation: (Rule: any) => Rule.max(300).warning('요약은 간결하게 작성하세요'),
@@ -68,7 +75,7 @@ export default {
     {
       name: 'content',
       title: '본문 내용',
-      description: '본문 내용을 작성하세요. 문단 구분은 Enter로, 제목은 위 메뉴에서 설정할 수 있습니다',
+      description: '브리핑 전문을 작성하세요.',
       type: 'array',
       of: [
         {
@@ -132,28 +139,29 @@ export default {
     {
       name: 'videoUrl',
       title: '비디오 URL',
-      description: '유튜브나 비메오 영상이 있다면 URL을 입력하세요 (선택사항)',
+      description: '브리핑 영상이 있다면 URL을 입력하세요 (유튜브, 비메오 등)',
       type: 'url',
     },
   ],
   preview: {
     select: {
       title: 'title',
-      type: 'type',
+      briefType: 'briefType',
       media: 'mainImage',
       date: 'publishedAt',
     },
-    prepare({ title, type, media, date }: any) {
+    prepare({ title, briefType, media, date }: any) {
       const typeLabels: Record<string, string> = {
-        news: '뉴스',
-        press: '보도자료',
-        speech: '연설문',
-        media: '미디어 출연',
+        press_conference: '기자회견',
+        statement: '성명서',
+        position: '입장문',
+        briefing: '브리핑 자료',
+        other: '기타',
       };
       
       return {
         title,
-        subtitle: `${typeLabels[type] || type} - ${date || '날짜 미정'}`,
+        subtitle: `${typeLabels[briefType] || briefType} (${date || '날짜 미정'})`,
         media,
       };
     },
