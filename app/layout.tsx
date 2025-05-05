@@ -63,19 +63,20 @@ export default function RootLayout({
                 left: auto;
                 right: 0;
                 width: auto; /* 필요한 만큼만 너비 차지 */
-                min-width: 200px; /* 최소 너비 */
-                max-width: 300px; /* 최대 너비 */
+                min-width: 180px; /* 최소 너비 축소 */
+                max-width: 250px; /* 최대 너비 축소 */
                 height: auto; /* 내용물 크기에 맞춤 */
                 max-height: calc(100vh - 80px); /* 헤더 아래 공간만 차지 */
-                background-color: white;
-                padding: 1.5rem;
+                background-color: rgba(255, 255, 255, 0.75); /* 더 투명하게 변경 */
+                backdrop-filter: blur(15px); /* 블러 효과 강화 */
+                padding: 1rem; /* 패딩 축소 */
                 z-index: 1020; /* 헤더보다 낮은 z-index */
                 transform: translateX(100%); /* 오른쪽에서 슬라이드 */
                 transition: transform 0.3s ease;
-                box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+                box-shadow: -2px 0 15px rgba(0,0,0,0.08);
                 overflow-y: auto;
-                border-bottom-left-radius: 15px;
-                border-top-left-radius: 15px;
+                border-bottom-left-radius: 12px;
+                border-top-left-radius: 12px;
               }
               
               .navbar-collapse.show {
@@ -89,17 +90,31 @@ export default function RootLayout({
               
               .navbar-nav .nav-link {
                 color: #333 !important;
-                font-weight: 500 !important;
+                font-weight: 400 !important; /* 폰트 무게 가볍게 */
                 border: none !important;
+                font-size: 0.95rem !important; /* 폰트 크기 축소 */
+                letter-spacing: -0.02em; /* 자간 좁게 */
               }
               
               .nav-button {
                 border: none !important;
-                border-bottom: 1px solid #eee !important;
+                border-bottom: 1px solid rgba(0,0,0,0.05) !important; /* 경계선 더 가볍게 */
                 border-radius: 0 !important;
                 margin: 0 !important;
-                padding: 1rem 0.5rem !important;
+                padding: 0.7rem 0.5rem !important; /* 패딩 축소 */
                 text-align: center;
+                position: relative !important;
+              }
+              
+              /* 메뉴 항목 구분선 추가 */
+              .navbar-nav .nav-item:not(:last-child) .nav-button::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 15%;
+                right: 15%;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, rgba(0,0,0,0.07), transparent);
               }
               
               .nav-button::before {
@@ -107,7 +122,7 @@ export default function RootLayout({
               }
               
               .nav-button:hover {
-                background-color: #f8f9fa !important;
+                background-color: rgba(0,0,0,0.03) !important; /* 호버 효과 가볍게 */
                 color: #000 !important;
               }
               
@@ -117,10 +132,17 @@ export default function RootLayout({
                 right: 0.5rem;
                 background: none;
                 border: none;
-                font-size: 1.2rem;
+                font-size: 1rem; /* 크기 축소 */
                 cursor: pointer;
                 color: #333;
                 padding: 0.2rem 0.5rem;
+              }
+              
+              /* 모바일 메뉴 폰트 가벼운 스타일로 변경 */
+              .navbar-nav .nav-link.site-title {
+                font-weight: 300 !important;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, 
+                  Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
               }
             }
 
@@ -151,6 +173,11 @@ export default function RootLayout({
               transition: all 0.3s ease;
               background-image: none !important;
               position: relative;
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              width: 24px !important;
+              height: 24px !important;
             }
             
             .navbar-toggler-icon::before,
@@ -165,12 +192,22 @@ export default function RootLayout({
             }
             
             .navbar-toggler-icon::before {
-              top: 10px;
-              box-shadow: 0 -10px 0 white; /* 상단 라인용 */
+              top: 6px;
+              box-shadow: 0 -6px 0 white; /* 상단 라인용 */
             }
             
             .navbar-toggler-icon::after {
-              bottom: 10px;
+              bottom: 6px;
+            }
+            
+            /* 토글러 버튼 스타일 개선 */
+            .navbar-toggler {
+              width: 40px !important;
+              height: 40px !important;
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              padding: 0 !important;
             }
             
             .nav-close-icon::before {
@@ -209,6 +246,31 @@ export default function RootLayout({
               transition: none !important;
               opacity: 1 !important;
               visibility: visible !important;
+            }
+            
+            /* 햄버거 메뉴 대형 화면에서 숨기기 */
+            @media (min-width: 992px) {
+              .navbar-toggler {
+                display: none !important;
+              }
+              
+              /* 대형 화면에서 메뉴 항상 펼침 */
+              .navbar-collapse {
+                display: flex !important;
+                flex-basis: auto;
+                transform: none !important;
+                position: static !important;
+                background: none !important;
+                box-shadow: none !important;
+              }
+              
+              .navbar-nav {
+                flex-direction: row !important;
+              }
+              
+              .nav-item {
+                margin-left: 0.5rem;
+              }
             }
             
             /* 헤더 브랜드 영역 */
@@ -366,6 +428,11 @@ export default function RootLayout({
                     <i className="bi bi-x"></i>
                   </button>
                   <ul className="navbar-nav ms-auto">
+                    <li className="nav-item d-lg-none">
+                      <Link href="/" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1 site-title">
+                        처음으로
+                      </Link>
+                    </li>
                     <li className="nav-item">
                       <Link href="/profile" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1 site-title">소개</Link>
                     </li>
