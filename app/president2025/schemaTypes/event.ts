@@ -33,13 +33,24 @@ export default {
       },
       prepare(selection: {
         title?: string;
-        start?: string;
+        start?: string | Date;
         location?: string;
         isImportant?: boolean;
         category?: string;
       }) {
         const { title, start, location, isImportant, category } = selection;
-        const date = start ? new Date(start).toLocaleDateString('ko-KR') : '날짜 미정';
+        
+        let date = '날짜 미정';
+        if (start) {
+          try {
+            const dateObj = typeof start === 'string' ? new Date(start) : start;
+            if (!isNaN(dateObj.getTime())) {
+              date = dateObj.toLocaleDateString('ko-KR');
+            }
+          } catch (error) {
+            console.error('날짜 변환 오류:', error);
+          }
+        }
         
         const categoryLabel = 
           category === 'candidate' ? '후보' :

@@ -54,7 +54,7 @@ export default {
       prepare(selection: {
         title?: string;
         category?: string;
-        publishedAt?: string;
+        publishedAt?: string | Date;
         media?: any;
         author?: string;
       }) {
@@ -64,9 +64,17 @@ export default {
           category === 'today' ? '오늘의 영국' :
           category === 'media' ? '언론 속 영국' : '';
         
-        const date = publishedAt 
-          ? new Date(publishedAt).toLocaleDateString('ko-KR')
-          : '날짜 미정';
+        let date = '날짜 미정';
+        if (publishedAt) {
+          try {
+            const dateObj = typeof publishedAt === 'string' ? new Date(publishedAt) : publishedAt;
+            if (!isNaN(dateObj.getTime())) {
+              date = dateObj.toLocaleDateString('ko-KR');
+            }
+          } catch (error) {
+            console.error('날짜 변환 오류:', error);
+          }
+        }
         
         return {
           title,

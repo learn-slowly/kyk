@@ -447,8 +447,8 @@ export default function HomeClient({ schedules = [] }: HomeClientProps) {
 
           {/* 히어로(권영국 이름과 부제목) 이 위치에 배치 */}
           <div className="hero-content loaded" style={{ position: 'relative', zIndex: 10, textAlign: 'center', margin: '3rem 0' }}>
-            <h1 className="interactive-text" style={{ marginBottom: '12px' }}>권영국</h1>
-            <p className="subtitle" style={{ display: 'block', whiteSpace: 'nowrap', marginTop: '5px' }}>
+            <h1 className="interactive-text">권영국</h1>
+            <p className="subtitle" style={{ display: 'block', whiteSpace: 'nowrap' }}>
               <span className="org-name rainbow-animation">사회대전환 연대회의</span>
               <span className="candidate-title rainbow-animation">대통령 후보</span>
             </p>
@@ -872,7 +872,7 @@ export default function HomeClient({ schedules = [] }: HomeClientProps) {
         .interactive-text {
           font-size: 7rem;
           font-weight: 700;
-          margin-bottom: 15px;
+          margin-bottom: 1rem;
           letter-spacing: -0.02em;
           color: #0b365f;
           position: relative;
@@ -930,7 +930,6 @@ export default function HomeClient({ schedules = [] }: HomeClientProps) {
         .subtitle {
           font-size: 2.5rem;
           margin-bottom: 2rem;
-          margin-top: 8px;
           color: #0b365f;
           position: relative;
           display: inline-block;
@@ -1421,10 +1420,12 @@ export default function HomeClient({ schedules = [] }: HomeClientProps) {
           
           .hero-content {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
-            justify-content: center;
-            text-align: center;
+            justify-content: flex-start;
+            text-align: left;
+            width: 100%;
+            gap: 15px;
           }
           
           .hero-content .interactive-text {
@@ -1485,20 +1486,6 @@ export default function HomeClient({ schedules = [] }: HomeClientProps) {
           .rainbow-animation {
             font-size: 1.8rem;
             margin-right: 2px;
-          }
-          
-          /* 모바일에서 한줄 표시 보장 */
-          .subtitle {
-            white-space: nowrap !important;
-            text-align: center !important;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block !important;
-            margin-top: 6px !important;
-          }
-          
-          .interactive-text {
-            margin-bottom: 10px !important;
           }
         }
 

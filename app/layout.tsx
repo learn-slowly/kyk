@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Link from 'next/link'
+import Image from 'next/image'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import './globals.css'
@@ -140,13 +141,189 @@ export default function RootLayout({
                 width: 100%;
               }
             }
+
+            .site-title {
+              font-family: 'GamtanRoad Gamtan', sans-serif;
+            }
+            
+            /* 네비게이션 토글 버튼 아이콘 변환 */
+            .navbar-toggler-icon {
+              transition: all 0.3s ease;
+              background-image: none !important;
+              position: relative;
+            }
+            
+            .navbar-toggler-icon::before,
+            .navbar-toggler-icon::after {
+              content: '';
+              position: absolute;
+              width: 100%;
+              height: 2px;
+              background-color: white;
+              left: 0;
+              transition: all 0.3s ease;
+            }
+            
+            .navbar-toggler-icon::before {
+              top: 10px;
+              box-shadow: 0 -10px 0 white; /* 상단 라인용 */
+            }
+            
+            .navbar-toggler-icon::after {
+              bottom: 10px;
+            }
+            
+            .nav-close-icon::before {
+              top: 50%;
+              transform: rotate(45deg);
+              box-shadow: none;
+            }
+            
+            .nav-close-icon::after {
+              bottom: 50%;
+              transform: rotate(-45deg);
+            }
+            
+            /* 스티키 헤더 고정 스타일 */
+            .sticky-header {
+              position: fixed;
+              top: 0;
+              left: 0;
+              right: 0;
+              width: 100%;
+              z-index: 1020;
+              transition: none !important;
+              transform: none !important;
+              animation: none !important;
+              opacity: 1 !important;
+              visibility: visible !important;
+              background: linear-gradient(90deg, #FF0000 0%, #FFed00 50%, #00a366 100%) !important;
+            }
+            
+            /* 네비게이션 바 */
+            .navbar {
+              padding-top: 10px !important;
+              padding-bottom: 10px !important;
+              position: static !important;
+              transform: none !important;
+              transition: none !important;
+              opacity: 1 !important;
+              visibility: visible !important;
+            }
+            
+            /* 헤더 브랜드 영역 */
+            .navbar-brand {
+              display: block !important;
+              white-space: normal !important;
+              overflow: visible !important;
+              position: static !important;
+              transform: none !important;
+              transition: none !important;
+              animation: none !important;
+              opacity: 1 !important;
+              visibility: visible !important;
+              color: white !important;
+            }
+            
+            /* 서브타이틀 고정 스타일 */
+            .subtitle-container {
+              display: block !important;
+              position: static !important;
+              width: 100% !important;
+              margin-bottom: 4px !important;
+              transform: none !important;
+              transition: none !important;
+              animation: none !important;
+              opacity: 1 !important;
+              visibility: visible !important;
+            }
+            
+            .brand-text {
+              position: static !important;
+              transform: none !important;
+              transition: none !important;
+              animation: none !important;
+              padding: 0 !important;
+              margin: 0 !important;
+              opacity: 1 !important;
+              visibility: visible !important;
+              color: white !important;
+            }
+            
+            .logo-container {
+              display: inline-block !important;
+              position: static !important;
+              transform: none !important;
+              transition: none !important;
+              animation: none !important;
+              opacity: 1 !important;
+              visibility: visible !important;
+            }
+            
+            /* 헤더 공간 확보를 위한 패딩 */
+            .header-spacer {
+              height: 110px; /* 헤더 높이에 맞게 조정 */
+            }
+            
+            /* 헤더 내용 고정 */
+            .header-content {
+              position: relative;
+              display: flex;
+              align-items: center;
+            }
+            
+            /* 반응형 로고 크기 조정 */
+            @media (max-width: 768px) {
+              .header-spacer {
+                height: 100px; /* 모바일 헤더 높이에 맞게 조정 */
+              }
+              .header-logo {
+                width: 200px !important;
+                height: 47px !important;
+              }
+              .site-title {
+                font-size: 2rem !important;
+              }
+              .subtitle {
+                font-size: 0.8em !important;
+                margin-bottom: 5px !important;
+              }
+            }
+            
+            @media (max-width: 480px) {
+              .header-spacer {
+                height: 90px; /* 모바일 헤더 높이에 맞게 조정 */
+              }
+              .header-logo {
+                width: 160px !important;
+                height: 38px !important;
+              }
+              .site-title {
+                font-size: 1.7rem !important;
+              }
+              .subtitle {
+                font-size: 0.7em !important;
+                margin-bottom: 3px !important;
+              }
+            }
+
+            .subtitle {
+              display: block !important;
+              opacity: 1 !important;
+              visibility: visible !important;
+              position: static !important;
+              transition: none !important;
+              transform: none !important;
+              animation: none !important;
+              color: white !important;
+            }
           `}
         </style>
       </head>
       <body className={inter.className}>
         <ClientBootstrap />
         <header 
-          className="sticky-top shadow-sm"
+          className="sticky-header shadow-sm"
           style={{
             background: 'linear-gradient(90deg, #FF0000 0%, #FFed00 50%, #00a366 100%)'
           }}
@@ -155,9 +332,22 @@ export default function RootLayout({
             <nav className="navbar navbar-expand-lg">
               <div className="container-fluid">
                 <Link href="/" className="navbar-brand fw-bolder text-white">
-                  <div className="d-flex flex-column">
-                    <small style={{ fontSize: '0.6em', fontWeight: 'normal', opacity: 0.9, lineHeight: '1' }}>사회대전환 연대회의 대통령 후보</small>
-                    <span className="fs-1 fw-bolder">민주노동당 권영국</span>
+                  <div className="subtitle-container">
+                    <span className="site-title subtitle d-block brand-text" style={{opacity: 1, visibility: 'visible'}}>사회대전환 연대회의 대통령 후보</span>
+                  </div>
+                  <div className="d-flex align-items-center">
+                    <div className="logo-container">
+                      <Image 
+                        src="/images/pi-l.png" 
+                        alt="민주노동당 로고" 
+                        width={240} 
+                        height={56} 
+                        className="header-logo"
+                        style={{ marginRight: '8px' }} 
+                        priority
+                      />
+                    </div>
+                    <span className="fs-1 fw-bolder site-title brand-text">권영국</span>
                   </div>
                 </Link>
                 <button 
@@ -169,7 +359,7 @@ export default function RootLayout({
                     borderColor: 'rgba(255,255,255,0.5)'
                   }}
                 >
-                  <span className="navbar-toggler-icon" style={{ filter: 'brightness(0) invert(1)' }}></span>
+                  <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
                   <button className="mobile-menu-close d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -177,19 +367,19 @@ export default function RootLayout({
                   </button>
                   <ul className="navbar-nav ms-auto">
                     <li className="nav-item">
-                      <Link href="/profile" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1">소개</Link>
+                      <Link href="/profile" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1 site-title">소개</Link>
                     </li>
                     <li className="nav-item">
-                      <Link href="/policies" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1">정책</Link>
+                      <Link href="/policies" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1 site-title">정책</Link>
                     </li>
                     <li className="nav-item">
-                      <Link href="/posts" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1">뉴스</Link>
+                      <Link href="/posts" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1 site-title">뉴스</Link>
                     </li>
                     <li className="nav-item">
-                      <Link href="/events" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1">일정</Link>
+                      <Link href="/events" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1 site-title">일정</Link>
                     </li>
                     <li className="nav-item">
-                      <Link href="/join" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1">함께하기</Link>
+                      <Link href="/join" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1 site-title">함께하기</Link>
                     </li>
                   </ul>
                 </div>
@@ -197,6 +387,7 @@ export default function RootLayout({
             </nav>
           </div>
         </header>
+        <div className="header-spacer"></div>
 
         <main style={{ backgroundColor: '#f8f9fa' }}>
           {children}
@@ -234,13 +425,15 @@ export default function RootLayout({
           <div className="container position-relative" style={{ zIndex: 2 }}>
             <div className="custom-row">
               <div className="custom-col">
-                <h3 className="fs-4 fw-bold mb-3">사회대전환 연대회의 대통령 후보<br />민주노동당 권영국</h3>
-                <p className="text-light">
-                  사회를 바꾸고 우리의 미래를 바꾸기 위한 선택
-                </p>
+                <h3 className="fs-4 fw-bold mb-3 site-title">사회대전환 연대회의 대통령 후보</h3> 
+                <div className="d-flex align-items-center mb-3">
+                  <div className="d-flex align-items-center">
+                    <Image src="/images/pi-w.png" alt="민주노동당 로고" width={240} height={64} style={{ marginRight: '8px' }} />
+                    <h3 className="fs-1 fw-bold mb-0 site-title">권영국</h3>
+                  </div>
+                </div>
               </div>
               <div className="custom-col">
-                <h3 className="fs-5 fw-bold mb-3">연락처</h3>
                 <p className="text-light">
                   이메일: contact@kyk2027.kr<br />
                   전화: 02-2038-0103<br />

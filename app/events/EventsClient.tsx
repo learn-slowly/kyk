@@ -506,16 +506,16 @@ export default function EventsClient({ events }: { events: Event[] }) {
                          backgroundColor: '#e9ecef',
                          left: '25px'
                        }}>
-                  </div>
+              </div>
                   
                   {/* 이벤트 항목들 */}
                   {groupedEvents[date]
                     .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
                     .map((event, eventIndex) => (
-                    <div 
-                      key={event._id} 
+                  <div 
+                    key={event._id} 
                       className="timeline-event mb-3 position-relative fade-in-up rounded-3 shadow-sm"
-                      style={{
+                    style={{
                         animationDelay: `${(index * 0.1) + (eventIndex * 0.05)}s`,
                         border: '1px solid #f1f3f5',
                         backgroundColor: 'white',
@@ -540,8 +540,8 @@ export default function EventsClient({ events }: { events: Event[] }) {
                         <div className="d-flex justify-content-between align-items-start mb-2">
                           <h5 className="event-title mb-0 fs-5">
                             {event.isImportant && <i className="bi bi-star-fill text-danger me-2 small"></i>}
-                            {event.title}
-                          </h5>
+                          {event.title}
+                        </h5>
                           <span className="time-badge py-1 px-2 rounded-pill small" 
                                 style={{
                                   backgroundColor: '#f8f9fa',
@@ -549,7 +549,7 @@ export default function EventsClient({ events }: { events: Event[] }) {
                                   fontSize: '0.75rem',
                                   fontWeight: '500'
                                 }}>
-                            {new Date(event.start).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+                          {new Date(event.start).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
                         
@@ -735,12 +735,12 @@ export default function EventsClient({ events }: { events: Event[] }) {
                               </li>
                             </ul>
                           </div>
-                        </div>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
+            </div>
             ))
           ) : (
             <div className="text-center p-5 fade-in-up">
@@ -974,7 +974,7 @@ export default function EventsClient({ events }: { events: Event[] }) {
                 }
               `}} />
               
-              <Calendar
+              <Calendar 
                 onChange={handleDateClick}
                 value={date}
                 locale="ko-KR"
@@ -1006,7 +1006,7 @@ export default function EventsClient({ events }: { events: Event[] }) {
                             <div 
                               key={i}
                               className="event-dot"
-                              style={{
+                             style={{
                                 backgroundColor: eventsOnDay[i].isImportant ? '#ff3b30' : 
                                                 eventsOnDay[i].category ? categoryColors[eventsOnDay[i].category] : '#007aff'
                               }}
@@ -1036,7 +1036,7 @@ export default function EventsClient({ events }: { events: Event[] }) {
             }}>
               {date && !Array.isArray(date) ? (
                 <>
-                  <div className="mb-3">
+                    <div className="mb-3">
                     <small className="text-secondary d-block mb-1">{date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</small>
                     <h4 className="mb-0">{date.toLocaleDateString('ko-KR', { weekday: 'long' })}</h4>
                   </div>
@@ -1046,11 +1046,11 @@ export default function EventsClient({ events }: { events: Event[] }) {
                     
                     if (eventsOnSelectedDay.length > 0) {
                       return (
-                        <div>
+                  <div>
                           <p className="text-secondary mb-3 small">{eventsOnSelectedDay.length}개의 일정</p>
                           {eventsOnSelectedDay
                             .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
-                            .map(event => (
+                        .map(event => (
                               <div 
                                 key={event._id} 
                                 className="event-item mb-3 p-3 rounded-3 shadow-sm"
@@ -1060,7 +1060,7 @@ export default function EventsClient({ events }: { events: Event[] }) {
                                   cursor: 'pointer',
                                   transition: 'all 0.2s'
                                 }}
-                                onClick={() => setSelectedEvent(event)}
+                              onClick={() => setSelectedEvent(event)}
                               >
                                 <div className="d-flex justify-content-between align-items-start mb-2">
                                   <h5 className="event-title mb-1 fs-5">
@@ -1074,9 +1074,9 @@ export default function EventsClient({ events }: { events: Event[] }) {
                                           fontSize: '0.75rem',
                                           fontWeight: '500'
                                         }}>
-                                    {new Date(event.start).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
-                                  </span>
-                                </div>
+                              {new Date(event.start).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                  </div>
                                 
                                 <div className="d-flex align-items-center text-muted small mb-2">
                                   <i className="bi bi-geo-alt me-2"></i>
@@ -1090,8 +1090,8 @@ export default function EventsClient({ events }: { events: Event[] }) {
                                     }}>
                                       {categoryLabels[event.category] || '기타'}
                                     </span>
-                                  )}
-                                </div>
+                )}
+              </div>
                                 
                                 {selectedEvent?._id === event._id && (
                                   <p className="text-secondary small mt-2 mb-0">{event.description}</p>
@@ -1260,11 +1260,11 @@ export default function EventsClient({ events }: { events: Event[] }) {
                                           >
                                             <i className="bi bi-clipboard me-2"></i> 클립보드에 복사
                                           </button>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </div>
-                                )}
+                        </li>
+                  </ul>
+                </div>
+              </div>
+            )}
                               </div>
                             ))
                           }
