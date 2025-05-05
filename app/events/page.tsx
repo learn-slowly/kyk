@@ -16,17 +16,43 @@ type Event = {
   end: string;
   location: string;
   isImportant: boolean;
+  category?: 'candidate' | 'election' | 'media';
 };
 
 export default async function EventsPage() {
   // 서버에서 데이터 가져오기
   const events = await client.fetch<Event[]>(
-    `*[_type == "event"] | order(start asc)`
+    `*[_type == "event"] | order(start asc) {
+      _id,
+      title,
+      description,
+      start,
+      end,
+      location,
+      isImportant,
+      category
+    }`
   );
+
+  // 디버깅용 로그
+  console.log('Fetched events:', events);
+  
+  // 만약 카테고리가 없는 이벤트가 있다면 기본값 설정
+  const eventsWithDefaultCategory = events.map(event => {
+    if (!event.category) {
+      return {
+        ...event,
+        category: 'candidate' as const // 구체적인 타입으로 지정
+      };
+    }
+    return event;
+  });
+
+  console.log('Events with default category:', eventsWithDefaultCategory);
 
   return (
     <>
-      <EventsClient events={events} />
+      <EventsClient events={eventsWithDefaultCategory} />
     </>
   );
 }

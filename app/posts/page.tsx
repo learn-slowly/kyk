@@ -1,21 +1,78 @@
 // 서버 컴포넌트 (기본값)
-import { client } from '../lib/sanity';
+import { client, urlFor } from '../lib/sanity';
 import PostsClient from './PostsClient';
 
-// 타입 정의
-type Post = {
+// 메타데이터 추가
+export const metadata = {
+  title: '권영국 후보 뉴스 | 민주노동당',
+  description: '권영국 후보의 성명서, 일상 및 언론 보도를 확인하세요.',
+};
+
+// 원본 데이터 타입
+type SanityPost = {
   _id: string;
   title: string;
-  category: string;
+  slug?: { current: string };
+  category: 'statement' | 'today' | 'media';
   publishedAt: string;
   body: string;
+  summary?: string;
+  source?: string;
+  thumbnail?: { 
+    asset?: { 
+      _ref: string;
+    } 
+  };
+};
+
+// 클라이언트에 전달할 타입
+export type ClientPost = {
+  _id: string;
+  title: string;
+  slug?: { current: string };
+  category: 'statement' | 'today' | 'media';
+  publishedAt: string;
+  body: string;
+  summary?: string;
+  source?: string;
+  thumbnail?: { 
+    asset?: { 
+      _ref: string;
+    } 
+  };
+  imageUrl?: string; // 프론트엔드에서 사용할 URL
 };
 
 export default async function PostsPage() {
   // 서버에서 데이터 가져오기
-  const posts = await client.fetch<Post[]>(
-    `*[_type == "post"] | order(publishedAt desc)`
+  const posts = await client.fetch<SanityPost[]>(
+    `*[_type == "post"] | order(publishedAt desc) {
+      _id,
+      title,
+      slug,
+      category,
+      publishedAt,
+      body,
+      summary,
+      source,
+      thumbnail
+    }`
   );
 
-  return <PostsClient posts={posts} />;
+  console.log('Fetched posts:', posts);
+
+  // 이미지 URL 추가
+  const postsWithImageUrls: ClientPost[] = posts.map(post => {
+    if (post.thumbnail?.asset?._ref) {
+      return {
+        ...post,
+        imageUrl: urlFor(post.thumbnail).url()
+      };
+    }
+    return post;
+  });
+
+  console.log('Posts with image URLs:', postsWithImageUrls);
+
+  return <PostsClient posts={postsWithImageUrls} />;
 }

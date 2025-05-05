@@ -17,6 +17,17 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
+  
+  // 이미지 호스트 설정 추가
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.sanity.io',
+        pathname: '**',
+      },
+    ],
+  },
 };
 
 export default nextConfig;
