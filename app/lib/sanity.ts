@@ -7,6 +7,11 @@ export const client = createClient({
   useCdn: process.env.NODE_ENV === 'production'
 })
 
+// Generic 타입을 사용하는 fetchSanityData 함수
+export async function fetchSanityData<T>(query: string, params: Record<string, any> = {}): Promise<T> {
+  return client.fetch<T>(query, params);
+}
+
 // Helper function to get schedules with query
 export async function getSchedules() {
   return client.fetch(`*[_type == "schedule"] | order(date asc)`)
