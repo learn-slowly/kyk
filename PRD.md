@@ -297,3 +297,16 @@ SPC 파리바게뜨 노동자들과 쿠팡 노동자들,
 - 일정 알림 기능
 - SNS 자동 포스팅 기능 (추후 추가 예정)
 
+## 14. 당 로고 결정에 따른 사항
+
+- 공식 폰트: 감탄로드 탄탄체
+  @font-face {
+    font-family: 'GamtanRoad Gamtan';
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+    src: url('https://cdn.jsdelivr.net/gh/fonts-archive/GamtanRoadGamtan/GamtanRoadGamtan.woff2') format('woff2'),
+         url('https://cdn.jsdelivr.net/gh/fonts-archive/GamtanRoadGamtan/GamtanRoadGamtan.woff') format('woff'),
+         url('https://cdn.jsdelivr.net/gh/fonts-archive/GamtanRoadGamtan/GamtanRoadGamtan.otf') format('opentype'),
+         url('https://cdn.jsdelivr.net/gh/fonts-archive/GamtanRoadGamtan/GamtanRoadGamtan.ttf') format('truetype');
+}

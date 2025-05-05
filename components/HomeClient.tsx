@@ -637,7 +637,8 @@ export default function HomeClient({ schedules = [] }: HomeClientProps) {
       {/* 최종 CTA 섹션 */}
       <section className="cta-section">
         <div className="container">
-          <h2 className="scroll-reveal interactive-text">권영국과 함께 꿈을<br />현실로 만들어 갑시다</h2>
+          <h2 className="scroll-reveal interactive-text">차별없는 나라, 우리를 지키는 진보대통령!</h2>
+          <h2 className="scroll-reveal interactive-text thin-text">권영국과 함께 꿈을<br />현실로 만들어 갑시다</h2>
         </div>
         
         {/* 애니메이션 원 */}
@@ -1571,6 +1572,12 @@ export default function HomeClient({ schedules = [] }: HomeClientProps) {
         .schedule-card:hover {
           transform: translateY(-5px);
           box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 얇은 글꼴 스타일 */
+        .thin-text {
+          font-weight: 300 !important;
+          letter-spacing: 0.02em;
         }
       `}</style>
     </div>
