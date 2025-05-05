@@ -1,21 +1,66 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
-import { Schedule } from '../app/page';
 
-// 정적 데이터와 동적 데이터를 처리하기 위한 클라이언트 컴포넌트
-interface HomeClientProps {
-  schedules: Schedule[];
+// black-box 스크롤 reveal 컴포넌트
+function BlackBoxReveal({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [reveal, setReveal] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new window.IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setReveal(true);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <span
+      ref={ref}
+      className="black-box"
+      style={{ position: 'relative', display: 'inline-block' }}
+    >
+      <span
+        className="reveal-bg"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          bottom: 0,
+          width: reveal ? '100%' : '0%',
+          background: '#000',
+          zIndex: 1,
+          transition: 'width 2.5s cubic-bezier(.4,2,.6,1)',
+        }}
+      ></span>
+      <span
+        className="reveal-text"
+        style={{
+          position: 'relative',
+          zIndex: 2,
+          color: '#fff',
+          whiteSpace: 'pre',
+        }}
+      >
+        {children}
+      </span>
+    </span>
+  );
 }
 
-export default function HomeClient({ schedules }: HomeClientProps) {
+export default function HomeClient() {
   const [scrollY, setScrollY] = useState(0);
-  const [isLoaded, setIsLoaded] = useState(true);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [viewportHeight, setViewportHeight] = useState(1000); // 기본값으로 1000px 설정
-  const statementRefs = useRef<(HTMLElement | null)[]>([]);
   const overlayRef = useRef<HTMLDivElement>(null);
   const overlayImageRef = useRef<HTMLImageElement>(null);
   const circleRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -31,17 +76,36 @@ export default function HomeClient({ schedules }: HomeClientProps) {
     if (heroSectionRef.current) {
       heroSectionRef.current.style.transform = `translateY(${window.innerHeight}px)`;
     }
-    
-    // 초기 로딩 애니메이션 효과 (로딩 시간 단축)
-    setTimeout(() => {
-      setIsLoaded(true);
-    }, 100);
   }, []);
 
   // 스크롤 이벤트 핸들러
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
+      // 히어로 섹션 상단 20%에 머물다 서서히 사라지는 효과
+      if (heroSectionRef.current) {
+        const scrollY = window.scrollY;
+        const vh = window.innerHeight;
+        const top20 = vh * 0.2;
+        if (scrollY < 300) {
+          heroSectionRef.current.style.transform = `translateY(${top20}px)`;
+          heroSectionRef.current.style.opacity = '1';
+        } else {
+          const fade = Math.max(0, 1 - (scrollY - 300) / 200);
+          heroSectionRef.current.style.transform = `translateY(${top20}px)`;
+          heroSectionRef.current.style.opacity = `${fade}`;
+        }
+      }
+      // big-message 섹션 등장 애니메이션이 히어로 위치에서 멈추도록
+      const bigMessageSection = document.querySelector('.big-message') as HTMLElement | null;
+      if (bigMessageSection) {
+        const scrollY = window.scrollY;
+        // 100px에서 0까지 올라오다가 30px에서 멈춤
+        let translateY = Math.max(0, 100 - scrollY * 0.5);
+        translateY = Math.max(30, translateY); // 30px 이하로는 더 줄어들지 않음
+        bigMessageSection.style.transform = `translateY(${translateY}px)`;
+        bigMessageSection.style.opacity = '1';
+      }
       
       // 회색 오버레이와 배경 이미지 스크롤에 따라 투명해지는 효과
       if (overlayRef.current) {
@@ -320,13 +384,6 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           paddingBottom: '5vh' // 아래 여백 줄여서 다음 섹션과 가까워지게
         }}
       >
-        <div className={`hero-content ${isLoaded ? 'loaded' : ''}`} style={{ position: 'relative', zIndex: 10 }}>
-          <h1 ref={heroTextRef} className="interactive-text">권영국</h1>
-          <p className="subtitle">
-            <span className="org-name">사회대전환 연대회의</span>
-            <span className="candidate-title">대통령 후보</span>
-          </p>
-        </div>
       </section>
 
       {/* 큰 메시지 섹션 */}
@@ -381,6 +438,16 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           <p className="big-text scroll-reveal">
             {splitWords('사회대전환을 꿈꾸는 모든 시민들의 염원을 담아')}
           </p>
+
+          {/* 히어로(권영국 이름과 부제목) 이 위치에 배치 */}
+          <div className="hero-content loaded" style={{ position: 'relative', zIndex: 10, textAlign: 'center', margin: '3rem 0' }}>
+            <h1 className="interactive-text">권영국</h1>
+            <p className="subtitle">
+              <span className="org-name">사회대전환 연대회의</span>
+              <span className="candidate-title">대통령 후보</span>
+            </p>
+          </div>
+
           <p className="big-text-right scroll-reveal">
             {splitWords('21대 대통령 선거에 출마합니다.')}
           </p>
@@ -499,17 +566,19 @@ export default function HomeClient({ schedules }: HomeClientProps) {
       <section>
         <div>
           <div className="cta-banner">
-            <h2 className="cta-description">간절히 기다렸던 윤석열 파면 이후 많은 시민들은 소중한 일상으로 되돌아갔습니다. 그러나 저는 그럴 수 없었습니다.</h2>
+            <h2 className="cta-description">간절히 기다렸던 <span className="scribble-bg">윤석열 파면</span> 이후 많은 시민들은 소중한 일상으로 되돌아갔습니다. 그러나 저는 그럴 수 없었습니다.</h2>
             
             <p className="cta-highlight">
-            돌아가야 할 일상이 <span className="red-highlight">계엄</span>과 다름없는 시민들이 여전히<span className="black-box">광장에, 고공에, 거리에</span> 남아있음을 알기에
+            돌아가야 할 일상이 <span className="red-alert-text">계엄</span>과 다름없는 시민들이 여전히
+            <BlackBoxReveal>광장에, 고공에, 거리에</BlackBoxReveal>
+            {' '}남아있음을 알기에
             </p>
             
             <div className="cta-highlight-container">
               <div className="cta-description">
-                <p>정권교체를 향한 민심은 이미 압도적입니다. 그러나 <span className="black-box">정권교체만으로는 부족합니다.</span></p>
-                <p>이번에야말로 정권교체와 함께 <span style={{whiteSpace: "nowrap"}}><span className="red-box">사회</span><span className="yellow-box">대</span><span className="green-box">전환</span></span>, 그리고 정치개혁을 반드시 이뤄내야 합니다.</p>
-                <p>사회분열의 원인인 불평등과 차별을 해소해야 합니다. 탄핵세력의 부활과 내란세력 존속의 근원인 낡은 기득권 정치를 깨끗이 해체해야 합니다. 그래야 다시는 윤석열 같은 헌정파괴세력이 대한민국 정치를 함부로 넘볼 수 없게 될 것입니다. 그렇게 양극단 진영정치로 갈라진 대한민국을 광장을 닮은 <span className="red-box">다</span><span className="yellow-box">양</span><span className="green-box">성</span>의 정치로 치유하고 통합해야 합니다. 이것이 바로 우리가 꿈꾸는 진정한 정치교체이자 <span className="red-highlight">내란청산</span>입니다. </p>
+                <p style={{ textAlign: "left" }}>정권교체를 향한 민심은 이미 압도적입니다. 그러나 <BlackBoxReveal>정권교체만으로는 부족합니다.</BlackBoxReveal>
+                {' '}이번에야말로 정권교체와 함께 <span style={{whiteSpace: "nowrap"}}><span className="red-box">사회</span><span className="yellow-box">대</span><span className="green-box">전환</span></span>, 그리고 정치개혁을 반드시 이뤄내야 합니다.</p>
+                <p>사회분열의 원인인 불평등과 차별을 해소해야 합니다. 탄핵세력의 부활과 내란세력 존속의 근원인 낡은 기득권 정치를 깨끗이 해체해야 합니다. 그래야 다시는 윤석열 같은 헌정파괴 세력이 대한민국 정치를 함부로 넘볼 수 없게 될 것입니다. 그렇게 양극단 진영정치로 갈라진 대한민국을 광장을 닮은 <span className="red-box">다</span><span className="yellow-box">양</span><span className="green-box">성</span>의 정치로 치유하고 통합해야 합니다. 이것이 바로 우리가 꿈꾸는 진정한 정치교체이자 <span className="red-alert-text">내란청산</span>입니다. </p>
                 </div>
             </div>
             <div className="cta-highlight-container">
@@ -518,14 +587,14 @@ export default function HomeClient({ schedules }: HomeClientProps) {
                <div className="text-with-image">
                  <div className="progressive-text">
                    싸우는 노동자가 이를 악물고 고공에 오르는 세상을 바꾸어
-                   모든 고공농성 노동자가 땅으로 내려올 수 있게 하는 것이 진보입니다.
+                   모든 고공농성 노동자가 땅으로 내려올 수 있게 하는 것이 <span className="pastel-hl-red">진보</span>입니다.
                    여성이 여성이라는 이유로 다치고 죽어가는 세상을 바꾸어
-                   모든 여성이 안전하게 살아갈 수 있게 하는 것이 진보입니다.
+                   모든 여성이 안전하게 살아갈 수 있게 하는 것이  <span className="pastel-hl-purple">진보</span>입니다.
                    성소수자, 장애인, 이주민을 차별하고 억압하는 세상을 바꾸어
-                   모든 사회적 소수자가 존재하는 그대로 존중받게 하는 것이 진보입니다.
+                   모든 사회적 소수자가 존재하는 그대로 존중받게 하는 것이 <span className="pastel-hl-yellow">진보</span>입니다.
                    말로는 기후위기를 이야기하지만
                    화석연료 중독을 끊어내지 못하는 세상을 바꾸어
-                   지구온도 상승을 기어코 멈추어내는 것이 진보입니다.
+                   지구온도 상승을 기어코 멈추어내는 것이 <span className="pastel-hl-green">진보</span>입니다.
                  </div>
                  <div className="updown-image">
                    <Image
@@ -541,7 +610,7 @@ export default function HomeClient({ schedules }: HomeClientProps) {
             </div>
             <div className="cta-highlight-container">
               <div className="cta-highlight-80">
-                <h2 className="cta-highlight">우리가 지켜야 할 시민들의 <span className="yellow-box">삶</span>이 있습니다. 우리가 마주하고 싶은 변화된 세상을 향한 <span className="green-box">꿈</span>이 있습니다.</h2>
+                <h2 className="cta-highlight">우리가 지켜야 할 시민들의 <span className="pastel-hl-purple">삶</span>이 있습니다. 우리가 마주하고 싶은 변화된 세상을 향한 <span className="pastel-hl-yellow">꿈</span>이 있습니다.</h2>
               </div>
             </div>
             <div className="dream-text cta-highlight-80">
@@ -562,7 +631,7 @@ export default function HomeClient({ schedules }: HomeClientProps) {
             {/* 최종 CTA 섹션 */}
             <section className="cta-section">
         <div className="container">
-          <h2 className="scroll-reveal interactive-text">권영국과 함께<br />꿈을 현실로 만들어 갑시다</h2>
+          <h2 className="scroll-reveal interactive-text">권영국과 함께 꿈을<br />현실로 만들어 갑시다</h2>
         </div>
         
         {/* 애니메이션 원 */}
@@ -649,7 +718,7 @@ export default function HomeClient({ schedules }: HomeClientProps) {
         
         /* 히어로 섹션 */
         .hero-section {
-          height: 80vh; /* 높이를 줄여서 다음 섹션과 더 붙게 함 (원래 100vh) */
+          height: 80vh;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -760,7 +829,7 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           transform: translateX(-50%) scaleX(1);
         }
         
-        /* 부제목 깜빡이는 효과 추가 */
+        /* 부제목 깜빡이는 효과 */
         @keyframes subtle-glow {
           0%, 100% {
             text-shadow: 0 0 5px rgba(255, 237, 0, 0.3);
@@ -774,47 +843,9 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           animation: subtle-glow 3s infinite ease-in-out;
         }
         
-        /* 스크롤 가이드 */
-        .scroll-guide {
-          margin-top: 5rem;
-          animation: fadeIn 1s ease 1.5s both;
-        }
-        
-        .mouse {
-          width: 26px;
-          height: 42px;
-          border: 2px solid #333;
-          border-radius: 14px;
-          position: relative;
-          margin: 0 auto;
-        }
-        
-        .wheel {
-          width: 4px;
-          height: 8px;
-          background-color: #333;
-          position: absolute;
-          top: 6px;
-          left: 50%;
-          transform: translateX(-50%);
-          border-radius: 2px;
-          animation: scrollWheel 1.5s infinite;
-        }
-        
-        @keyframes scrollWheel {
-          0% {
-            transform: translate(-50%, 0);
-            opacity: 1;
-          }
-          100% {
-            transform: translate(-50%, 15px);
-            opacity: 0;
-          }
-        }
-        
         /* 큰 메시지 섹션 */
         .big-message {
-          padding: 5vh 0; /* 패딩 줄임 (원래 15vh) */
+          padding: 5vh 0;
           position: relative;
         }
         
@@ -863,61 +894,6 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           color: #00a366;
         }
         
-        /* 선언문 섹션 */
-        .statement-section {
-          padding: 10vh 0;
-          position: relative;
-        }
-        
-        .statement-content {
-          max-width: 70%;
-          margin-bottom: 2rem;
-          position: relative;
-          opacity: 0;
-          transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        
-        .statement-section.right .statement-content {
-          margin-left: auto;
-          text-align: right;
-        }
-        
-        .statement-content p {
-          font-size: 2.3rem;
-          line-height: 1.5;
-          font-weight: 500;
-          word-break: keep-all;
-          color: #333;
-          position: relative;
-          z-index: 1;
-          transition: text-shadow 0.3s ease;
-        }
-        
-        .statement-content.highlight p {
-          font-weight: 700;
-          color: #0b365f;
-          font-size: 2.5rem;
-        }
-        
-        .statement-content.visible {
-          opacity: 1;
-          transform: translateY(0) !important;
-        }
-        
-        .highlight-bar {
-          position: absolute;
-          height: 8px;
-          bottom: -10px;
-          background: linear-gradient(90deg, #FF0000, #FFed00, #00a366);
-          transform: scaleX(0);
-          transform-origin: left;
-          transition: transform 0.8s ease 0.2s;
-        }
-        
-        .statement-content.visible .highlight-bar {
-          transform: scaleX(1);
-        }
-        
         /* CTA 섹션 */
         .cta-section {
           padding: 15vh 0;
@@ -936,49 +912,6 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           line-height: 1.2;
           position: relative;
           z-index: 1;
-        }
-        
-        .cta-button a {
-          display: inline-block;
-          font-size: 1.5rem;
-          font-weight: 700;
-          padding: 1rem 3rem;
-          background-color: white;
-          color: #333;
-          text-decoration: none;
-          border-radius: 50px;
-          transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
-          position: relative;
-          z-index: 1;
-          overflow: hidden;
-        }
-        
-        .btn-hover-effect {
-          position: relative;
-        }
-        
-        .btn-hover-effect::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(45deg, #FF0000, #FFed00, #00a366);
-          z-index: -1;
-          transform: scaleX(0);
-          transform-origin: left;
-          transition: transform 0.3s ease;
-        }
-        
-        .btn-hover-effect:hover {
-          color: white;
-          transform: translateY(-5px);
-          box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        
-        .btn-hover-effect:hover::before {
-          transform: scaleX(1);
         }
         
         /* 애니메이션 원 */
@@ -1050,113 +983,6 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           transform: translateY(0);
         }
         
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        
-        /* 반응형 스타일 */
-        @media (max-width: 768px) {
-          .interactive-text {
-            font-size: 5rem;
-          }
-          
-          .big-text, .big-text-right {
-            font-size: 2.5rem;
-            max-width: 100%;
-          }
-          
-          .statement-content {
-            max-width: 100%;
-          }
-          
-          .statement-content p {
-            font-size: 1.8rem;
-          }
-          
-          .statement-content.highlight p {
-            font-size: 2rem;
-          }
-          
-          .cta-section h2 {
-            font-size: 2.5rem;
-          }
-          
-          .cursor-effect {
-            display: none;
-          }
-          
-          .container .overlay-title {
-            font-size: 2.5rem;
-          }
-          
-          .container .overlay-title .first-part,
-          .container .overlay-title .second-part {
-            display: block;
-          }
-          
-          .container .overlay-subtitle {
-            font-size: 1.3rem;
-            white-space: nowrap;
-          }
-          
-          /* 모바일에서 히어로 콘텐츠 레이아웃 변경 */
-          .hero-content {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: flex-start;
-            text-align: left;
-            width: 100%;
-            gap: 15px;
-          }
-          
-          .hero-content .interactive-text {
-            font-size: 3.5rem;
-            margin-bottom: 0;
-            line-height: 1;
-            text-align: right;
-            flex: 0 0 auto;
-          }
-          
-          .hero-content .subtitle {
-            font-size: 1.4rem;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            text-align: left;
-            margin-bottom: 0;
-            line-height: 1.3;
-          }
-          
-          .hero-content .subtitle .org-name,
-          .hero-content .subtitle .candidate-title {
-            display: block;
-            white-space: nowrap;
-          }
-          
-          /* 모바일에서 동영상 섹션 스타일 */
-          .video-section .video-container {
-            padding-bottom: 75% !important;
-          }
-          
-          .video-section .video-overlay h3 {
-            font-size: 1.5rem !important;
-          }
-          
-          .video-section .video-overlay p {
-            font-size: 1rem !important;
-          }
-          
-          .video-section .video-overlay {
-            padding: 1rem !important;
-          }
-        }
-
         /* 오버레이 콘텐츠 스타일 */
         .overlay-content {
           position: relative;
@@ -1222,7 +1048,7 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           border-radius: 50%;
           opacity: 0.7;
           animation: floatUp linear infinite;
-          animation-duration: 6s; /* 기본값 */
+          animation-duration: 6s;
           box-shadow: 0 2px 8px rgba(0,0,0,0.1);
           filter: blur(0.5px);
         }
@@ -1280,291 +1106,14 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           }
         }
 
-        /* 애니메이션 효과들 */
-        .fade-in-up.visible {
-          animation: fadeInUp 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        
-        .slide-in-right.visible {
-          animation: slideInRight 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        
-        .fade-in-zoom.visible {
-          animation: fadeInZoom 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        
-        .slide-in-left.visible {
-          animation: slideInLeft 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        
-        .rotate-in.visible {
-          animation: rotateIn 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        
-        .bounce-in.visible {
-          animation: bounceIn 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        
-        .flip-in.visible {
-          animation: flipIn 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        
-        .scale-in.visible {
-          animation: scaleIn 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        
-        .fade-in-blur.visible {
-          animation: fadeInBlur 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        
-        .slide-in-bottom.visible {
-          animation: slideInBottom 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        
-        .fade-in.visible {
-          animation: fadeIn 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        
-        .slide-in-top.visible {
-          animation: slideInTop 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        
-        .glitch-in.visible {
-          animation: glitchIn 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        
-        .glow-in.visible {
-          animation: glowIn 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(100px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        
-        @keyframes fadeInZoom {
-          from {
-            opacity: 0;
-            transform: scale(0.8);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        
-        @keyframes slideInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-100px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        
-        @keyframes rotateIn {
-          from {
-            opacity: 0;
-            transform: rotate(-5deg) scale(0.9);
-          }
-          to {
-            opacity: 1;
-            transform: rotate(0) scale(1);
-          }
-        }
-        
-        @keyframes bounceIn {
-          0% {
-            opacity: 0;
-            transform: scale(0.3);
-          }
-          50% {
-            opacity: 1;
-            transform: scale(1.05);
-          }
-          70% {
-            transform: scale(0.9);
-          }
-          100% {
-            transform: scale(1);
-          }
-        }
-        
-        @keyframes flipIn {
-          from {
-            opacity: 0;
-            transform: perspective(400px) rotateX(90deg);
-          }
-          to {
-            opacity: 1;
-            transform: perspective(400px) rotateX(0);
-          }
-        }
-        
-        @keyframes scaleIn {
-          from {
-            opacity: 0;
-            transform: scale(1.2);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        
-        @keyframes fadeInBlur {
-          from {
-            opacity: 0;
-            filter: blur(8px);
-          }
-          to {
-            opacity: 1;
-            filter: blur(0);
-          }
-        }
-        
-        @keyframes slideInBottom {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes slideInTop {
-          from {
-            opacity: 0;
-            transform: translateY(-30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes glitchIn {
-          0% {
-            opacity: 0;
-            transform: translateX(-5px);
-            text-shadow: 3px 0 #ff0000;
-          }
-          20% {
-            transform: translateX(5px);
-            text-shadow: -3px 0 #00a366;
-          }
-          40% {
-            transform: translateX(-2px);
-            text-shadow: 3px 0 #ff0000;
-          }
-          60% {
-            transform: translateX(2px);
-            text-shadow: -3px 0 #00a366;
-          }
-          80% {
-            transform: translateX(0);
-            text-shadow: 3px 0 #ffed00;
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0);
-            text-shadow: none;
-          }
-        }
-        
-        @keyframes glowIn {
-          0% {
-            opacity: 0;
-            text-shadow: 0 0 0 rgba(255, 0, 0, 0);
-          }
-          50% {
-            opacity: 0.5;
-            text-shadow: 0 0 20px rgba(255, 0, 0, 0.5), 0 0 30px rgba(255, 237, 0, 0.5);
-          }
-          100% {
-            opacity: 1;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3), 0 0 15px rgba(255, 237, 0, 0.3);
-          }
-        }
-
-        /* 새로운 CTA 배너 스타일 */
-        .cta-banner-section {
-          padding: 8vh 0;
-          background-color: #fff;
-          margin: 6vh 0;
-          position: relative;
-        }
-        
+        /* CTA 배너 스타일 */
         .cta-banner {
           border-top: 3px solid #000;
           border-bottom: 3px solid #000;
-          padding: 5vh 0;
+          padding: 5vh 5vw;
           position: relative;
-        }
-        
-        .cta-title {
-          font-size: 3.8rem;
-          font-weight: 700;
-          line-height: 1.4;
-          margin-bottom: 4vh;
-          text-align: left;
-        }
-        
-        .red-box {
-          display: inline-block;
-          background-color: #ff0000;
-          color: white;
-          padding: 0.1em 0.2em;
-          margin: 0;
-          position: relative;
-        }
-
-        .yellow-box {
-          display: inline-block;
-          background-color: #ffed00;
-          color: black;
-          padding: 0.1em 0.2em;
-          margin: 0;
-          position: relative;
-        }
-
-        .green-box {
-          display: inline-block;
-          background-color: #00a366;
-          color: white;
-          padding: 0.1em 0.2em;
-          margin: 0;
-          position: relative;
-        }
-
-        .black-box {
-          display: inline-block;
-          background-color: #000000;
-          color: white;
-          padding: 0.1em 0.2em 0.1em 0.1em;
-          margin: 0 0.1em;
-          position: relative;
+          max-width: 1200px;
+          margin: 0 auto;
         }
         
         .cta-description {
@@ -1572,12 +1121,12 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           line-height: 1.6;
           margin-bottom: 5vh;
           text-align: justify;
-          word-break: keep-all;
         }
         
         .cta-highlight-container {
           display: flex;
           justify-content: space-between;
+          align-items: center;
           border-top: 1px solid #000;
           padding-top: 5vh;
           margin-top: 2vh;
@@ -1585,180 +1134,15 @@ export default function HomeClient({ schedules }: HomeClientProps) {
         }
         
         .cta-highlight {
-          font-size: 3rem;
-          font-weight: 900;
+          font-size: 2rem;
+          font-weight: 700;
           line-height: 1.2;
           text-align: left;
           max-width: 100%;
         }
         
-        .red-highlight {
-          color: transparent;
-          -webkit-text-stroke: 2px #ff0000;
-          background: repeating-linear-gradient(45deg, #ff0000, #ff0000 2px, transparent 2px, transparent 4px);
-          background-clip: text;
-          -webkit-background-clip: text;
-          text-decoration: none;
-          padding: 0 0.1em;
-        }
-        
-        .cta-button {
-          width: 100px;
-          height: 100px;
-          border-radius: 50%;
-          background-color: #ff0000;
-          color: white;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: 2rem;
-          font-weight: 900;
-          cursor: pointer;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-          box-shadow: 0 4px 10px rgba(255, 0, 0, 0.3);
-        }
-        
-        .cta-button:hover {
-          transform: scale(1.05);
-          box-shadow: 0 6px 15px rgba(255, 0, 0, 0.4);
-        }
-        
-        @media (max-width: 768px) {
-          .cta-title {
-            font-size: 3.2rem;
-          }
-          
-          .cta-description {
-            font-size: 1.2rem;
-            max-width: 100%;
-          }
-          
-          .cta-highlight {
-            font-size: 1.8rem;
-            max-width: 100%;
-          }
-          
-          .cta-button {
-            width: 80px;
-            height: 80px;
-            font-size: 1.6rem;
-          }
-        }
-
-        /* 기후 위기 섹션 스타일 */
-        .climate-crisis-section-1 {
-          padding: 12vh 0 6vh;
-          position: relative;
-          background-color: white;
-        }
-        
-        .right-now-badge {
-          position: absolute;
-          top: 20px;
-          left: 20px;
-          width: 120px;
-          height: 120px;
-          border-radius: 50%;
-          background-color: #000;
-          color: white;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.4rem;
-          font-weight: 700;
-          text-align: center;
-          line-height: 1.2;
-          transform: rotate(-10deg);
-          z-index: 5;
-        }
-        
-        .climate-title {
-          font-size: 3.2rem;
-          text-align: center;
-          font-weight: 700;
-          margin-bottom: 5vh;
-          color: transparent;
-          -webkit-text-stroke: 1px #555;
-          text-stroke: 1px #555;
-          letter-spacing: -0.03em;
-        }
-        
-        .red-circle {
-          position: relative;
-          width: 600px;
-          height: 600px;
-          max-width: 90vw;
-          max-height: 90vw;
-          margin: 0 auto;
-          background-color: #ff0000;
-          border-radius: 50%;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          color: white;
-          padding: 40px;
-          box-sizing: border-box;
-        }
-        
-        .genocide-text {
-          font-size: 5rem;
-          font-weight: 900;
-          line-height: 1;
-          margin-bottom: 2vh;
-          text-align: left;
-          transform: rotate(-5deg);
-          position: absolute;
-          top: 80px;
-          left: 70px;
-        }
-        
-        .climate-warning {
-          font-size: 2.4rem;
-          font-weight: 700;
-          line-height: 1.3;
-          position: absolute;
-          top: 240px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 80%;
-          text-align: center;
-        }
-        
-        .red-box-text {
-          display: inline-block;
-          background-color: white;
-          color: #ff0000;
-          padding: 0.1em 0.3em;
-          font-weight: 800;
-        }
-
-        .black-box-text {
-          display: inline-block;
-          background-color: white;
-          color: #000000;
-          padding: 0.1em 0.3em;
-          font-weight: 800;
-        }
-        
-        .climate-description {
-          font-size: 1.05rem;
-          line-height: 1.5;
-          text-align: left;
-          position: absolute;
-          bottom: 60px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 85%;
-        }
-        
-        .climate-crisis-section-2 {
-          padding: 10vh 0;
-          position: relative;
-          background-color: white;
-        }
-        
         .red-alert-text {
-          font-size: 3.8rem;
+          font-size: 2.3rem;
           font-weight: 900;
           color: #ff0000;
           text-align: right;
@@ -1769,65 +1153,7 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           line-height: 1.2;
         }
         
-        .climate-question {
-          font-size: 3.2rem;
-          font-weight: 900;
-          text-align: center;
-          margin-bottom: 8vh;
-          line-height: 1.3;
-        }
-        
-        .climate-solution {
-          max-width: 600px;
-          margin: 0 auto;
-          font-size: 1.4rem;
-          line-height: 1.6;
-          text-align: center;
-        }
-        
-        @media (max-width: 768px) {
-          .right-now-badge {
-            width: 90px;
-            height: 90px;
-            font-size: 1.1rem;
-          }
-          
-          .climate-title {
-            font-size: 2.4rem;
-            margin-top: 30px;
-          }
-          
-          .genocide-text {
-            font-size: 3rem;
-            top: 60px;
-            left: 40px;
-          }
-          
-          .climate-warning {
-            font-size: 1.8rem;
-            top: 170px;
-          }
-          
-          .climate-description {
-            font-size: 0.9rem;
-            bottom: 40px;
-          }
-          
-          .red-alert-text {
-            font-size: 2.6rem;
-            margin-bottom: 8vh;
-          }
-          
-          .climate-question {
-            font-size: 2.2rem;
-          }
-          
-          .climate-solution {
-            font-size: 1.1rem;
-          }
-        }
-
-        /* 흔들리는 애니메이션 추가 */
+        /* 흔들리는 애니메이션 */
         @keyframes shake {
           0% { transform: translate(0, 0) rotate(0deg); }
           10% { transform: translate(-5px, -5px) rotate(-3deg); }
@@ -1857,374 +1183,6 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           animation: shake 3s cubic-bezier(.36,.07,.19,.97) infinite;
           transform-origin: center;
           letter-spacing: -0.03em;
-        }
-
-        @media (max-width: 768px) {
-          .shaking-text {
-            font-size: 2.2rem;
-            margin: 2rem auto;
-            padding: 1rem;
-          }
-        }
-
-        /* 새로운 CTA 배너 스타일 */
-        .cta-banner-section {
-          padding: 8vh 0;
-          background-color: #fff;
-          margin: 6vh 0;
-          position: relative;
-        }
-        
-        .cta-banner {
-          border-top: 3px solid #000;
-          border-bottom: 3px solid #000;
-          padding: 5vh 0;
-          position: relative;
-        }
-        
-        .cta-title {
-          font-size: 3.8rem;
-          font-weight: 700;
-          line-height: 1.4;
-          margin-bottom: 4vh;
-          text-align: left;
-        }
-        
-        .red-box {
-          display: inline-block;
-          background-color: #ff0000;
-          color: white;
-          padding: 0.1em 0.2em;
-          margin: 0;
-          position: relative;
-        }
-
-        .yellow-box {
-          display: inline-block;
-          background-color: #ffed00;
-          color: black;
-          padding: 0.1em 0.2em;
-          margin: 0;
-          position: relative;
-        }
-
-        .green-box {
-          display: inline-block;
-          background-color: #00a366;
-          color: white;
-          padding: 0.1em 0.2em;
-          margin: 0;
-          position: relative;
-        }
-
-        .black-box {
-          display: inline-block;
-          background-color: #000000;
-          color: white;
-          padding: 0.1em 0.2em 0.1em 0.1em;
-          margin: 0 0.1em;
-          position: relative;
-        }
-        
-        .cta-description {
-          font-size: 1.4rem;
-          line-height: 1.6;
-          margin-bottom: 5vh;
-          text-align: justify;
-          word-break: keep-all;
-        }
-        
-        .cta-highlight-container {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          border-top: 1px solid #000;
-          padding-top: 5vh;
-          margin-top: 2vh;
-          position: relative;
-        }
-        
-        .cta-highlight {
-          font-size: 3rem;
-          font-weight: 900;
-          line-height: 1.2;
-          text-align: left;
-          max-width: 100%;
-        }
-        
-        .red-highlight {
-          color: transparent;
-          -webkit-text-stroke: 2px #ff0000;
-          background: repeating-linear-gradient(45deg, #ff0000, #ff0000 2px, transparent 2px, transparent 4px);
-          background-clip: text;
-          -webkit-background-clip: text;
-          text-decoration: none;
-          padding: 0 0.1em;
-        }
-        
-        .cta-button {
-          width: 100px;
-          height: 100px;
-          border-radius: 50%;
-          background-color: #ff0000;
-          color: white;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: 2rem;
-          font-weight: 900;
-          cursor: pointer;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-          box-shadow: 0 4px 10px rgba(255, 0, 0, 0.3);
-        }
-        
-        .cta-button:hover {
-          transform: scale(1.05);
-          box-shadow: 0 6px 15px rgba(255, 0, 0, 0.4);
-        }
-        
-        @media (max-width: 768px) {
-          .cta-title {
-            font-size: 3.2rem;
-          }
-          
-          .cta-description {
-            font-size: 1.2rem;
-            max-width: 100%;
-          }
-          
-          .cta-highlight {
-            font-size: 1.8rem;
-            max-width: 100%;
-          }
-          
-          .cta-button {
-            width: 80px;
-            height: 80px;
-            font-size: 1.6rem;
-          }
-        }
-
-        /* 기후 위기 섹션 스타일 */
-        .climate-crisis-section-1 {
-          padding: 12vh 0 6vh;
-          position: relative;
-          background-color: white;
-        }
-        
-        .right-now-badge {
-          position: absolute;
-          top: 20px;
-          left: 20px;
-          width: 120px;
-          height: 120px;
-          border-radius: 50%;
-          background-color: #000;
-          color: white;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.4rem;
-          font-weight: 700;
-          text-align: center;
-          line-height: 1.2;
-          transform: rotate(-10deg);
-          z-index: 5;
-        }
-        
-        .climate-title {
-          font-size: 3.2rem;
-          text-align: center;
-          font-weight: 700;
-          margin-bottom: 5vh;
-          color: transparent;
-          -webkit-text-stroke: 1px #555;
-          text-stroke: 1px #555;
-          letter-spacing: -0.03em;
-        }
-        
-        .red-circle {
-          position: relative;
-          width: 600px;
-          height: 600px;
-          max-width: 90vw;
-          max-height: 90vw;
-          margin: 0 auto;
-          background-color: #ff0000;
-          border-radius: 50%;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          color: white;
-          padding: 40px;
-          box-sizing: border-box;
-        }
-        
-        .genocide-text {
-          font-size: 5rem;
-          font-weight: 900;
-          line-height: 1;
-          margin-bottom: 2vh;
-          text-align: left;
-          transform: rotate(-5deg);
-          position: absolute;
-          top: 80px;
-          left: 70px;
-        }
-        
-        .climate-warning {
-          font-size: 2.4rem;
-          font-weight: 700;
-          line-height: 1.3;
-          position: absolute;
-          top: 240px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 80%;
-          text-align: center;
-        }
-        
-        .red-box-text {
-          display: inline-block;
-          background-color: white;
-          color: #ff0000;
-          padding: 0.1em 0.3em;
-          font-weight: 800;
-        }
-
-        .black-box-text {
-          display: inline-block;
-          background-color: white;
-          color: #000000;
-          padding: 0.1em 0.3em;
-          font-weight: 800;
-        }
-        
-        .climate-description {
-          font-size: 1.05rem;
-          line-height: 1.5;
-          text-align: left;
-          position: absolute;
-          bottom: 60px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 85%;
-        }
-        
-        .climate-crisis-section-2 {
-          padding: 10vh 0;
-          position: relative;
-          background-color: white;
-        }
-        
-        .red-alert-text {
-          font-size: 3.8rem;
-          font-weight: 900;
-          color: #ff0000;
-          text-align: right;
-          margin-bottom: 15vh;
-          -webkit-text-stroke: 2px #ff0000;
-          text-stroke: 2px #ff0000;
-          color: transparent;
-          line-height: 1.2;
-        }
-        
-        .climate-question {
-          font-size: 3.2rem;
-          font-weight: 900;
-          text-align: center;
-          margin-bottom: 8vh;
-          line-height: 1.3;
-        }
-        
-        .climate-solution {
-          max-width: 600px;
-          margin: 0 auto;
-          font-size: 1.4rem;
-          line-height: 1.6;
-          text-align: center;
-        }
-        
-        @media (max-width: 768px) {
-          .right-now-badge {
-            width: 90px;
-            height: 90px;
-            font-size: 1.1rem;
-          }
-          
-          .climate-title {
-            font-size: 2.4rem;
-            margin-top: 30px;
-          }
-          
-          .genocide-text {
-            font-size: 3rem;
-            top: 60px;
-            left: 40px;
-          }
-          
-          .climate-warning {
-            font-size: 1.8rem;
-            top: 170px;
-          }
-          
-          .climate-description {
-            font-size: 0.9rem;
-            bottom: 40px;
-          }
-          
-          .red-alert-text {
-            font-size: 2.6rem;
-            margin-bottom: 8vh;
-          }
-          
-          .climate-question {
-            font-size: 2.2rem;
-          }
-          
-          .climate-solution {
-            font-size: 1.1rem;
-          }
-        }
-
-        /* 흔들리는 애니메이션 추가 */
-        @keyframes shake {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          10% { transform: translate(-5px, -5px) rotate(-3deg); }
-          20% { transform: translate(7px, -6px) rotate(3deg); }
-          30% { transform: translate(-7px, 5px) rotate(-2deg); }
-          40% { transform: translate(6px, 6px) rotate(2deg); }
-          50% { transform: translate(-6px, -7px) rotate(-3deg); }
-          60% { transform: translate(7px, -5px) rotate(2deg); }
-          70% { transform: translate(-7px, 6px) rotate(-3deg); }
-          80% { transform: translate(-5px, -5px) rotate(3deg); }
-          90% { transform: translate(6px, 7px) rotate(-2deg); }
-          100% { transform: translate(0, 0) rotate(0deg); }
-        }
-
-        .shaking-text {
-          display: block;
-          width: 100%;
-          font-size: 3.2rem;
-          font-weight: 800;
-          color: transparent;
-          -webkit-text-stroke: 1px #555;
-          text-stroke: 1px #555;
-          text-align: center;
-          margin: 3rem auto;
-          padding: 1.5rem;
-          border-radius: 8px;
-          animation: shake 3s cubic-bezier(.36,.07,.19,.97) infinite;
-          transform-origin: center;
-          letter-spacing: -0.03em;
-        }
-
-        @media (max-width: 768px) {
-          .shaking-text {
-            font-size: 2.2rem;
-            margin: 2rem auto;
-            padding: 1rem;
-          }
         }
 
         /* 텍스트와 이미지 배치 스타일 */
@@ -2248,48 +1206,6 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           position: relative;
         }
         
-        @media (max-width: 768px) {
-          .text-with-image {
-            flex-direction: column;
-          }
-          
-          .updown-image {
-            margin-left: 0;
-            margin-top: 2rem;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-          }
-        }
-        
-        /* 추가 스타일 */
-        .cta-banner {
-          margin-top: 3rem;
-          padding: 2rem;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          background-color: rgba(255, 255, 255, 0.8);
-        }
-        
-        .cta-highlight {
-          font-size: 1.8rem;
-          font-weight: 700;
-          line-height: 1.5;
-          color: #0b365f;
-          margin-bottom: 1rem;
-        }
-        
-        .cta-highlight-container {
-          margin: 2rem 0;
-        }
-        
-        .cta-text {
-          font-size: 1.2rem;
-          line-height: 1.6;
-          margin-top: 1rem;
-          color: #333;
-        }
-        
         .dream-text {
           margin: 2.5rem 0;
           font-size: 1.4rem;
@@ -2303,13 +1219,99 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           margin: 0.5rem 0;
         }
         
+        .cta-highlight-80 {
+          width: 80%;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        
+        /* 반응형 스타일 */
         @media (max-width: 768px) {
-          .cta-highlight {
-            font-size: 1.5rem;
+          .interactive-text {
+            font-size: 5rem;
           }
           
-          .cta-text {
-            font-size: 1.1rem;
+          .big-text, .big-text-right {
+            font-size: 2.5rem;
+            max-width: 100%;
+          }
+          
+          .cta-section h2 {
+            font-size: 2.5rem;
+          }
+          
+          .cursor-effect {
+            display: none;
+          }
+          
+          .container .overlay-title {
+            font-size: 2.5rem;
+          }
+          
+          .container .overlay-title .first-part,
+          .container .overlay-title .second-part {
+            display: block;
+          }
+          
+          .container .overlay-subtitle {
+            font-size: 1.3rem;
+            white-space: nowrap;
+          }
+          
+          .hero-content {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: left;
+            width: 100%;
+            gap: 15px;
+          }
+          
+          .hero-content .interactive-text {
+            font-size: 3.5rem;
+            margin-bottom: 0;
+            line-height: 1;
+            text-align: right;
+            flex: 0 0 auto;
+          }
+          
+          .hero-content .subtitle {
+            font-size: 1.4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            margin-bottom: 0;
+            line-height: 1.3;
+          }
+          
+          .hero-content .subtitle .org-name,
+          .hero-content .subtitle .candidate-title {
+            display: block;
+            white-space: nowrap;
+          }
+          
+          .text-with-image {
+            flex-direction: column;
+          }
+          
+          .updown-image {
+            margin-left: 0;
+            margin-top: 2rem;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+          }
+          
+          .shaking-text {
+            font-size: 2.2rem;
+            margin: 2rem auto;
+            padding: 1rem;
+          }
+          
+          .cta-highlight {
+            font-size: 1.8rem;
           }
           
           .dream-text {
@@ -2317,12 +1319,58 @@ export default function HomeClient({ schedules }: HomeClientProps) {
           }
         }
 
-        /* 이미 있는 스타일들 유지 */
-        
-        .cta-highlight-80 {
-          width: 80%;
-          margin-left: auto;
-          margin-right: auto;
+        .scribble-bg {
+          position: relative;
+          display: inline-block;
+          z-index: 1;
+          font-weight: 900;
+          font-size: 2.3rem;
+          color: #fff;
+        }
+
+        .scribble-bg::before {
+          content: '';
+          position: absolute;
+          left: -6px;
+          top: 50%;
+          width: calc(100% + 12px);
+          height: 120%;
+          background: url('/images/scribble-red.png') center/100% 100% no-repeat;
+          z-index: -1;
+          transform: translateY(-50%);
+          pointer-events: none;
+        }
+
+        .pastel-hl-red {
+          background: linear-gradient(transparent 60%, #ffd6d6 60%, #ffd6d6 100%);
+          color: #d7263d;
+          font-weight: 900;
+          border-radius: 0.2em;
+          padding: 0 0.1em;
+        }
+
+        .pastel-hl-purple {
+          background: linear-gradient(transparent 60%, #e6d6ff 60%, #e6d6ff 100%);
+          color: #7c3aed;
+          font-weight: 900;
+          border-radius: 0.2em;
+          padding: 0 0.1em;
+        }
+
+        .pastel-hl-yellow {
+          background: linear-gradient(transparent 60%, #fff9c4 60%, #fff9c4 100%);
+          color: #bfa800;
+          font-weight: 900;
+          border-radius: 0.2em;
+          padding: 0 0.1em;
+        }
+
+        .pastel-hl-green {
+          background: linear-gradient(transparent 60%, #d6ffe6 60%, #d6ffe6 100%);
+          color: #009e60;
+          font-weight: 900;
+          border-radius: 0.2em;
+          padding: 0 0.1em;
         }
       `}</style>
     </div>

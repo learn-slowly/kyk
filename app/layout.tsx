@@ -122,6 +122,24 @@ export default function RootLayout({
                 padding: 0.2rem 0.5rem;
               }
             }
+
+            .custom-row {
+              display: flex;
+              width: 100%;
+              gap: 0;
+            }
+            .custom-col {
+              flex: 1 1 0;
+              width: 50%;
+            }
+            @media (max-width: 768px) {
+              .custom-row {
+                flex-direction: column;
+              }
+              .custom-col {
+                width: 100%;
+              }
+            }
           `}
         </style>
       </head>
@@ -139,7 +157,7 @@ export default function RootLayout({
                 <Link href="/" className="navbar-brand fw-bolder text-white">
                   <div className="d-flex flex-column">
                     <small style={{ fontSize: '0.6em', fontWeight: 'normal', opacity: 0.9, lineHeight: '1' }}>사회대전환 연대회의 대통령 후보</small>
-                    <span className="fs-3">민주노동당 권영국</span>
+                    <span className="fs-1 fw-bolder">민주노동당 권영국</span>
                   </div>
                 </Link>
                 <button 
@@ -214,27 +232,20 @@ export default function RootLayout({
           
           {/* 푸터 내용 */}
           <div className="container position-relative" style={{ zIndex: 2 }}>
-            <div className="row">
-              <div className="col-md-4 mb-4 mb-md-0">
-                <h3 className="fs-4 fw-bold mb-3">사회대전환 연대회의 대통령 후보 민주노동당 권영국</h3>
+            <div className="custom-row">
+              <div className="custom-col">
+                <h3 className="fs-4 fw-bold mb-3">사회대전환 연대회의 대통령 후보<br />민주노동당 권영국</h3>
                 <p className="text-light">
                   사회를 바꾸고 우리의 미래를 바꾸기 위한 선택
                 </p>
               </div>
-              <div className="col-md-4 mb-4 mb-md-0">
-                <h3 className="fs-5 fw-bold mb-3">바로가기</h3>
-                <ul className="list-unstyled">
-                  <li className="mb-2"><Link href="/profile" className="text-light text-decoration-none">소개</Link></li>
-                  <li className="mb-2"><Link href="/policies" className="text-light text-decoration-none">정책</Link></li>
-                  <li className="mb-2"><Link href="/join" className="text-light text-decoration-none">함께하기</Link></li>
-                </ul>
-              </div>
-              <div className="col-md-4">
+              <div className="custom-col">
                 <h3 className="fs-5 fw-bold mb-3">연락처</h3>
                 <p className="text-light">
                   이메일: contact@kyk2027.kr<br />
-                  전화: 02-123-4567<br />
-                  서울특별시 종로구 1번지
+                  전화: 02-2038-0103<br />
+                  FAX: 02-761-0103<br />
+                  주소: (08376) 서울특별시 구로구 디지털로33길 55, 이앤씨벤처드림타워2차 1011호
                 </p>
               </div>
             </div>

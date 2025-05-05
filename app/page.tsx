@@ -18,5 +18,5 @@ export default async function Home() {
   const schedules = await getUpcomingSchedules();
   
   // 클라이언트 컴포넌트에 데이터 전달
-  return <HomeClient schedules={schedules} />;
+  return <HomeClient />;
 } 
