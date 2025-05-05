@@ -3,7 +3,7 @@ export default {
     title: '일정',
     type: 'document',
     fields: [
-      { name: 'title', title: '일정명', type: 'string', validation: (Rule) => Rule.required() },
+      { name: 'title', title: '일정명', type: 'string', validation: (Rule: any) => Rule.required() },
       { name: 'description', title: '설명', type: 'text' },
       { 
         name: 'category', 
@@ -18,9 +18,9 @@ export default {
         },
         initialValue: 'candidate'
       },
-      { name: 'start', title: '시작일시', type: 'datetime', validation: (Rule) => Rule.required() },
-      { name: 'end', title: '종료일시', type: 'datetime', validation: (Rule) => Rule.required() },
-      { name: 'location', title: '장소', type: 'string', validation: (Rule) => Rule.required() },
+      { name: 'start', title: '시작일시', type: 'datetime', validation: (Rule: any) => Rule.required() },
+      { name: 'end', title: '종료일시', type: 'datetime', validation: (Rule: any) => Rule.required() },
+      { name: 'location', title: '장소', type: 'string', validation: (Rule: any) => Rule.required() },
       { name: 'isImportant', title: '중요 일정', type: 'boolean', initialValue: false }
     ],
     preview: {
@@ -31,7 +31,13 @@ export default {
         isImportant: 'isImportant',
         category: 'category'
       },
-      prepare(selection) {
+      prepare(selection: {
+        title?: string;
+        start?: string;
+        location?: string;
+        isImportant?: boolean;
+        category?: string;
+      }) {
         const { title, start, location, isImportant, category } = selection;
         const date = start ? new Date(start).toLocaleDateString('ko-KR') : '날짜 미정';
         

@@ -51,7 +51,14 @@ export default {
         media: 'thumbnail',
         author: 'author'
       },
-      prepare({ title, category, publishedAt, media, author }) {
+      prepare(selection: {
+        title?: string;
+        category?: string;
+        publishedAt?: string;
+        media?: any;
+        author?: string;
+      }) {
+        const { title, category, publishedAt, media, author } = selection;
         const categoryLabel = 
           category === 'statement' ? '성명' :
           category === 'today' ? '오늘의 영국' :
