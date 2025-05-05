@@ -1,4 +1,4 @@
-import { getUpcomingSchedules, getPastSchedules, getHighlightedSchedules } from '../../sanity/lib/client'
+import { getUpcomingSchedules, getPastSchedules, getHighlightedSchedules } from '../lib/sanity'
 import dynamic from 'next/dynamic'
 
 // 클라이언트 컴포넌트를 동적으로 불러옵니다

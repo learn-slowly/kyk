@@ -1,39 +1,38 @@
-import { createClient } from 'next-sanity';
-
-// Sanity 프로젝트 정보 
-// 실제 프로젝트 정보는 환경변수에서 가져오되, 개발 중에는 기본값을 사용
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'h3f5tvcj'; // 예시 ID
-const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production';
-const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2023-05-03';
+import { createClient } from '@sanity/client'
 
 export const client = createClient({
-  projectId,
-  dataset,
-  apiVersion,
-  useCdn: process.env.NODE_ENV === 'production',
-  // 개발 모드에서는 캐시를 비활성화하여 실시간 변경 사항 확인
-  perspective: 'published',
-});
+  projectId: 'qpvtzhxq', // president2025의 projectId
+  dataset: 'production',
+  apiVersion: '2025-05-05',
+  useCdn: process.env.NODE_ENV === 'production'
+})
 
-// 안전한 데이터 페칭 함수
-export async function fetchSanityData<T>(query: string, params = {}): Promise<T | null> {
-  try {
-    const data = await client.fetch<T>(query, params);
-    return data;
-  } catch (error) {
-    console.error('Sanity 데이터 페칭 오류:', error);
-    return null;
-  }
+// Helper function to get schedules with query
+export async function getSchedules() {
+  return client.fetch(`*[_type == "schedule"] | order(date asc)`)
 }
 
-// 이미지 URL 생성 헬퍼 함수
-export function urlFor(source: any) {
-  if (!source) return '';
-  
-  try {
-    return `https://cdn.sanity.io/images/${projectId}/${dataset}/${source.replace('image-', '').replace('-jpg', '.jpg').replace('-png', '.png').replace('-webp', '.webp')}`;
-  } catch (error) {
-    console.error('이미지 URL 생성 오류:', error);
-    return '';
-  }
-} 
+// Helper function to get upcoming schedules
+export async function getUpcomingSchedules() {
+  return client.fetch(`*[_type == "schedule" && isPast == false] | order(date asc)[0...3]`)
+}
+
+// Helper function to get past schedules
+export async function getPastSchedules() {
+  return client.fetch(`*[_type == "schedule" && isPast == true] | order(date desc)[0...3]`)
+}
+
+// Helper function to get highlighted schedules
+export async function getHighlightedSchedules() {
+  return client.fetch(`*[_type == "schedule" && isHighlighted == true] | order(date asc)`)
+}
+
+// 게시물 관련 함수
+export async function getPosts() {
+  return client.fetch(`*[_type == "post"] | order(publishedAt desc)`)
+}
+
+// 이벤트 관련 함수
+export async function getEvents() {
+  return client.fetch(`*[_type == "event"] | order(start asc)`)
+}

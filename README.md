@@ -1,136 +1,105 @@
-# 대선 후보자 페이지
+# 권영국 대선 후보 웹사이트
 
-Next.js와 Sanity.io를 사용한 대선 후보자 프로필 및 공약 페이지입니다.
+이 프로젝트는 권영국 대선 후보의 공식 웹사이트입니다. Next.js와 Sanity CMS를 활용하여 구축되었습니다.
 
-## 기술 스택
+## 주요 기술 스택
 
-- Next.js 15.3.1
-- Sanity.io
-- TypeScript
-- Bootstrap 5
-- Mustache 템플릿 엔진
-- Vercel (배포)
-
-## 시작하기
-
-### 필수 요구사항
-
-- Node.js 18.17.0 이상
-- npm 또는 yarn
-- Git
-
-### 설치 방법
-
-1. 저장소 클론
-```bash
-git clone https://github.com/learn-slowly/kyk.git
-cd kyk
-```
-
-2. 의존성 패키지 설치
-```bash
-npm install
-```
-
-필요한 주요 패키지들:
-```json
-{
-  "dependencies": {
-    "@popperjs/core": "^2.11.8",
-    "@sanity/client": "^7.0.0",
-    "@sanity/image-url": "^1.1.0",
-    "@sanity/vision": "^3.87.0",
-    "bootstrap": "^5.3.2",
-    "next": "15.3.1",
-    "next-sanity": "^9.10.6",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "sanity": "^3.87.0",
-    "styled-components": "^6.1.17",
-    "mustache": "^4.2.0",
-    "sass": "^1.69.5",
-    
-    // 캘린더 기능을 위한 패키지
-    "react-big-calendar": "^1.18.0",
-    "@types/react-big-calendar": "^1.16.1",
-    "moment": "^2.30.1",
-    "date-fns": "^4.1.0",
-    "date-fns-tz": "^3.2.0",
-    "googleapis": "^148.0.0"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@types/mustache": "^4.2.5",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.1",
-    "typescript": "^5"
-  }
-}
-```
-
-3. 환경 변수 설정
-`.env.local` 파일을 생성하고 다음 내용을 추가:
-```
-NEXT_PUBLIC_SANITY_PROJECT_ID=qpvtzhxq
-NEXT_PUBLIC_SANITY_DATASET=kyk
-
-# 구글 캘린더 API 연동을 위한 환경 변수 (필요한 경우)
-GOOGLE_API_KEY=your_api_key_here
-```
-
-4. 개발 서버 실행
-```bash
-npm run dev
-```
+- **프론트엔드**: Next.js 14 (App Router)
+- **스타일링**: CSS-in-JS (styled-jsx), 인라인 스타일
+- **CMS**: Sanity.io
+- **배포**: Vercel
 
 ## 프로젝트 구조
 
 ```
-kyk/
-├── app/                    # Next.js 앱 디렉토리
-│   ├── page.tsx           # 메인 페이지
-│   ├── profile/           # 후보자 프로필 페이지
-│   ├── policies/          # 공약 페이지
-│   ├── schedule/          # 일정 캘린더 페이지
-│   └── studio/            # Sanity Studio
-├── sanity/                # Sanity 설정
-│   └── schemas/           # Sanity 스키마
-│       ├── candidate.ts   # 후보자 프로필 스키마
-│       ├── policy.ts      # 공약 스키마
-│       ├── schedule.ts    # 일정 스키마
-│       └── index.ts       # 스키마 인덱스
-└── public/                # 정적 파일
+/
+├── app/                      # Next.js App Router 디렉토리
+│   ├── components/           # 앱 내부의 컴포넌트
+│   ├── events/               # 일정 페이지
+│   ├── lib/                  # 유틸리티 및 Sanity 클라이언트
+│   ├── news/                 # 뉴스 페이지
+│   ├── policies/             # 정책 페이지
+│   ├── posts/                # 게시물 페이지
+│   ├── president2025/        # Sanity CMS 스키마 정의
+│   ├── profile/              # 프로필 페이지
+│   ├── schedule/             # 스케줄 페이지
+│   ├── studio/              # Sanity 스튜디오 마운트 포인트
+│   ├── layout.tsx           # 루트 레이아웃
+│   └── page.tsx             # 홈페이지
+├── components/               # 공통 컴포넌트
+│   ├── HomeClient.tsx        # 홈페이지 클라이언트 컴포넌트
+│   └── ...
+├── public/                   # 정적 파일
+│   ├── images/               # 이미지 파일
+│   └── ...
+├── sanity.config.ts          # Sanity Studio 설정 (루트)
+└── package.json              # 프로젝트 의존성
 ```
 
-## 주요 기능
+## Sanity CMS 설정
 
-- 후보자 프로필 관리
-- 공약 관리
-- 게시판 기능
-- 정적 페이지 관리
-- 캘린더 및 일정 관리 기능
-  - 일간/주간/월간 뷰 지원
-  - 반응형 레이아웃 (모바일/데스크탑)
-  - 주요 일정 강조 표시
-  - 구글 캘린더 연동 준비 중
+### 스키마 정의
+스키마 정의 파일들은 `app/president2025/schemaTypes` 디렉토리에 있으며, 다음의 주요 스키마를 사용합니다:
+
+- **event**: 일정 정보 (이벤트, 미팅, 등)
+- **post**: 뉴스 및 블로그 글
+- **schedule**: 캠페인 일정
+
+### Sanity 설정 구조
+- `app/lib/sanity.ts`: 프론트엔드에서 사용하는 Sanity 클라이언트 설정
+- `sanity.config.ts`: Sanity Studio 설정 (루트 경로의 `/studio`에 마운트)
+- `app/president2025/schemaTypes`: 콘텐츠 스키마 정의
+
+### Sanity Studio 접근
+Sanity Studio는 `/studio` 경로에서 접근할 수 있으며, `app/studio/[[...tool]]/page.tsx`에 마운트되어 있습니다.
+
+## 데이터 흐름
+
+1. 서버 컴포넌트에서 Sanity CMS로부터 데이터를 가져옵니다.
+2. 가져온 데이터는 클라이언트 컴포넌트에 props로 전달됩니다.
+3. 클라이언트 컴포넌트에서 데이터를 렌더링합니다.
+
+예시:
+```tsx
+// 서버 컴포넌트 (app/page.tsx)
+export default async function Home() {
+  const schedules = await getUpcomingSchedules();
+  return <HomeClient schedules={schedules} />;
+}
+
+// 클라이언트 컴포넌트 (components/HomeClient.tsx)
+'use client';
+export default function HomeClient({ schedules }: { schedules: Schedule[] }) {
+  // 클라이언트 측에서 데이터 렌더링
+}
+```
+
+## 디자인 원칙
+
+웹사이트는 다음의 디자인 원칙을 따릅니다:
+
+- **컬러 스키마**: 빨강(#FF0000), 노랑(#FFed00), 초록(#00a366) 그라데이션
+- **레이아웃**: 모바일 우선 반응형 디자인
+- **애니메이션**: 스크롤 기반 애니메이션으로 몰입감 향상
+- **접근성**: 의미있는 HTML 구조와 대비 충족
+
+## 로컬 개발 환경 설정
+
+```bash
+# 프로젝트 설치
+npm install
+
+# 개발 서버 실행
+npm run dev
+
+# Sanity 스튜디오 실행
+npm run sanity:dev
+```
+
+접속 URL:
+- 웹사이트: http://localhost:3000
+- Sanity Studio: http://localhost:3000/studio
 
 ## 배포
 
-이 프로젝트는 Vercel을 통해 배포됩니다. GitHub 저장소와 Vercel을 연결하면 자동으로 배포됩니다.
-
-## Sanity Studio
-
-Sanity Studio는 `/studio` 경로에서 접근할 수 있습니다. 콘텐츠 관리를 위해 다음 항목들을 관리할 수 있습니다:
-
-- 후보자 프로필
-- 공약
-- 게시글
-- 정적 페이지
-- 일정 및 캠페인 이벤트
-
-## 라이선스
-
-MIT
+이 프로젝트는 Vercel에 배포됩니다. main 브랜치에 푸시하면 자동으로 배포됩니다.

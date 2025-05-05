@@ -183,10 +183,10 @@ export default function RootLayout({
                       <Link href="/policies" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1">정책</Link>
                     </li>
                     <li className="nav-item">
-                      <Link href="/news" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1">뉴스</Link>
+                      <Link href="/posts" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1">뉴스</Link>
                     </li>
                     <li className="nav-item">
-                      <Link href="/schedule" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1">일정</Link>
+                      <Link href="/events" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1">일정</Link>
                     </li>
                     <li className="nav-item">
                       <Link href="/join" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1">함께하기</Link>

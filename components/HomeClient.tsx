@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
+import { Schedule } from '../app/page'; // Schedule 타입을 app/page.tsx에서 임포트
 
 // black-box 스크롤 reveal 컴포넌트
 function BlackBoxReveal({ children }: { children: React.ReactNode }) {
@@ -57,7 +58,12 @@ function BlackBoxReveal({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function HomeClient() {
+// HomeClient 컴포넌트 프롭스 타입 정의
+interface HomeClientProps {
+  schedules?: Schedule[]; // 선택적 프롭으로 일정 정보 받기
+}
+
+export default function HomeClient({ schedules = [] }: HomeClientProps) {
   const [scrollY, setScrollY] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [viewportHeight, setViewportHeight] = useState(1000); // 기본값으로 1000px 설정
@@ -610,7 +616,7 @@ export default function HomeClient() {
             </div>
             <div className="cta-highlight-container">
               <div className="cta-highlight-80">
-                <h2 className="cta-highlight">우리가 지켜야 할 시민들의 <span className="pastel-hl-purple">삶</span>이 있습니다. 우리가 마주하고 싶은 변화된 세상을 향한 <span className="pastel-hl-yellow">꿈</span>이 있습니다.</h2>
+                <h2 className="cta-highlight">우리가 지켜야 할 시민들의 <span className="pastel-hl-yellow">삶</span>이 있습니다. 우리가 마주하고 싶은 <span className="pastel-hl-red">변화된 세상</span>을 향한 <span className="pastel-hl-green">꿈</span>이 있습니다.</h2>
               </div>
             </div>
             <div className="dream-text cta-highlight-80">
@@ -628,8 +634,8 @@ export default function HomeClient() {
         }}
       ></div>
 
-            {/* 최종 CTA 섹션 */}
-            <section className="cta-section">
+      {/* 최종 CTA 섹션 */}
+      <section className="cta-section">
         <div className="container">
           <h2 className="scroll-reveal interactive-text">권영국과 함께 꿈을<br />현실로 만들어 갑시다</h2>
         </div>
@@ -641,6 +647,130 @@ export default function HomeClient() {
           <div className="circle circle-3"></div>
         </div>
       </section>
+
+      {/* 일정 섹션 추가 */}
+      {schedules && schedules.length > 0 && (
+        <section className="schedules-section scroll-reveal" style={{
+          padding: '10vh 0',
+          backgroundColor: '#f9f9f9',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          <div className="container">
+            <h2 style={{
+              fontSize: '2.5rem',
+              fontWeight: '700',
+              marginBottom: '2rem',
+              textAlign: 'center',
+              background: 'linear-gradient(90deg, #FF0000 0%, #FFed00 50%, #00a366 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
+              다가오는 일정
+            </h2>
+            
+            <div className="schedule-cards">
+              {schedules.map((schedule) => (
+                <div key={schedule._id} className="schedule-card" style={{
+                  background: 'white',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                  padding: '1.5rem',
+                  marginBottom: '1.5rem',
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}>
+                  {/* 그라데이션 상단 테두리 효과 */}
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '4px',
+                    background: 'linear-gradient(90deg, #FF0000 0%, #FFed00 50%, #00a366 100%)'
+                  }}></div>
+                  
+                  <div style={{ padding: '0.5rem 0' }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginBottom: '0.75rem'
+                    }}>
+                      <h3 style={{
+                        fontSize: '1.5rem',
+                        fontWeight: '600',
+                        marginBottom: '0.25rem'
+                      }}>{schedule.title}</h3>
+                      
+                      <span style={{
+                        fontSize: '1.1rem',
+                        padding: '0.25rem 1rem',
+                        borderRadius: '20px',
+                        color: 'white',
+                        background: 'linear-gradient(90deg, #FF0000 0%, #FFed00 50%, #00a366 100%)'
+                      }}>
+                        {new Date(schedule.date).toLocaleDateString('ko-KR', {
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </span>
+                    </div>
+                    
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: '#555',
+                      marginBottom: '0.5rem'
+                    }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style={{ marginRight: '0.5rem' }}>
+                        <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                      </svg>
+                      {schedule.startTime && (
+                        <span>{schedule.startTime} ~ {schedule.endTime || ''}</span>
+                      )}
+                    </div>
+                    
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: '#555'
+                    }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style={{ marginRight: '0.5rem' }}>
+                        <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+                        <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                      </svg>
+                      <span>{schedule.location}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div style={{
+              textAlign: 'center',
+              marginTop: '2rem'
+            }}>
+              <a href="/events" style={{
+                display: 'inline-block',
+                padding: '0.75rem 2rem',
+                borderRadius: '30px',
+                background: 'linear-gradient(90deg, #FF0000 0%, #FFed00 50%, #00a366 100%)',
+                color: 'white',
+                fontWeight: '600',
+                textDecoration: 'none',
+                boxShadow: '0 4px 15px rgba(0,0,0,0.15)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+              }}>
+                더 많은 일정 보기
+              </a>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CSS 스타일 */}
       <style jsx>{`
@@ -1317,6 +1447,10 @@ export default function HomeClient() {
           .dream-text {
             font-size: 1.2rem;
           }
+          
+          .schedule-cards {
+            grid-template-columns: 1fr;
+          }
         }
 
         .scribble-bg {
@@ -1371,6 +1505,23 @@ export default function HomeClient() {
           font-weight: 900;
           border-radius: 0.2em;
           padding: 0 0.1em;
+        }
+
+        /* 일정 카드 스타일 */
+        .schedule-cards {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+          gap: 1.5rem;
+        }
+        
+        .schedule-card {
+          transform: translateY(0);
+          cursor: pointer;
+        }
+        
+        .schedule-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
       `}</style>
     </div>
