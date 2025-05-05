@@ -331,7 +331,7 @@ export default function RootLayout({
           <div className="container">
             <nav className="navbar navbar-expand-lg">
               <div className="container-fluid">
-                <Link href="/" className="navbar-brand fw-bolder text-white">
+                <Link href="/" className="navbar-brand text-white">
                   <div className="subtitle-container">
                     <span className="site-title subtitle d-block brand-text" style={{opacity: 1, visibility: 'visible'}}>사회대전환 연대회의 대통령 후보</span>
                   </div>
@@ -347,7 +347,7 @@ export default function RootLayout({
                         priority
                       />
                     </div>
-                    <span className="fs-1 fw-bolder site-title brand-text">권영국</span>
+                    <span className="fs-1 site-title brand-text">권영국</span>
                   </div>
                 </Link>
                 <button 
@@ -425,11 +425,11 @@ export default function RootLayout({
           <div className="container position-relative" style={{ zIndex: 2 }}>
             <div className="custom-row">
               <div className="custom-col">
-                <h3 className="fs-4 fw-bold mb-3 site-title">사회대전환 연대회의 대통령 후보</h3> 
+                <h3 className="fs-4 mb-3 site-title">사회대전환 연대회의 대통령 후보</h3> 
                 <div className="d-flex align-items-center mb-3">
                   <div className="d-flex align-items-center">
-                    <Image src="/images/pi-w.png" alt="민주노동당 로고" width={240} height={64} style={{ marginRight: '8px' }} />
-                    <h3 className="fs-1 fw-bold mb-0 site-title">권영국</h3>
+                    <Image src="/images/pi-w.png" alt="민주노동당 로고" width={240} height={74} style={{ marginRight: '8px' }} />
+                    <h3 className="fs-1 mb-0 site-title">권영국</h3>
                   </div>
                 </div>
               </div>
