@@ -9,11 +9,11 @@ import 'react-calendar/dist/Calendar.css';
 type Event = {
   _id: string;
   title: string;
-  description: string;
+  description?: string;
   start: string;
-  end: string;
+  end?: string;
   location: string;
-  isImportant: boolean;
+  isImportant?: boolean;
   category?: 'candidate' | 'election' | 'media';
 };
 

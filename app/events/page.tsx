@@ -11,16 +11,17 @@ export const metadata = {
 type Event = {
   _id: string;
   title: string;
-  description: string;
+  description?: string;
   start: string;
-  end: string;
+  end?: string;
   location: string;
-  isImportant: boolean;
+  isImportant?: boolean;
   category?: 'candidate' | 'election' | 'media';
 };
 
 export default async function EventsPage() {
   // 서버에서 데이터 가져오기
+  // CSV에서 가져온 데이터는 event 타입으로 저장되었으므로 쿼리에 맞게 수정
   const events = await client.fetch<Event[]>(
     `*[_type == "event"] | order(start asc) {
       _id,
@@ -35,7 +36,7 @@ export default async function EventsPage() {
   );
 
   // 디버깅용 로그
-  console.log('Fetched events:', events);
+  console.log('Fetched events:', events.length, 'items');
   
   // 만약 카테고리가 없는 이벤트가 있다면 기본값 설정
   const eventsWithDefaultCategory = events.map(event => {
@@ -48,7 +49,7 @@ export default async function EventsPage() {
     return event;
   });
 
-  console.log('Events with default category:', eventsWithDefaultCategory);
+  console.log('Events with default category:', eventsWithDefaultCategory.length, 'items');
 
   return (
     <>

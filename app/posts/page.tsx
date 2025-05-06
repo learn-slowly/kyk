@@ -45,8 +45,9 @@ export type ClientPost = {
 
 export default async function PostsPage() {
   // 서버에서 데이터 가져오기
+  // post 타입과 statement 타입 모두 가져오도록 수정
   const posts = await client.fetch<SanityPost[]>(
-    `*[_type == "post"] | order(publishedAt desc) {
+    `*[_type == "post" || _type == "statement"] | order(publishedAt desc) {
       _id,
       title,
       slug,
@@ -59,7 +60,7 @@ export default async function PostsPage() {
     }`
   );
 
-  console.log('Fetched posts:', posts);
+  console.log('Fetched posts:', posts.length, 'items');
 
   // 이미지 URL 추가
   const postsWithImageUrls: ClientPost[] = posts.map(post => {
@@ -72,7 +73,7 @@ export default async function PostsPage() {
     return post;
   });
 
-  console.log('Posts with image URLs:', postsWithImageUrls);
+  console.log('Posts with image URLs:', postsWithImageUrls.length, 'items');
 
   return <PostsClient posts={postsWithImageUrls} />;
 }
