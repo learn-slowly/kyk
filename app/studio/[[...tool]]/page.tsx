@@ -14,8 +14,10 @@ import config from '../../../sanity.config'
 
 export default function StudioPage() {
   return (
-    <NextStudio 
-      config={config}
-    />
+    <div style={{ height: '100vh', width: '100vw', overflow: 'hidden' }}>
+      <NextStudio 
+        config={config}
+      />
+    </div>
   )
 }

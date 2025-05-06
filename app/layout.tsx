@@ -1,4 +1,5 @@
-import type { Metadata } from 'next'
+'use client'
+
 import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -6,22 +7,37 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import './globals.css'
 import ClientBootstrap from './components/ClientBootstrap'
+import { usePathname } from 'next/navigation'
 
 const inter = Inter({ subsets: ['latin'] })
-
-export const metadata: Metadata = {
-  title: '민주노동당 대선후보 권영국',
-  description: '민주노동당 대선후보 권영국 공식 웹사이트입니다.',
-}
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const pathname = usePathname()
+  const isStudioRoute = pathname?.startsWith('/studio')
+
+  // 스튜디오 경로인 경우 헤더와 푸터 없이 그대로 렌더링
+  if (isStudioRoute) {
+    return (
+      <html lang="ko">
+        <head>
+          <title>Sanity Studio - 권영국</title>
+        </head>
+        <body className={inter.className} style={{ margin: 0, padding: 0 }}>
+          {children}
+        </body>
+      </html>
+    )
+  }
+
   return (
     <html lang="ko">
       <head>
+        <title>민주노동당 대선후보 권영국</title>
+        <meta name="description" content="민주노동당 대선후보 권영국 공식 웹사이트입니다." />
         <style>
           {`
             .nav-button {
