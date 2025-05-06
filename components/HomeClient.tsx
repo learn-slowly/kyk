@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Schedule } from '../app/page'; // Schedule 타입을 app/page.tsx에서 임포트
 
 // black-box 스크롤 reveal 컴포넌트
@@ -713,10 +714,10 @@ export default function HomeClient({ schedules = [] }: HomeClientProps) {
                         color: 'white',
                         background: 'linear-gradient(90deg, #FF0000 0%, #FFed00 50%, #00a366 100%)'
                       }}>
-                        {new Date(schedule.date).toLocaleDateString('ko-KR', {
+                        {schedule.date ? new Date(schedule.date).toLocaleDateString('ko-KR', {
                           month: 'short',
                           day: 'numeric'
-                        })}
+                        }) : '날짜 미정'}
                       </span>
                     </div>
                     
@@ -755,7 +756,7 @@ export default function HomeClient({ schedules = [] }: HomeClientProps) {
               textAlign: 'center',
               marginTop: '2rem'
             }}>
-              <a href="/events" style={{
+              <Link href="/events" style={{
                 display: 'inline-block',
                 padding: '0.75rem 2rem',
                 borderRadius: '30px',
@@ -767,7 +768,7 @@ export default function HomeClient({ schedules = [] }: HomeClientProps) {
                 transition: 'transform 0.3s ease, box-shadow 0.3s ease'
               }}>
                 더 많은 일정 보기
-              </a>
+              </Link>
             </div>
           </div>
         </section>

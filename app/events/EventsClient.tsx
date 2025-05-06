@@ -253,6 +253,7 @@ export default function EventsClient({ events }: { events: Event[] }) {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     ['candidate', 'election', 'media']
   );
+  const [showPastEvents, setShowPastEvents] = useState<boolean>(false);
   
   // 카테고리 토글 함수
   const toggleCategory = (category: string) => {
@@ -263,10 +264,21 @@ export default function EventsClient({ events }: { events: Event[] }) {
     }
   };
   
+  // 날짜 기준으로 이벤트를 과거/미래로 분류
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // 오늘 날짜의 시작 시간으로 설정
+  
+  // 미래 일정만 필터링 (또는 showPastEvents가 true면 모든 일정 표시)
+  const futureEvents = events.filter(event => {
+    const eventDate = new Date(event.start);
+    eventDate.setHours(0, 0, 0, 0); // 이벤트 날짜의 시작 시간으로 설정
+    return showPastEvents || eventDate >= today;
+  });
+  
   // 필터링된 이벤트 목록
   const filteredEvents = selectedCategories.length === 0 
-    ? events 
-    : events.filter(event => !event.category || selectedCategories.includes(event.category));
+    ? futureEvents 
+    : futureEvents.filter(event => !event.category || selectedCategories.includes(event.category));
   
   // 일정을 날짜별로 그룹화 (필터링 적용)
   const groupedEvents = filteredEvents.reduce((acc, event) => {
@@ -282,6 +294,13 @@ export default function EventsClient({ events }: { events: Event[] }) {
   const sortedDates = Object.keys(groupedEvents).sort((a, b) => {
     return new Date(a).getTime() - new Date(b).getTime();
   });
+
+  // 과거 일정 개수 계산
+  const pastEventsCount = events.filter(event => {
+    const eventDate = new Date(event.start);
+    eventDate.setHours(0, 0, 0, 0);
+    return eventDate < today;
+  }).length;
   
   // 달력에 표시할 날짜에 이벤트가 있는지 확인하는 함수 (필터링 적용)
   const getEventsOnDay = (date: Date) => {
@@ -401,8 +420,8 @@ export default function EventsClient({ events }: { events: Event[] }) {
           <p className="lead mb-4 text-secondary">대선 캠페인 공식 일정과 주요 행사를 확인하세요.</p>
           
           {/* 뷰 모드 선택 - 미니멀한 디자인의 버튼 그룹 */}
-          <div className="d-flex mb-4">
-            <div className="btn-group">
+          <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+            <div className="btn-group mb-2 mb-md-0">
               <button 
                 className={`btn ${viewMode === 'list' ? 'btn-primary' : 'btn-outline-primary'}`}
                 onClick={() => setViewMode('list')}
@@ -434,6 +453,22 @@ export default function EventsClient({ events }: { events: Event[] }) {
                 <i className="bi bi-calendar3 me-2"></i> 달력보기
               </button>
             </div>
+            
+            {/* 지난 일정 보기 토글 버튼 */}
+            {viewMode === 'list' && pastEventsCount > 0 && (
+              <button
+                className={`btn ${showPastEvents ? 'btn-secondary' : 'btn-outline-secondary'}`}
+                onClick={() => setShowPastEvents(!showPastEvents)}
+                style={{
+                  fontSize: '0.9rem',
+                  borderRadius: '8px',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <i className={`bi ${showPastEvents ? 'bi-eye-slash' : 'bi-clock-history'} me-2`}></i>
+                {showPastEvents ? '앞으로의 일정만 보기' : `지난 일정 보기 (${pastEventsCount}개)`}
+              </button>
+            )}
           </div>
         </div>
       </div>
