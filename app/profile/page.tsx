@@ -74,15 +74,19 @@ export default function ProfilePage() {
   // 터치 이벤트 처리를 위한 변수
   const touchStartY = useRef(0);
   const touchEndY = useRef(0);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
   
   // 터치 시작 위치 기록
   const handleTouchStart = (e: TouchEvent) => {
     touchStartY.current = e.touches[0].clientY;
+    touchStartX.current = e.touches[0].clientX;
   };
   
   // 터치 이동 감지
   const handleTouchMove = (e: TouchEvent) => {
     touchEndY.current = e.touches[0].clientY;
+    touchEndX.current = e.touches[0].clientX;
   };
   
   // 스크롤 이벤트 처리 - useCallback으로 감싸기
@@ -113,15 +117,39 @@ export default function ProfilePage() {
   const handleTouchEnd = useCallback(() => {
     if (scrolling.current) return;
     
-    const diff = touchStartY.current - touchEndY.current;
+    const diffY = touchStartY.current - touchEndY.current;
+    const diffX = touchStartX.current - touchEndX.current;
+    
     // 충분한 스와이프 거리가 있을 때만 슬라이드 전환
-    if (Math.abs(diff) > 50) {
+    const minSwipeDistance = 50;
+    
+    // 수직 스와이프가 수평 스와이프보다 크면 위/아래 이동
+    if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > minSwipeDistance) {
       scrolling.current = true;
       
-      if (diff > 0) {
+      if (diffY > 0) {
         nextSlide(); // 위로 스와이프
       } else {
         prevSlide(); // 아래로 스와이프
+      }
+      
+      // 스크롤 디바운싱
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
+      
+      scrollTimeout.current = setTimeout(() => {
+        scrolling.current = false;
+      }, 800);
+    } 
+    // 수평 스와이프가 수직 스와이프보다 크면 좌/우 이동
+    else if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > minSwipeDistance) {
+      scrolling.current = true;
+      
+      if (diffX > 0) {
+        nextSlide(); // 오른쪽에서 왼쪽으로 스와이프
+      } else {
+        prevSlide(); // 왼쪽에서 오른쪽으로 스와이프
       }
       
       // 스크롤 디바운싱
@@ -293,7 +321,7 @@ export default function ProfilePage() {
                       </div>
                       <div className="bio-text-container">
                         <div className="bio-text">
-                          <p>2014년 11월 13일 쌍용차 정리해고 사건에서 노동자들에게 패배를 안긴 대법원 판결은 변호사 권영국을 현실 정치로 이끌었다. 판결을 통해 세상을 바꿔보겠다는 생각은 고상한 환상이라는 것을, 대법원의 판결은 기득권 질서를 비호하고 정당화하는 제도적 폭력임을 깨닫는 순간이었다. 그리고 기울어진 운동장을 바꾸기 위해 정치의 주인으로서 용기 있는 발걸음을 내딛었다. (&lsquo;거리에 핀 정의&rsquo; 책소개 중에서)</p>
+                          <p>2014년 11월 13일 쌍용차 정리해고 사건에서 노동자들에게 패배를 안긴 대법원 판결은 변호사 권영국을 현실 정치로 이끌었다. 판결을 통해 세상을 바꿔보겠다는 생각은 고상한 환상이라는 것을, 대법원의 판결은 기득권 질서를 비호하고 정당화하는 제도적 폭력임을 깨닫는 순간이었다. (&lsquo;거리에 핀 정의&rsquo; 책소개 중에서)</p>
                         </div>
                       </div>
                     </div>
@@ -329,15 +357,15 @@ export default function ProfilePage() {
                         </div>
                       </div>
                     </div>
-                    <div className="n-layout" style={{ marginTop: "-5%" }}>
+                    <div className="n-layout">
                       <div className="quote-text-container">
                         <div className="quote-text">
-                          <p>현실정치를 고민하며 노동자를 대변할 정치권력으로 정의당을 선택, 입당한다.</p>
+                          <p>현실정치를 고민하며 노동자를 대변할 정치권력으로 정의당을 선택</p>
                         </div>
                       </div>
                       <div className="bio-text-container">
                         <div className="bio-text">
-                          <p>&ldquo;헌법을 유린한 국정 농단 사태에 저항하며 광장으로 나선 촛불 시민들은 불평등한 사회 대개혁을 요구하며 평등하고 정의로운 시대의 도래를 희망했습니다. 하지만 아무리 광장의 불꽃이 타오른다 하여도 그 불꽃이 정치권력의 변화를 수반해내지 못하는 한 촛불은 언제든 배반당할 수 있음을 우리는 목격하고 있습니다. 노동자와 민중이 자신을 대변할 정치권력을 갖지 못하는 이상, 광장민주주의만으로 우리 삶을 변화시키지 못한다는 사실을 뼈저리게 확인하고 있습니다. 해고된 노동자와 그 가족의 고통, 차별받는 비정규직 노동자의 한숨, 위험의 외주화로 죽어가는 하청 노동자의 죽음의 행렬, 끊임없이 반복되는 비인간적인 노동현실을 멈추게 하려면 어떻게 해야 할 것인지에 대한 제 고민은 매우 절박하고 간절한 것이었습니다.&rdquo; (2019년 10월 28일, 정의당 입당의 변)</p>
+                          <p>&ldquo;하지만 아무리 광장의 불꽃이 타오른다 하여도 그 불꽃이 정치권력의 변화를 수반해내지 못하는 한 촛불은 언제든 배반당할 수 있음을 우리는 목격하고 있습니다. 해고된 노동자와 그 가족의 고통, 차별받는 비정규직 노동자의 한숨, 위험의 외주화로 죽어가는 하청 노동자의 죽음의 행렬, 끊임없이 반복되는 비인간적인 노동현실을 멈추게 하려면 어떻게 해야 할 것인지에 대한 제 고민은 매우 절박하고 간절한 것이었습니다.&rdquo; (2019년 10월 28일, 정의당 입당의 변)</p>
                         </div>
                       </div>
                     </div>
@@ -506,21 +534,21 @@ export default function ProfilePage() {
           left: 0;
           width: 100%;
           height: 100%;
-          background-color: rgba(0, 180, 0, 0.7);
+          background-color: rgba(0, 180, 0, 0.4);
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           z-index: 2;
           background-image: url(/images/about01.jpg);
-          background-blend-mode: multiply;
+          background-blend-mode: soft-light;
           background-size: cover !important;
           background-position: 60% center !important;
           background-repeat: no-repeat;
         }
         
         .black-overlay {
-          background-color: rgba(0, 0, 0, 0.5);
+          background-color: rgba(0, 0, 0, 0.3);
           background-image: url(/images/about11.jpg);
           background-blend-mode: soft-light;
           background-size: cover !important;
@@ -529,45 +557,45 @@ export default function ProfilePage() {
         }
         
         .skyblue-overlay {
-          background-color: rgba(0, 150, 230, 0.7);
+          background-color: rgba(0, 150, 230, 0.4);
           background-image: url(/images/about06.jpg);
-          background-blend-mode: multiply;
+          background-blend-mode: soft-light;
           background-size: cover !important;
           background-position: 60% center !important;
           background-repeat: no-repeat;
         }
         
         .red-overlay {
-          background-color: rgba(220, 0, 0, 0.7);
+          background-color: rgba(220, 0, 0, 0.4);
           background-image: url(/images/about10.jpg);
-          background-blend-mode: multiply;
+          background-blend-mode: soft-light;
           background-size: cover !important;
           background-position: center center !important;
           background-repeat: no-repeat;
         }
         
         .yellow-overlay {
-          background-color: rgba(255, 200, 0, 0.7);
+          background-color: rgba(255, 200, 0, 0.4);
           background-image: url(/images/about17.jpg);
-          background-blend-mode: multiply;
+          background-blend-mode: soft-light;
           background-size: cover !important;
           background-position: 60% center !important;
           background-repeat: no-repeat;
         }
         
         .purple-overlay {
-          background-color: rgba(255, 105, 180, 0.7);
+          background-color: rgba(255, 105, 180, 0.4);
           background-image: url(/images/about12.jpg);
-          background-blend-mode: multiply;
+          background-blend-mode: soft-light;
           background-size: cover !important;
           background-position: center center !important;
           background-repeat: no-repeat;
         }
         
         .navy-overlay {
-          background-color: rgba(65, 105, 225, 0.7);
+          background-color: rgba(65, 105, 225, 0.4);
           background-image: url(/images/about19.jpg);
-          background-blend-mode: multiply;
+          background-blend-mode: soft-light;
           background-size: cover !important;
           background-position: center center !important;
           background-repeat: no-repeat;
@@ -575,9 +603,9 @@ export default function ProfilePage() {
         }
         
         .image-background {
-          background-color: rgba(255, 255, 255, 0.7);
+          background-color: rgba(255, 255, 255, 0.4);
           background-image: url(/images/about13.jpg);
-          background-blend-mode: multiply;
+          background-blend-mode: soft-light;
           background-size: cover !important;
           background-position: center center !important;
           background-repeat: no-repeat;
@@ -605,15 +633,9 @@ export default function ProfilePage() {
         
         .seventh-char {
           /* 배경 이미지 속성 제거하고 특별 스타일만 유지 */
-          color: rgba(255, 255, 255, 0.4) !important;
-          opacity: 0.4 !important;
-          text-shadow: 
-            0 0 20px rgba(0, 0, 0, 0.8) !important,
-            2px 2px 4px rgba(0, 0, 0, 0.7) !important,
-            -1px -1px 0 rgba(0, 0, 0, 0.7) !important,
-            1px -1px 0 rgba(0, 0, 0, 0.7) !important,
-            -1px 1px 0 rgba(0, 0, 0, 0.7) !important,
-            1px 1px 0 rgba(0, 0, 0, 0.7) !important;
+          color: rgba(0, 0, 0, 0.5) !important;
+          opacity: 0.5 !important;
+          text-shadow: none;
         }
         
         .eighth-char {
@@ -641,17 +663,29 @@ export default function ProfilePage() {
         }
         
         .seventh-text {
-          font-size: 25vw; /* 30vw에서 25vw로 크기 줄임 */
+          font-size: 25vw;
+          letter-spacing: -0.5rem;
+          padding: 0 15px;
+          color: rgba(0, 0, 0, 0.5);
+          -webkit-text-fill-color: rgba(0, 0, 0, 0.5);
+          -webkit-text-stroke: none;
+          text-shadow: none;
         }
         
         .eighth-text {
-          font-size: 30vw;
+          font-size: 25vw;
+          letter-spacing: -0.5rem;
+          padding: 0 15px;
+          color: rgba(0, 0, 0, 0.5);
+          -webkit-text-fill-color: rgba(0, 0, 0, 0.5);
+          -webkit-text-stroke: none;
+          text-shadow: none;
         }
         
         .giant-text-stroke {
           position: relative;
           opacity: 0;
-          animation: fadeIn 0.5s ease forwards 0.8s;
+          animation: fadeIn 0.5s ease forwards 0.5s;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -662,26 +696,23 @@ export default function ProfilePage() {
         .giant-text {
           font-size: 40vw;
           font-weight: bold;
-          color: rgba(255, 255, 255, 0.4);
+          color: rgba(0, 0, 0, 0.5);
           position: relative;
           font-family: 'SBAggroB', sans-serif;
           z-index: 3;
-          text-shadow: 
-            0 0 20px rgba(0, 0, 0, 0.8),
-            2px 2px 4px rgba(0, 0, 0, 0.7),
-            -1px -1px 0 rgba(0, 0, 0, 0.7),
-            1px -1px 0 rgba(0, 0, 0, 0.7),
-            -1px 1px 0 rgba(0, 0, 0, 0.7),
-            1px 1px 0 rgba(0, 0, 0, 0.7);
-          opacity: 0.4;
-          filter: brightness(1.5) contrast(1.3);
+          text-shadow: none;
+          opacity: 0.5;
+          filter: brightness(1.2) contrast(1.1);
           clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
-          animation: revealChar 1s ease forwards 0.5s;
+          animation: revealChar 0.8s ease forwards 0.3s;
+          white-space: nowrap;
+          -webkit-text-fill-color: rgba(0, 0, 0, 0.5);
+          -webkit-text-stroke: none;
         }
         
         .first-char {
           font-size: 30vw;
-          color: rgba(255, 255, 255, 0.4);
+          color: rgba(0, 0, 0, 0.5);
           text-shadow: 
             0 0 30px rgba(0, 0, 0, 0.8),
             3px 3px 5px rgba(0, 0, 0, 0.8),
@@ -689,10 +720,15 @@ export default function ProfilePage() {
             2px -2px 0 rgba(0, 0, 0, 0.7),
             -2px 2px 0 rgba(0, 0, 0, 0.7),
             2px 2px 0 rgba(0, 0, 0, 0.7);
+          -webkit-text-fill-color: rgba(0, 0, 0, 0.5);
         }
         
         .vertical-text {
           display: inline-block;
+          white-space: nowrap;
+          padding: 0 10px;
+          width: auto;
+          max-width: none;
         }
         
         .quote-text-container {
@@ -700,6 +736,9 @@ export default function ProfilePage() {
           display: flex;
           justify-content: flex-start;
           padding-left: 10%;
+          position: absolute;
+          top: 10%;
+          left: 0;
         }
         
         .quote-text {
@@ -711,7 +750,7 @@ export default function ProfilePage() {
           font-weight: 300;
           text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
           opacity: 0;
-          animation: fadeInUp 1s forwards 2.1s;
+          animation: fadeInUp 0.8s forwards 1.2s;
           line-height: 1.2;
           margin-bottom: 2rem;
         }
@@ -719,19 +758,23 @@ export default function ProfilePage() {
         .bio-text-container {
           width: 100%;
           display: flex;
-          justify-content: flex-end;
+          justify-content: flex-start;
+          padding-left: 40%;
           padding-right: 10%;
+          position: absolute;
+          top: 40%;
+          left: 0;
         }
         
         .bio-text {
-          width: 50%;
-          text-align: right;
+          width: 85%;
+          text-align: left;
           color: white;
           font-size: 1.1rem;
           font-weight: 400;
           text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
           opacity: 0;
-          animation: fadeInUp 1s forwards 2.6s;
+          animation: fadeInUp 0.8s forwards 1.6s;
           line-height: 1.5;
         }
         
@@ -886,7 +929,8 @@ export default function ProfilePage() {
           height: 100%;
           display: flex;
           flex-direction: column;
-          justify-content: center;
+          justify-content: flex-start;
+          padding-top: 10%;
           align-items: center;
         }
         
@@ -941,234 +985,125 @@ export default function ProfilePage() {
         /* 모바일에서 글자 크기 키우기 */
         @media (max-width: 768px) {
           .giant-text {
-            font-size: 70vw;
-          }
-          
-          .first-char {
-            font-size: 24vw;
-          }
-          
-          .vertical-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -0.5rem;
-            font-size: 40vw;
-          }
-          
-          .second-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -0.3rem;
-            font-size: 40vw;
-          }
-          
-          .third-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -0.3rem;
-            font-size: 40vw;
-          }
-          
-          .fourth-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -0.3rem;
-            font-size: 40vw;
-          }
-          
-          .fifth-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -0.3rem;
-            font-size: 40vw;
-          }
-          
-          .sixth-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -0.3rem;
-            font-size: 40vw;
-          }
-          
-          .seventh-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -0.3rem;
-            font-size: 35vw; /* 40vw에서 35vw로 줄임 */
-          }
-          
-          .eighth-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -0.3rem;
-            font-size: 40vw;
-          }
-          
-          /* 태블릿에서의 배경 이미지 위치 조정 */
-          .special-overlay {
-            background-position: 60% center !important;
-            background-size: cover !important;
-          }
-          
-          .skyblue-overlay {
-            background-position: 60% center !important;
-            background-size: cover !important;
-          }
-          
-          .yellow-overlay {
-            background-position: 60% center !important;
-            background-size: cover !important;
-          }
-          
-          /* 이미지 컨테이너 스타일도 수정 */
-          .image-container img {
-            object-fit: cover !important;
-            object-position: center center !important;
-          }
-          
-          .quote-text {
-            font-size: 2rem;
-            width: 70%;
-          }
-          
-          .bio-text {
-            font-size: 1rem;
-            width: 60%;
-          }
-        }
-        
-        @media (max-width: 480px) {
-          .giant-text {
-            font-size: 90vw;
-          }
-          
-          .first-char {
-            font-size: 40vw;
+            font-size: 50vw;
+            white-space: nowrap;
+            max-width: 100vw;
+            overflow: visible;
           }
           
           .vertical-text {
             writing-mode: vertical-lr;
             text-orientation: upright;
             letter-spacing: -1.5rem;
-            font-size: 60vw;
-            line-height: 0.8;
+            font-size: 40vw;
+            white-space: nowrap;
+            width: auto;
+            max-width: none;
+            margin: 0 auto;
+            padding: 0 8vw;
           }
           
-          .second-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -1rem;
-            font-size: 60vw;
-            line-height: 0.8;
+          /* 안드로이드용 특별 스타일 */
+          @supports not (-webkit-touch-callout: none) {
+            .vertical-text {
+              letter-spacing: -2rem;
+              text-orientation: upright;
+              writing-mode: vertical-lr;
+            }
           }
           
-          .third-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -1rem;
-            font-size: 60vw;
-            line-height: 0.8;
-          }
-          
-          .fourth-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -1rem;
-            font-size: 60vw;
-            line-height: 0.8;
-          }
-          
-          .fifth-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -1rem;
-            font-size: 60vw;
-            line-height: 0.8;
-          }
-          
-          .sixth-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -1rem;
-            font-size: 50vw; /* 약간 작게 설정 (긴 텍스트) */
-            line-height: 0.8;
-          }
-          
-          .seventh-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -1rem;
-            font-size: 60vw; /* 80vw에서 60vw로 줄임 */
-            line-height: 0.8;
-          }
-          
-          .eighth-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -1rem;
-            font-size: 60vw;
-            line-height: 0.8;
-          }
-          
-          /* 모바일에서의 배경 이미지 위치 조정 */
-          .special-overlay {
-            background-position: 60% center !important;
-            background-size: cover !important;
-          }
-          
-          .skyblue-overlay {
-            background-position: 60% center !important;
-            background-size: cover !important;
-          }
-          
-          .yellow-overlay {
-            background-position: 60% center !important;
-            background-size: cover !important;
-          }
-          
-          .red-overlay,
-          .purple-overlay,
-          .navy-overlay,
-          .giant-text {
-            background-position: center center !important;
-            background-size: cover !important;
-          }
-          
-          .n-layout {
-            justify-content: flex-start;
-            padding-top: 25%;
-          }
-          
-          /* 여섯 번째 슬라이드(정의당) 텍스트 위치 조정 */
-          .navy-overlay .n-layout {
-            padding-top: 15%;
-            margin-top: -8% !important;
-          }
-          
-          /* 모바일에서 여섯 번째 슬라이드 텍스트 줄이기 */
-          .navy-overlay .bio-text {
-            font-size: 0.95rem;
-            max-height: 50vh;
-            overflow-y: auto;
+          /* 모바일에서 첫 문장 컨테이너 너비 확장 */
+          .quote-text-container {
+            padding-left: 5%;
+            padding-right: 5%;
+            width: 100%;
+            position: relative;
+            top: 0;
           }
           
           .quote-text {
+            width: 90%;
             font-size: 2rem;
-            width: 85%;
-            line-height: 1.3;
           }
           
+          /* 모바일에서 두 번째 문단 조정 */
           .bio-text-container {
-            padding-right: 15%;
-            justify-content: flex-start;
-            padding-left: 10%;
-            margin-top: 1.5rem;
+            padding-left: 5%;
+            padding-right: 5%;
+            position: relative;
+            top: auto;
+            margin-top: 20px;
           }
           
           .bio-text {
-            font-size: 1.1rem;
-            width: 80%;
-            text-align: left;
+            width: 90%;
+            font-size: 1rem;
+          }
+          
+          /* n-layout 조정 - 첫 문장이 상단 10%에서 시작되도록 */
+          .n-layout {
+            padding-top: 10%;
+          }
+          
+          /* 안드로이드용 특별 스타일 */
+          @supports not (-webkit-touch-callout: none) {
+            .vertical-text {
+              letter-spacing: -2rem;
+              text-orientation: upright;
+              writing-mode: vertical-lr;
+            }
+          }
+          
+          .seventh-text, .eighth-text {
+            -webkit-text-stroke: none;
+            text-shadow: none;
+            color: rgba(0, 0, 0, 0.5);
+            -webkit-text-fill-color: rgba(0, 0, 0, 0.5);
+          }
+          
+          .giant-text-container {
+            width: 100%;
+            max-width: 100%;
+            overflow: visible;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          
+          /* 모바일에서 8번째 슬라이드의 오버레이 조정 */
+          .white-overlay-layer {
+            background-color: rgba(255, 255, 255, 0.15);
+          }
+        }
+        
+        /* 더 작은 모바일 디바이스 */
+        @media (max-width: 480px) {
+          .giant-text {
+            font-size: 60vw;
+            white-space: nowrap;
+          }
+          
+          .vertical-text {
+            writing-mode: vertical-lr;
+            text-orientation: upright;
+            letter-spacing: -1.8rem;
+            font-size: 50vw;
+            line-height: 0.7;
+            padding: 0 12vw;
+          }
+          
+          /* 안드로이드용 특별 스타일 */
+          @supports not (-webkit-touch-callout: none) {
+            .vertical-text {
+              letter-spacing: -2.5rem;
+            }
+          }
+          
+          .seventh-text, .eighth-text {
+            -webkit-text-stroke: none;
+            text-shadow: none;
+            color: rgba(0, 0, 0, 0.5);
+            -webkit-text-fill-color: rgba(0, 0, 0, 0.5);
           }
         }
 
@@ -1210,13 +1145,13 @@ export default function ProfilePage() {
         
         .white-text {
           background: url(/images/about13.jpg) no-repeat center center !important;
-          color: white !important; /* 100% 흰색 텍스트 */
+          color: white !important;
           mix-blend-mode: difference;
           text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
         }
         
         .white-pure-text {
-          color: white !important; /* 100% 흰색 텍스트 */
+          color: white !important;
           text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.7);
         }
         
@@ -1249,9 +1184,9 @@ export default function ProfilePage() {
         }
         
         .white-clean-text {
-          color: white !important; /* 100% 흰색 텍스트 */
+          color: white !important;
           position: relative;
-          z-index: 5; /* 검은색 텍스트보다 낮은 z-index */
+          z-index: 5;
         }
         
         .black-simple-text {
@@ -1301,7 +1236,7 @@ export default function ProfilePage() {
           left: 0;
           width: 100%;
           height: 100%;
-          background-color: rgba(255, 255, 255, 0.4);
+          background-color: rgba(255, 255, 255, 0.15);
           z-index: 2;
         }
 
@@ -1311,6 +1246,42 @@ export default function ProfilePage() {
           background-blend-mode: normal;
           background-size: cover;
           background-position: center center;
+        }
+
+        /* iOS 사파리에서 텍스트 렌더링 문제 해결을 위한 추가 스타일 */
+        @supports (-webkit-touch-callout: none) {
+          .giant-text {
+            -webkit-text-stroke: none;
+            color: rgba(0, 0, 0, 0.5) !important;
+            -webkit-text-fill-color: rgba(0, 0, 0, 0.5) !important;
+            opacity: 0.5 !important;
+            text-shadow: none;
+          }
+          
+          .first-char, .second-char, .third-char, .fourth-char,
+          .fifth-char, .sixth-char {
+            color: rgba(0, 0, 0, 0.5) !important;
+            -webkit-text-fill-color: rgba(0, 0, 0, 0.5) !important;
+            -webkit-text-stroke: none;
+            text-shadow: none;
+          }
+          
+          .seventh-char, .eighth-char {
+            color: rgba(0, 0, 0, 0.5) !important;
+            -webkit-text-fill-color: rgba(0, 0, 0, 0.5) !important;
+            -webkit-text-stroke: none;
+            text-shadow: none;
+          }
+        }
+
+        /* iOS(아이폰) 관련 스타일 보완 */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+          .giant-text {
+            -webkit-text-stroke: none;
+            text-shadow: none;
+            color: rgba(0, 0, 0, 0.6);
+            opacity: 0.6;
+          }
         }
       `}</style>
     </div>
