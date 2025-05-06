@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 
 const slides = [
@@ -54,25 +54,39 @@ export default function ProfilePage() {
   const [animationKey, setAnimationKey] = useState(0);
 
   // 다음 이미지로 이동
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex === slides.length - 1 ? 0 : prevIndex + 1));
     setAnimationKey(prev => prev + 1);
-  };
+  }, [slides.length]);
 
   // 이전 이미지로 이동
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex === 0 ? slides.length - 1 : prevIndex - 1));
     setAnimationKey(prev => prev + 1);
-  };
+  }, [slides.length]);
 
   // 특정 이미지로 이동
-  const goToSlide = (index: number) => {
+  const goToSlide = useCallback((index: number) => {
     setCurrentIndex(index);
     setAnimationKey(prev => prev + 1);
-  };
+  }, []);
 
-  // 스크롤 이벤트 처리
-  const handleWheel = (e: WheelEvent) => {
+  // 터치 이벤트 처리를 위한 변수
+  const touchStartY = useRef(0);
+  const touchEndY = useRef(0);
+  
+  // 터치 시작 위치 기록
+  const handleTouchStart = (e: TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+  
+  // 터치 이동 감지
+  const handleTouchMove = (e: TouchEvent) => {
+    touchEndY.current = e.touches[0].clientY;
+  };
+  
+  // 스크롤 이벤트 처리 - useCallback으로 감싸기
+  const handleWheel = useCallback((e: WheelEvent) => {
     e.preventDefault(); // 기본 스크롤 동작 방지
     
     if (scrolling.current) return; // 이미 스크롤 중이면 무시
@@ -93,24 +107,10 @@ export default function ProfilePage() {
     scrollTimeout.current = setTimeout(() => {
       scrolling.current = false;
     }, 800); // 0.8초 동안 추가 스크롤 무시
-  };
+  }, [nextSlide, prevSlide]);
   
-  // 터치 이벤트 처리를 위한 변수
-  const touchStartY = useRef(0);
-  const touchEndY = useRef(0);
-  
-  // 터치 시작 위치 기록
-  const handleTouchStart = (e: TouchEvent) => {
-    touchStartY.current = e.touches[0].clientY;
-  };
-  
-  // 터치 이동 감지
-  const handleTouchMove = (e: TouchEvent) => {
-    touchEndY.current = e.touches[0].clientY;
-  };
-  
-  // 터치 종료 시 방향 판단 및 슬라이드 전환
-  const handleTouchEnd = () => {
+  // 터치 종료 시 방향 판단 및 슬라이드 전환 - useCallback으로 감싸기
+  const handleTouchEnd = useCallback(() => {
     if (scrolling.current) return;
     
     const diff = touchStartY.current - touchEndY.current;
@@ -133,7 +133,7 @@ export default function ProfilePage() {
         scrolling.current = false;
       }, 800);
     }
-  };
+  }, [nextSlide, prevSlide]);
 
   // 키보드 이벤트 처리
   useEffect(() => {
@@ -178,7 +178,7 @@ export default function ProfilePage() {
         clearTimeout(scrollTimeout.current);
       }
     };
-  }, []);
+  }, [handleWheel, handleTouchEnd]);
 
   return (
     <div className="profile-page">
