@@ -37,7 +37,7 @@ const slides = [
   {
     image: '/images/about11.jpg',
     title: '광야의 외침',
-    message: '원내 정당의 관성을 버리고 민중의 곁으로 돌아가는 정치'
+    message: '원내 정당의 관성을 버리고 광야로 나갈 각오를 다지겠다'
   },
   {
     image: '/images/about13.jpg',
@@ -158,21 +158,32 @@ export default function ProfilePage() {
   // 스크롤 이벤트 리스너 등록
   useEffect(() => {
     const slider = sliderRef.current;
+    const body = document.body;
+    
+    const wheelHandler = (e: WheelEvent) => {
+      handleWheel(e);
+    };
     
     if (slider) {
-      slider.addEventListener('wheel', handleWheel, { passive: false });
+      slider.addEventListener('wheel', wheelHandler, { passive: false });
       slider.addEventListener('touchstart', handleTouchStart as EventListener);
       slider.addEventListener('touchmove', handleTouchMove as EventListener);
       slider.addEventListener('touchend', handleTouchEnd as EventListener);
+      
+      // body에도 이벤트 등록
+      body.addEventListener('wheel', wheelHandler, { passive: false });
     }
     
     return () => {
       if (slider) {
-        slider.removeEventListener('wheel', handleWheel);
+        slider.removeEventListener('wheel', wheelHandler);
         slider.removeEventListener('touchstart', handleTouchStart as EventListener);
         slider.removeEventListener('touchmove', handleTouchMove as EventListener);
         slider.removeEventListener('touchend', handleTouchEnd as EventListener);
       }
+      
+      // body의 이벤트 리스너도 제거
+      body.removeEventListener('wheel', wheelHandler);
       
       if (scrollTimeout.current) {
         clearTimeout(scrollTimeout.current);
@@ -335,7 +346,7 @@ export default function ProfilePage() {
                   <div key={animationKey} className="special-overlay black-overlay">
                     <div className="giant-text-container">
                       <div className="giant-text-stroke">
-                        <div className="giant-text seventh-char black-text">
+                        <div className="giant-text seventh-char">
                           <span className="vertical-text seventh-text">광야</span>
                         </div>
                       </div>
@@ -356,22 +367,22 @@ export default function ProfilePage() {
                 ) : index === 7 ? (
                   <div key={animationKey} className="special-overlay image-background">
                     <div className="white-overlay-layer"></div>
-                    <div className="n-layout reverse-layout">
-                      <div className="quote-text-container top-quote">
+                    <div className="giant-text-container">
+                      <div className="giant-text-stroke">
+                        <div className="giant-text eighth-char">
+                          <span className="vertical-text eighth-text">광장</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="n-layout">
+                      <div className="quote-text-container">
                         <div className="quote-text black-simple-text">
                           <p>광장의 목소리를 지키기 위해</p>
                         </div>
                       </div>
-                      <div className="bio-text-container top-bio">
+                      <div className="bio-text-container">
                         <div className="bio-text black-simple-text">
                           <p>우리에겐 우리가 지켜야 할 시민들의 삶이 있습니다. 우리가 마주하고 싶은 변화된 세상을 향한 꿈이 있습니다. 진보가 지켜내야 할 그 존재들이 있음을 알기에 용기를 내어 대선에 나섰습니다. 우리에게 주어진 역할을 단단히 붙들고 6월 3일로 나아가겠습니다. (2025년 5월 5일, 민주노동당으로의 당명 개정 및 대선 후보 선출에 붙여)</p>
-                        </div>
-                      </div>
-                      <div className="bottom-giant-text">
-                        <div className="giant-text-stroke">
-                          <div className="giant-text eighth-char white-clean-text">
-                            <span className="vertical-text eighth-text">광장</span>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -503,113 +514,110 @@ export default function ProfilePage() {
           z-index: 2;
           background-image: url(/images/about01.jpg);
           background-blend-mode: multiply;
-          background-size: cover;
-          background-position: center center;
+          background-size: cover !important;
+          background-position: 60% center !important;
+          background-repeat: no-repeat;
         }
         
         .black-overlay {
-          background-color: rgba(0, 0, 0, 0.8);
+          background-color: rgba(0, 0, 0, 0.5);
           background-image: url(/images/about11.jpg);
-          background-blend-mode: multiply;
-          background-size: cover;
-          background-position: center center;
+          background-blend-mode: soft-light;
+          background-size: cover !important;
+          background-position: center center !important;
+          background-repeat: no-repeat;
         }
         
         .skyblue-overlay {
           background-color: rgba(0, 150, 230, 0.7);
           background-image: url(/images/about06.jpg);
           background-blend-mode: multiply;
-          background-size: cover;
-          background-position: center center;
+          background-size: cover !important;
+          background-position: 60% center !important;
+          background-repeat: no-repeat;
         }
         
         .red-overlay {
           background-color: rgba(220, 0, 0, 0.7);
           background-image: url(/images/about10.jpg);
           background-blend-mode: multiply;
-          background-size: cover;
-          background-position: center center;
+          background-size: cover !important;
+          background-position: center center !important;
+          background-repeat: no-repeat;
         }
         
         .yellow-overlay {
           background-color: rgba(255, 200, 0, 0.7);
           background-image: url(/images/about17.jpg);
           background-blend-mode: multiply;
-          background-size: cover;
-          background-position: center center;
+          background-size: cover !important;
+          background-position: 60% center !important;
+          background-repeat: no-repeat;
         }
         
         .purple-overlay {
           background-color: rgba(255, 105, 180, 0.7);
           background-image: url(/images/about12.jpg);
           background-blend-mode: multiply;
-          background-size: cover;
-          background-position: center center;
+          background-size: cover !important;
+          background-position: center center !important;
+          background-repeat: no-repeat;
         }
         
         .navy-overlay {
-          background-color: rgba(65, 105, 225, 0.7); /* 옅은 남색 */
+          background-color: rgba(65, 105, 225, 0.7);
           background-image: url(/images/about19.jpg);
           background-blend-mode: multiply;
-          background-size: cover;
-          background-position: center center;
+          background-size: cover !important;
+          background-position: center center !important;
+          background-repeat: no-repeat;
           padding-top: 5%;
         }
         
-        .second-char {
-          background: url(/images/about06.jpg) no-repeat center center !important;
+        .image-background {
+          background-color: rgba(255, 255, 255, 0.7);
+          background-image: url(/images/about13.jpg);
+          background-blend-mode: multiply;
           background-size: cover !important;
           background-position: center center !important;
-          background-clip: text !important;
-          -webkit-background-clip: text !important;
+          background-repeat: no-repeat;
+        }
+        
+        .second-char {
+          /* 배경 이미지 속성 제거 */
         }
         
         .third-char {
-          background: url(/images/about10.jpg) no-repeat center center !important;
-          background-size: cover !important;
-          background-position: center center !important;
-          background-clip: text !important;
-          -webkit-background-clip: text !important;
+          /* 배경 이미지 속성 제거 */
         }
         
         .fourth-char {
-          background: url(/images/about17.jpg) no-repeat center center !important;
-          background-size: cover !important;
-          background-position: center center !important;
-          background-clip: text !important;
-          -webkit-background-clip: text !important;
+          /* 배경 이미지 속성 제거 */
         }
         
         .fifth-char {
-          background: url(/images/about12.jpg) no-repeat center center !important;
-          background-size: cover !important;
-          background-position: center center !important;
-          background-clip: text !important;
-          -webkit-background-clip: text !important;
+          /* 배경 이미지 속성 제거 */
         }
         
         .sixth-char {
-          background: url(/images/about19.jpg) no-repeat center center !important;
-          background-size: cover !important;
-          background-position: 60% center !important;
-          background-clip: text !important;
-          -webkit-background-clip: text !important;
+          /* 배경 이미지 속성 제거 */
         }
         
         .seventh-char {
-          background: url(/images/about11.jpg) no-repeat center center !important;
-          background-size: cover !important;
-          background-position: center center !important;
-          background-clip: text !important;
-          -webkit-background-clip: text !important;
+          /* 배경 이미지 속성 제거하고 특별 스타일만 유지 */
+          color: rgba(255, 255, 255, 0.4) !important;
+          opacity: 0.4 !important;
+          text-shadow: 
+            0 0 20px rgba(0, 0, 0, 0.8) !important,
+            2px 2px 4px rgba(0, 0, 0, 0.7) !important,
+            -1px -1px 0 rgba(0, 0, 0, 0.7) !important,
+            1px -1px 0 rgba(0, 0, 0, 0.7) !important,
+            -1px 1px 0 rgba(0, 0, 0, 0.7) !important,
+            1px 1px 0 rgba(0, 0, 0, 0.7) !important;
         }
         
         .eighth-char {
-          background: url(/images/about13.jpg) no-repeat center center !important;
-          background-size: cover !important;
-          background-position: center center !important;
-          background-clip: text !important;
-          -webkit-background-clip: text !important;
+          /* 배경 이미지 속성 제거 */
         }
         
         .second-text {
@@ -633,7 +641,7 @@ export default function ProfilePage() {
         }
         
         .seventh-text {
-          font-size: 30vw;
+          font-size: 25vw; /* 30vw에서 25vw로 크기 줄임 */
         }
         
         .eighth-text {
@@ -653,29 +661,34 @@ export default function ProfilePage() {
         
         .giant-text {
           font-size: 40vw;
-          font-weight: normal;
-          color: rgba(0, 0, 0, 0);
+          font-weight: bold;
+          color: rgba(255, 255, 255, 0.4);
           position: relative;
           font-family: 'SBAggroB', sans-serif;
           z-index: 3;
-          -webkit-mask-image: linear-gradient(#ffffff, #ffffff);
-          -webkit-mask-size: 100%;
-          mask-image: linear-gradient(#ffffff, #ffffff);
-          mask-size: 100%;
-          mix-blend-mode: screen;
-          background: url(/images/about01.jpg) no-repeat center center;
-          background-size: cover;
-          background-position: center center;
-          background-clip: text;
-          -webkit-background-clip: text;
-          opacity: 0.8;
-          filter: brightness(0.8);
+          text-shadow: 
+            0 0 20px rgba(0, 0, 0, 0.8),
+            2px 2px 4px rgba(0, 0, 0, 0.7),
+            -1px -1px 0 rgba(0, 0, 0, 0.7),
+            1px -1px 0 rgba(0, 0, 0, 0.7),
+            -1px 1px 0 rgba(0, 0, 0, 0.7),
+            1px 1px 0 rgba(0, 0, 0, 0.7);
+          opacity: 0.4;
+          filter: brightness(1.5) contrast(1.3);
           clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
-          animation: revealChar 1s ease forwards 1s;
+          animation: revealChar 1s ease forwards 0.5s;
         }
         
         .first-char {
           font-size: 30vw;
+          color: rgba(255, 255, 255, 0.4);
+          text-shadow: 
+            0 0 30px rgba(0, 0, 0, 0.8),
+            3px 3px 5px rgba(0, 0, 0, 0.8),
+            -2px -2px 0 rgba(0, 0, 0, 0.7),
+            2px -2px 0 rgba(0, 0, 0, 0.7),
+            -2px 2px 0 rgba(0, 0, 0, 0.7),
+            2px 2px 0 rgba(0, 0, 0, 0.7);
         }
         
         .vertical-text {
@@ -981,7 +994,7 @@ export default function ProfilePage() {
             writing-mode: vertical-lr;
             text-orientation: upright;
             letter-spacing: -0.3rem;
-            font-size: 40vw;
+            font-size: 35vw; /* 40vw에서 35vw로 줄임 */
           }
           
           .eighth-text {
@@ -994,38 +1007,23 @@ export default function ProfilePage() {
           /* 태블릿에서의 배경 이미지 위치 조정 */
           .special-overlay {
             background-position: 60% center !important;
+            background-size: cover !important;
           }
           
-          .giant-text {
+          .skyblue-overlay {
             background-position: 60% center !important;
+            background-size: cover !important;
           }
           
-          .second-char {
+          .yellow-overlay {
             background-position: 60% center !important;
+            background-size: cover !important;
           }
           
-          .third-char {
-            background-position: 60% center !important;
-          }
-          
-          .fourth-char {
-            background-position: 60% center !important;
-          }
-          
-          .fifth-char {
-            background-position: 60% center !important;
-          }
-          
-          .sixth-char {
-            background-position: 60% center !important;
-          }
-          
-          .seventh-char {
-            background-position: 60% center !important;
-          }
-          
-          .eighth-char {
-            background-position: 60% center !important;
+          /* 이미지 컨테이너 스타일도 수정 */
+          .image-container img {
+            object-fit: cover !important;
+            object-position: center center !important;
           }
           
           .quote-text {
@@ -1100,7 +1098,7 @@ export default function ProfilePage() {
             writing-mode: vertical-lr;
             text-orientation: upright;
             letter-spacing: -1rem;
-            font-size: 60vw;
+            font-size: 60vw; /* 80vw에서 60vw로 줄임 */
             line-height: 0.8;
           }
           
@@ -1115,63 +1113,25 @@ export default function ProfilePage() {
           /* 모바일에서의 배경 이미지 위치 조정 */
           .special-overlay {
             background-position: 60% center !important;
+            background-size: cover !important;
           }
           
           .skyblue-overlay {
             background-position: 60% center !important;
-          }
-          
-          .red-overlay {
-            background-position: 60% center !important;
+            background-size: cover !important;
           }
           
           .yellow-overlay {
             background-position: 60% center !important;
+            background-size: cover !important;
           }
           
-          .purple-overlay {
-            background-position: 60% center !important;
-          }
-          
-          .navy-overlay {
-            background-position: 60% center !important;
-            padding-top: 5% !important;
-          }
-          
-          .black-overlay {
-            background-position: 60% center !important;
-          }
-          
+          .red-overlay,
+          .purple-overlay,
+          .navy-overlay,
           .giant-text {
-            background-position: 60% center !important;
-          }
-          
-          .second-char {
-            background-position: 60% center !important;
-          }
-          
-          .third-char {
-            background-position: 60% center !important;
-          }
-          
-          .fourth-char {
-            background-position: 60% center !important;
-          }
-          
-          .fifth-char {
-            background-position: 60% center !important;
-          }
-          
-          .sixth-char {
-            background-position: 60% center !important;
-          }
-          
-          .seventh-char {
-            background-position: 60% center !important;
-          }
-          
-          .eighth-char {
-            background-position: 60% center !important;
+            background-position: center center !important;
+            background-size: cover !important;
           }
           
           .n-layout {
@@ -1333,13 +1293,6 @@ export default function ProfilePage() {
           width: 100%;
           text-align: center;
           z-index: 5;
-        }
-
-        .image-background {
-          background-image: url(/images/about13.jpg);
-          background-size: cover;
-          background-position: center center;
-          position: relative;
         }
 
         .white-overlay-layer {
