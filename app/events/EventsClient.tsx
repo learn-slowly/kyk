@@ -105,66 +105,16 @@ const addToAppleCalendar = (event: Event) => {
   if (typeof window === 'undefined') return;
   
   try {
-    // iCalendar 콘텐츠 생성
-    const icalContent = generateICalEvent(event);
-    
-    // 애플 기기(iOS/macOS)인지 확인
-    const isAppleDevice = /Mac|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    
-    // 방법 1: webcal:// 프로토콜 시도 (일부 브라우저에서만 작동)
-    if (isAppleDevice) {
-      try {
-        // Blob 생성
-        const blob = new Blob([icalContent], { type: 'text/calendar;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        
-        // 1초 후에 "애플 캘린더에 추가 중..." 알림 표시
-        const addingMsg = alert("애플 캘린더에 추가 중입니다...");
-        
-        // webcal:// 프로토콜로 열기 시도
-        window.location.href = "webcal:" + url.substring(5);  // "blob:" 제거
-        
-        // 사용자에게 안내 메시지 (지연 시간을 두어 이벤트 처리)
-        setTimeout(() => {
-          const shouldDownload = confirm('캘린더 앱이 열리지 않으면, ICS 파일을 다운로드 하시겠습니까?');
-          if (shouldDownload) {
-            // 방법 2: 다운로드 방식으로 대체
-            downloadICS();
-          }
-          
-          // 메모리 해제
-          URL.revokeObjectURL(url);
-        }, 2000);
-      } catch (e) {
-        console.error("애플 캘린더 직접 추가 오류:", e);
-        // 바로 다운로드 방식으로 대체
-        downloadICS();
-      }
-    } else {
-      // 비 애플 기기는 바로 다운로드
-      downloadICS();
-    }
-    
-    // ICS 파일 다운로드 함수
-    function downloadICS() {
-      const link = document.createElement('a');
-      link.href = getAppleCalendarUrl(event);
-      link.download = `${event.title}.ics`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  } catch (error) {
-    console.error('캘린더 추가 오류:', error);
-    alert('캘린더에 추가하는 중 오류가 발생했습니다. 다시 시도해주세요.');
-    
-    // 오류 발생 시 기존 방식으로 다운로드
+    // ICS 파일 다운로드 
     const link = document.createElement('a');
     link.href = getAppleCalendarUrl(event);
     link.download = `${event.title}.ics`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  } catch (error) {
+    console.error('캘린더 추가 오류:', error);
+    alert('캘린더에 추가하는 중 오류가 발생했습니다. 다시 시도해주세요.');
   }
 };
 
@@ -276,6 +226,24 @@ const categoryLabels = {
   candidate: '후보일정',
   election: '선거일정', 
   media: '미디어',
+};
+
+// 달력용 이벤트 데이터 포맷팅 함수
+const formatEventForCalendar = (event: Event) => {
+  const startDate = new Date(event.start);
+  const endDate = event.end ? new Date(event.end) : new Date(startDate.getTime() + 60 * 60 * 1000);
+  
+  return {
+    name: event.title,
+    startDate: startDate.toISOString().split('T')[0],
+    endDate: endDate.toISOString().split('T')[0],
+    startTime: startDate.toISOString().split('T')[1].substring(0, 5),
+    endTime: endDate.toISOString().split('T')[1].substring(0, 5),
+    location: event.location,
+    description: event.description || '',
+    options: ['Apple', 'Google', 'Outlook.com'] as any[],
+    timeZone: 'Asia/Seoul'
+  };
 };
 
 export default function EventsClient({ events }: { events: Event[] }) {
@@ -595,7 +563,7 @@ export default function EventsClient({ events }: { events: Event[] }) {
                               addToAppleCalendar(event);
                             }}
                             className="btn btn-sm btn-outline-dark"
-                            title="애플 캘린더에 추가"
+                            title="ICS 파일 다운로드"
                             style={{
                               fontSize: '0.75rem',
                               borderRadius: '4px',
@@ -1123,7 +1091,7 @@ export default function EventsClient({ events }: { events: Event[] }) {
                                         addToAppleCalendar(event);
                                       }}
                                       className="btn btn-sm btn-outline-dark"
-                                      title="애플 캘린더에 추가"
+                                      title="ICS 파일 다운로드"
                                       style={{
                                         fontSize: '0.75rem',
                                         borderRadius: '4px',

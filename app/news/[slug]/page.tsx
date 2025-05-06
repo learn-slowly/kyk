@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { fetchSanityData } from '../../lib/sanity';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { PortableTextContent } from './PortableTextComponent';
 
@@ -93,7 +93,19 @@ export default function NewsDetailPage() {
   // 날짜 포맷팅
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
-    return format(new Date(dateString), 'yyyy년 MM월 dd일', { locale: ko });
+    try {
+      // 날짜 문자열이 ISO 형식('YYYY-MM-DD')이 아닐 경우를 대비한 안전한 파싱
+      const parsedDate = parseISO(dateString);
+      // 유효한 날짜인지 확인
+      if (isNaN(parsedDate.getTime())) {
+        throw new Error('Invalid date');
+      }
+      return format(parsedDate, 'yyyy년 MM월 dd일', { locale: ko });
+    } catch (error) {
+      console.error('날짜 형식 오류:', dateString, error);
+      // 오류 발생 시 포맷팅할 수 없음을 표시
+      return '날짜 정보 없음';
+    }
   };
 
   if (isLoading) {

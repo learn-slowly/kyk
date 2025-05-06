@@ -25,34 +25,29 @@ export default function RootLayout({
         <style>
           {`
             .nav-button {
-              border: 3px solid white !important;
-              border-radius: 20px !important;
+              border: none !important;
+              border-radius: 0 !important;
               margin: 0 5px !important;
               position: relative;
               z-index: 1;
-              overflow: hidden;
               transition: all 0.3s ease;
             }
             
             .nav-button::before {
-              content: '';
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              background: white;
-              z-index: -1;
-              opacity: 0;
-              transition: opacity 0.3s ease;
+              display: none;
             }
             
             .nav-button:hover {
-              color: rgba(0, 0, 0, 0.3) !important;
+              color: #FFed00 !important;
+              text-decoration: underline !important;
             }
             
-            .nav-button:hover::before {
-              opacity: 1;
+            /* 메뉴 구분선 추가 */
+            .nav-item:not(:last-child) .nav-button::after {
+              content: '/';
+              position: absolute;
+              right: -7px;
+              color: rgba(255, 255, 255, 0.5);
             }
             
             /* 모바일 메뉴 스타일 */
@@ -106,6 +101,11 @@ export default function RootLayout({
                 position: relative !important;
               }
               
+              /* 모바일에서는 슬래시 구분선 제거 */
+              .nav-item:not(:last-child) .nav-button::after {
+                display: none;
+              }
+              
               /* 메뉴 항목 구분선 추가 */
               .navbar-nav .nav-item:not(:last-child) .nav-button::after {
                 content: '';
@@ -117,13 +117,10 @@ export default function RootLayout({
                 background: linear-gradient(90deg, transparent, rgba(0,0,0,0.07), transparent);
               }
               
-              .nav-button::before {
-                display: none;
-              }
-              
               .nav-button:hover {
-                background-color: rgba(0,0,0,0.03) !important; /* 호버 효과 가볍게 */
                 color: #000 !important;
+                text-decoration: none !important;
+                background-color: rgba(0,0,0,0.03) !important; /* 호버 효과 가볍게 */
               }
               
               .mobile-menu-close {
@@ -168,7 +165,7 @@ export default function RootLayout({
               font-family: 'GamtanRoad Gamtan', sans-serif;
             }
             
-            /* 네비게이션 토글 버튼 아이콘 변환 */
+            /* 네비게이션 토글 버튼 아이콘 변환 - 완전히 새로운 방식 */
             .navbar-toggler-icon {
               transition: all 0.3s ease;
               background-image: none !important;
@@ -180,6 +177,7 @@ export default function RootLayout({
               height: 24px !important;
             }
             
+            /* 상단과 하단 라인 */
             .navbar-toggler-icon::before,
             .navbar-toggler-icon::after {
               content: '';
@@ -191,13 +189,20 @@ export default function RootLayout({
               transition: all 0.3s ease;
             }
             
+            /* 상단 라인 */
             .navbar-toggler-icon::before {
-              top: 6px;
-              box-shadow: 0 -6px 0 white; /* 상단 라인용 */
+              top: 4px;
             }
             
+            /* 하단 라인 */
             .navbar-toggler-icon::after {
-              bottom: 6px;
+              bottom: 4px;
+            }
+            
+            /* 중간 라인 (가상 요소가 아닌 배경으로 추가) - 위치 조정 */
+            .navbar-toggler-icon {
+              background-color: transparent;
+              background-image: linear-gradient(transparent 11px, white 11px, white 13px, transparent 13px) !important;
             }
             
             /* 토글러 버튼 스타일 개선 */
@@ -208,17 +213,23 @@ export default function RootLayout({
               align-items: center !important;
               justify-content: center !important;
               padding: 0 !important;
+              border-radius: 4px !important;
             }
             
+            /* X 모양으로 변환 (메뉴 열린 상태) */
             .nav-close-icon::before {
               top: 50%;
               transform: rotate(45deg);
-              box-shadow: none;
             }
             
             .nav-close-icon::after {
               bottom: 50%;
               transform: rotate(-45deg);
+            }
+            
+            /* X 모양일 때는 중간 라인 숨기기 */
+            .nav-close-icon {
+              background-image: none !important;
             }
             
             /* 스티키 헤더 고정 스타일 */
@@ -239,8 +250,8 @@ export default function RootLayout({
             
             /* 네비게이션 바 */
             .navbar {
-              padding-top: 10px !important;
-              padding-bottom: 10px !important;
+              padding-top: 3px !important;
+              padding-bottom: 3px !important;
               position: static !important;
               transform: none !important;
               transition: none !important;
@@ -324,7 +335,7 @@ export default function RootLayout({
             
             /* 헤더 공간 확보를 위한 패딩 */
             .header-spacer {
-              height: 110px; /* 헤더 높이에 맞게 조정 */
+              height: 85px; /* 헤더 높이에 맞게 조정 */
             }
             
             /* 헤더 내용 고정 */
@@ -337,7 +348,7 @@ export default function RootLayout({
             /* 반응형 로고 크기 조정 */
             @media (max-width: 768px) {
               .header-spacer {
-                height: 100px; /* 모바일 헤더 높이에 맞게 조정 */
+                height: 90px; /* 모바일 헤더 높이에 맞게 조정 */
               }
               .header-logo {
                 width: 200px !important;
@@ -348,13 +359,13 @@ export default function RootLayout({
               }
               .subtitle {
                 font-size: 0.8em !important;
-                margin-bottom: 5px !important;
+                margin-bottom: 3px !important;
               }
             }
             
             @media (max-width: 480px) {
               .header-spacer {
-                height: 90px; /* 모바일 헤더 높이에 맞게 조정 */
+                height: 80px; /* 모바일 헤더 높이에 맞게 조정 */
               }
               .header-logo {
                 width: 160px !important;
@@ -365,7 +376,7 @@ export default function RootLayout({
               }
               .subtitle {
                 font-size: 0.7em !important;
-                margin-bottom: 3px !important;
+                margin-bottom: 2px !important;
               }
             }
 
@@ -429,24 +440,24 @@ export default function RootLayout({
                   </button>
                   <ul className="navbar-nav ms-auto">
                     <li className="nav-item d-lg-none">
-                      <Link href="/" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1 site-title">
+                      <Link href="/" className="nav-link nav-button text-white fw-normal fs-5 px-2 py-1 site-title">
                         처음으로
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link href="/profile" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1 site-title">소개</Link>
+                      <Link href="/profile" className="nav-link nav-button text-white fw-normal fs-5 px-2 py-1 site-title">소개</Link>
                     </li>
                     <li className="nav-item">
-                      <Link href="/policies" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1 site-title">정책</Link>
+                      <Link href="/policies" className="nav-link nav-button text-white fw-normal fs-5 px-2 py-1 site-title">정책</Link>
                     </li>
                     <li className="nav-item">
-                      <Link href="/posts" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1 site-title">뉴스</Link>
+                      <Link href="/posts" className="nav-link nav-button text-white fw-normal fs-5 px-2 py-1 site-title">뉴스</Link>
                     </li>
                     <li className="nav-item">
-                      <Link href="/events" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1 site-title">일정</Link>
+                      <Link href="/events" className="nav-link nav-button text-white fw-normal fs-5 px-2 py-1 site-title">일정</Link>
                     </li>
                     <li className="nav-item">
-                      <Link href="/join" className="nav-link nav-button text-white fw-bold fs-6 px-2 py-1 site-title">함께하기</Link>
+                      <Link href="/join" className="nav-link nav-button text-white fw-normal fs-5 px-2 py-1 site-title">함께하기</Link>
                     </li>
                   </ul>
                 </div>
