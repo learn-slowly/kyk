@@ -532,8 +532,7 @@ export default function ProfilePage() {
           position: absolute;
           top: 0;
           left: 0;
-          width: 100vw;
-          max-width: 100vw;
+          width: 100%;
           height: 100%;
           background-color: rgba(0, 180, 0, 0.4);
           display: flex;
@@ -546,10 +545,7 @@ export default function ProfilePage() {
           background-size: cover !important;
           background-position: 60% center !important;
           background-repeat: no-repeat;
-          left: 0;
-          right: 0;
-          margin: 0;
-          padding: 0;
+          overflow: hidden;
         }
         
         .black-overlay {
@@ -690,17 +686,16 @@ export default function ProfilePage() {
         }
         
         .giant-text-container {
-          width: 100vw;
-          max-width: 100vw;
+          width: 90vw;
+          max-width: 90vw;
           overflow: visible;
           display: flex;
           justify-content: center;
           align-items: center;
-          height: 100%;
+          height: 70%;
           position: relative;
           padding: 0;
-          left: 50%;
-          transform: translateX(-50%);
+          margin: 0 auto;
         }
         
         .giant-text-stroke {
@@ -710,14 +705,14 @@ export default function ProfilePage() {
           display: flex;
           justify-content: center;
           align-items: center;
-          width: 100vw;
-          max-width: 100vw;
+          width: 90vw;
+          max-width: 90vw;
           height: 100%;
           overflow: visible;
         }
         
         .giant-text {
-          font-size: 40vw;
+          font-size: 35vw;
           font-weight: 300;
           color: rgba(0, 0, 0, 0.7);
           position: relative;
@@ -731,7 +726,7 @@ export default function ProfilePage() {
           white-space: nowrap;
           -webkit-text-fill-color: rgba(0, 0, 0, 0.7);
           -webkit-text-stroke: none;
-          width: 100vw;
+          width: 90vw;
           text-align: center;
         }
         
@@ -1011,21 +1006,21 @@ export default function ProfilePage() {
         /* 모바일에서 글자 크기 키우기 */
         @media (max-width: 768px) {
           .giant-text {
-            font-size: 50vw;
+            font-size: 35vw;
             white-space: nowrap;
-            max-width: 100vw;
+            max-width: 90vw;
             overflow: visible;
-            transform: scale(0.9);
+            transform: none;
             transform-origin: center center;
-            width: 100vw;
+            width: 90vw;
             text-align: center;
           }
           
           .vertical-text {
             writing-mode: vertical-lr;
             text-orientation: upright;
-            letter-spacing: -1.5rem;
-            font-size: 45vw;
+            letter-spacing: -1rem;
+            font-size: 30vw;
             white-space: nowrap;
             width: auto;
             max-width: none;
@@ -1034,20 +1029,20 @@ export default function ProfilePage() {
           }
           
           .giant-text-container {
-            width: 100vw;
-            max-width: 100vw;
+            width: 90vw;
+            max-width: 90vw;
             overflow: visible;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            margin: 0 auto;
+            transform: none;
           }
           
           .giant-text-stroke {
-            width: 100vw;
-            max-width: 100vw;
+            width: 90vw;
+            max-width: 90vw;
             height: 100%;
             overflow: visible;
             display: flex;
@@ -1057,50 +1052,59 @@ export default function ProfilePage() {
           
           /* 특별히 iOS 사파리를 위한 조정 */
           @supports (-webkit-touch-callout: none) {
+            .special-overlay {
+              overflow: hidden;
+              width: 100%;
+              height: 100%;
+              max-width: 100%;
+              max-height: 100%;
+            }
+            
             .giant-text {
-              font-size: 40vw;
-              transform: scale(0.95);
+              font-size: 30vw;
+              transform: none;
               margin: 0 auto;
-              transform-origin: center center;
-              width: 100vw;
+              width: 90vw;
+              max-width: 90vw;
               text-align: center;
+              transform-origin: center center;
+              max-height: 70vh;
+              line-height: 1;
             }
             
             .vertical-text {
-              font-size: 35vw;
-              letter-spacing: -1rem;
+              font-size: 30vw;
+              letter-spacing: -0.5rem;
               padding: 0;
-              max-width: 100%;
+              max-width: 90vw;
               width: auto;
               overflow: visible;
-              transform: translateX(0);
+              transform: none;
+              max-height: 70vh;
             }
             
             .giant-text-container {
-              width: 100vw;
-              max-width: 100vw;
-              height: 100%;
+              width: 90vw;
+              max-width: 90vw;
+              height: 70vh;
+              max-height: 70vh;
               padding: 0;
+              margin: 0 auto;
               overflow: visible;
-              left: 50%;
-              transform: translateX(-50%);
+              transform: none;
             }
             
             .giant-text-stroke {
-              width: 100vw;
-              max-width: 100vw;
-              height: 100%;
+              width: 90vw;
+              max-width: 90vw;
+              height: 70vh;
+              max-height: 70vh;
               overflow: visible;
             }
             
-            /* 추가 Safari 버그 수정 - 컨테이너 확장 */
-            .special-overlay {
-              width: 100vw;
-              max-width: 100vw;
-              left: 0;
-              right: 0;
-              margin: 0;
-              padding: 0;
+            /* iOS 15 이상 Safari 버그 수정 */
+            .seventh-text, .eighth-text {
+              font-size: 25vw;
             }
           }
           
@@ -1146,13 +1150,6 @@ export default function ProfilePage() {
             }
           }
           
-          .seventh-text, .eighth-text {
-            -webkit-text-stroke: none;
-            text-shadow: none;
-            color: rgba(0, 0, 0, 0.4);
-            -webkit-text-fill-color: rgba(0, 0, 0, 0.4);
-          }
-          
           .giant-text-container {
             width: 100%;
             max-width: 100%;
@@ -1171,39 +1168,64 @@ export default function ProfilePage() {
         /* 더 작은 모바일 디바이스 */
         @media (max-width: 480px) {
           .giant-text {
-            font-size: 60vw;
+            font-size: 32vw;
             white-space: nowrap;
-            transform: scale(0.85);
+            transform: none;
+            width: 90vw;
+            line-height: 1;
           }
           
           .vertical-text {
             writing-mode: vertical-lr;
             text-orientation: upright;
-            letter-spacing: -1.8rem;
-            font-size: 55vw;
-            line-height: 0.7;
+            letter-spacing: -0.8rem;
+            font-size: 28vw;
+            line-height: 0.9;
             padding: 0;
           }
           
           /* iOS 사파리 특화 스타일 - 작은 모바일 */
           @supports (-webkit-touch-callout: none) {
             .giant-text {
-              font-size: 38vw;
-              transform: scale(0.9);
-              transform-origin: center center;
+              font-size: 28vw;
+              transform: none;
+              line-height: 1;
+              max-height: 70vh;
             }
             
             .vertical-text {
-              font-size: 35vw;
-              letter-spacing: -1.2rem;
+              font-size: 28vw;
+              letter-spacing: -0.5rem;
               padding: 0;
               width: auto;
-              max-width: 100%;
-              transform: translateX(0);
+              max-width: 90vw;
+              transform: none;
+              max-height: 70vh;
+              line-height: 0.9;
             }
             
             .giant-text-container, .giant-text-stroke {
               overflow: visible;
+              width: 90vw;
+              max-width: 90vw;
+              height: 70vh;
+              max-height: 70vh;
+            }
+            
+            /* 특정 이슈가 있는 iOS 버전 대응 */
+            @supports (padding: max(0px)) {
+              .vertical-text {
+                font-size: 24vw;
+                letter-spacing: -0.3rem;
+              }
+              
+              .giant-text {
+                font-size: 24vw;
+              }
+              
+              .seventh-text, .eighth-text {
+                font-size: 22vw;
+              }
             }
           }
           
