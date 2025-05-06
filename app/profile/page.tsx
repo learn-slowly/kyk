@@ -57,13 +57,13 @@ export default function ProfilePage() {
   const nextSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex === slides.length - 1 ? 0 : prevIndex + 1));
     setAnimationKey(prev => prev + 1);
-  }, [slides.length]);
+  }, []);
 
   // 이전 이미지로 이동
   const prevSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex === 0 ? slides.length - 1 : prevIndex - 1));
     setAnimationKey(prev => prev + 1);
-  }, [slides.length]);
+  }, []);
 
   // 특정 이미지로 이동
   const goToSlide = useCallback((index: number) => {
@@ -153,7 +153,7 @@ export default function ProfilePage() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [nextSlide, prevSlide]);
   
   // 스크롤 이벤트 리스너 등록
   useEffect(() => {

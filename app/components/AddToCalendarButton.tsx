@@ -38,13 +38,6 @@ export default function AddToCalendarButton({
   // 캘린더 링크 생성
   const calendarLinks = {
     Google: () => {
-      const startDateTime = startTime 
-        ? `${startDate}T${startTime}:00` 
-        : startDate;
-      const endDateTime = endTime 
-        ? `${endDate}T${endTime}:00` 
-        : endDate;
-      
       return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(name)}&dates=${formatDate(startDate, startTime)}/${formatDate(endDate, endTime)}&location=${encodeURIComponent(location)}&details=${encodeURIComponent(description)}&ctz=${encodeURIComponent(timeZone)}`;
     },
     Apple: () => {
@@ -67,23 +60,9 @@ END:VEVENT
 END:VCALENDAR`.replace(/\n/g, '%0A');
     },
     'Outlook.com': () => {
-      const startDateTime = startTime 
-        ? `${startDate}T${startTime}:00` 
-        : startDate;
-      const endDateTime = endTime 
-        ? `${endDate}T${endTime}:00` 
-        : endDate;
-      
-      return `https://outlook.live.com/calendar/deeplink/compose?subject=${encodeURIComponent(name)}&startdt=${startDateTime}&enddt=${endDateTime}&location=${encodeURIComponent(location)}&body=${encodeURIComponent(description)}`;
+      return `https://outlook.live.com/calendar/deeplink/compose?subject=${encodeURIComponent(name)}&startdt=${startDate}T${startTime || '00:00'}:00&enddt=${endDate}T${endTime || '23:59'}:00&location=${encodeURIComponent(location)}&body=${encodeURIComponent(description)}`;
     },
     Yahoo: () => {
-      const startDateTime = startTime 
-        ? `${startDate}T${startTime}:00` 
-        : startDate;
-      const endDateTime = endTime 
-        ? `${endDate}T${endTime}:00` 
-        : endDate;
-      
       return `https://calendar.yahoo.com/?v=60&title=${encodeURIComponent(name)}&st=${formatDate(startDate, startTime)}&et=${formatDate(endDate, endTime)}&in_loc=${encodeURIComponent(location)}&desc=${encodeURIComponent(description)}`;
     }
   };
