@@ -532,7 +532,8 @@ export default function ProfilePage() {
           position: absolute;
           top: 0;
           left: 0;
-          width: 100%;
+          width: 100vw;
+          max-width: 100vw;
           height: 100%;
           background-color: rgba(0, 180, 0, 0.4);
           display: flex;
@@ -545,6 +546,10 @@ export default function ProfilePage() {
           background-size: cover !important;
           background-position: 60% center !important;
           background-repeat: no-repeat;
+          left: 0;
+          right: 0;
+          margin: 0;
+          padding: 0;
         }
         
         .black-overlay {
@@ -666,20 +671,36 @@ export default function ProfilePage() {
           font-size: 25vw;
           letter-spacing: -0.5rem;
           padding: 0 15px;
-          color: rgba(0, 0, 0, 0.5);
-          -webkit-text-fill-color: rgba(0, 0, 0, 0.5);
+          color: rgba(0, 0, 0, 0.7);
+          -webkit-text-fill-color: rgba(0, 0, 0, 0.7);
           -webkit-text-stroke: none;
           text-shadow: none;
+          font-weight: 300;
         }
         
         .eighth-text {
           font-size: 25vw;
           letter-spacing: -0.5rem;
           padding: 0 15px;
-          color: rgba(0, 0, 0, 0.5);
-          -webkit-text-fill-color: rgba(0, 0, 0, 0.5);
+          color: rgba(0, 0, 0, 0.7);
+          -webkit-text-fill-color: rgba(0, 0, 0, 0.7);
           -webkit-text-stroke: none;
           text-shadow: none;
+          font-weight: 300;
+        }
+        
+        .giant-text-container {
+          width: 100vw;
+          max-width: 100vw;
+          overflow: visible;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+          position: relative;
+          padding: 0;
+          left: 50%;
+          transform: translateX(-50%);
         }
         
         .giant-text-stroke {
@@ -689,38 +710,43 @@ export default function ProfilePage() {
           display: flex;
           justify-content: center;
           align-items: center;
-          width: 100%;
+          width: 100vw;
+          max-width: 100vw;
           height: 100%;
+          overflow: visible;
         }
         
         .giant-text {
           font-size: 40vw;
-          font-weight: bold;
-          color: rgba(0, 0, 0, 0.5);
+          font-weight: 300;
+          color: rgba(0, 0, 0, 0.7);
           position: relative;
           font-family: 'SBAggroB', sans-serif;
           z-index: 3;
           text-shadow: none;
-          opacity: 0.5;
-          filter: brightness(1.2) contrast(1.1);
+          opacity: 0.7;
+          filter: brightness(1.2) contrast(1);
           clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
           animation: revealChar 0.8s ease forwards 0.3s;
           white-space: nowrap;
-          -webkit-text-fill-color: rgba(0, 0, 0, 0.5);
+          -webkit-text-fill-color: rgba(0, 0, 0, 0.7);
           -webkit-text-stroke: none;
+          width: 100vw;
+          text-align: center;
         }
         
         .first-char {
           font-size: 30vw;
-          color: rgba(0, 0, 0, 0.5);
+          font-weight: 300;
+          color: rgba(0, 0, 0, 0.7);
           text-shadow: 
-            0 0 30px rgba(0, 0, 0, 0.8),
-            3px 3px 5px rgba(0, 0, 0, 0.8),
-            -2px -2px 0 rgba(0, 0, 0, 0.7),
-            2px -2px 0 rgba(0, 0, 0, 0.7),
-            -2px 2px 0 rgba(0, 0, 0, 0.7),
-            2px 2px 0 rgba(0, 0, 0, 0.7);
-          -webkit-text-fill-color: rgba(0, 0, 0, 0.5);
+            0 0 30px rgba(0, 0, 0, 0.6),
+            3px 3px 5px rgba(0, 0, 0, 0.6),
+            -2px -2px 0 rgba(0, 0, 0, 0.5),
+            2px -2px 0 rgba(0, 0, 0, 0.5),
+            -2px 2px 0 rgba(0, 0, 0, 0.5),
+            2px 2px 0 rgba(0, 0, 0, 0.5);
+          -webkit-text-fill-color: rgba(0, 0, 0, 0.7);
         }
         
         .vertical-text {
@@ -985,47 +1011,96 @@ export default function ProfilePage() {
         /* 모바일에서 글자 크기 키우기 */
         @media (max-width: 768px) {
           .giant-text {
-            font-size: 40vw;
+            font-size: 50vw;
             white-space: nowrap;
             max-width: 100vw;
             overflow: visible;
-            transform: scale(0.8);
+            transform: scale(0.9);
             transform-origin: center center;
+            width: 100vw;
+            text-align: center;
           }
           
           .vertical-text {
             writing-mode: vertical-lr;
             text-orientation: upright;
             letter-spacing: -1.5rem;
-            font-size: 35vw;
+            font-size: 45vw;
             white-space: nowrap;
             width: auto;
             max-width: none;
             margin: 0 auto;
-            padding: 0 8vw;
+            padding: 0;
           }
           
           .giant-text-container {
-            width: 100%;
-            max-width: 100%;
+            width: 100vw;
+            max-width: 100vw;
             overflow: visible;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 0 5%;
+            padding: 0;
+            left: 50%;
+            transform: translateX(-50%);
+          }
+          
+          .giant-text-stroke {
+            width: 100vw;
+            max-width: 100vw;
+            height: 100%;
+            overflow: visible;
+            display: flex;
+            justify-content: center;
+            align-items: center;
           }
           
           /* 특별히 iOS 사파리를 위한 조정 */
           @supports (-webkit-touch-callout: none) {
             .giant-text {
-              font-size: 38vw;
-              transform: scale(0.9);
+              font-size: 40vw;
+              transform: scale(0.95);
               margin: 0 auto;
+              transform-origin: center center;
+              width: 100vw;
+              text-align: center;
             }
             
             .vertical-text {
-              font-size: 32vw;
-              letter-spacing: -1.2rem;
+              font-size: 35vw;
+              letter-spacing: -1rem;
+              padding: 0;
+              max-width: 100%;
+              width: auto;
+              overflow: visible;
+              transform: translateX(0);
+            }
+            
+            .giant-text-container {
+              width: 100vw;
+              max-width: 100vw;
+              height: 100%;
+              padding: 0;
+              overflow: visible;
+              left: 50%;
+              transform: translateX(-50%);
+            }
+            
+            .giant-text-stroke {
+              width: 100vw;
+              max-width: 100vw;
+              height: 100%;
+              overflow: visible;
+            }
+            
+            /* 추가 Safari 버그 수정 - 컨테이너 확장 */
+            .special-overlay {
+              width: 100vw;
+              max-width: 100vw;
+              left: 0;
+              right: 0;
+              margin: 0;
+              padding: 0;
             }
           }
           
@@ -1074,8 +1149,8 @@ export default function ProfilePage() {
           .seventh-text, .eighth-text {
             -webkit-text-stroke: none;
             text-shadow: none;
-            color: rgba(0, 0, 0, 0.5);
-            -webkit-text-fill-color: rgba(0, 0, 0, 0.5);
+            color: rgba(0, 0, 0, 0.4);
+            -webkit-text-fill-color: rgba(0, 0, 0, 0.4);
           }
           
           .giant-text-container {
@@ -1096,40 +1171,47 @@ export default function ProfilePage() {
         /* 더 작은 모바일 디바이스 */
         @media (max-width: 480px) {
           .giant-text {
-            font-size: 50vw;
+            font-size: 60vw;
             white-space: nowrap;
-            transform: scale(0.75);
+            transform: scale(0.85);
           }
           
           .vertical-text {
             writing-mode: vertical-lr;
             text-orientation: upright;
             letter-spacing: -1.8rem;
-            font-size: 40vw;
+            font-size: 55vw;
             line-height: 0.7;
-            padding: 0 12vw;
+            padding: 0;
           }
           
           /* iOS 사파리 특화 스타일 - 작은 모바일 */
           @supports (-webkit-touch-callout: none) {
             .giant-text {
-              font-size: 42vw;
-              transform: scale(0.85);
+              font-size: 38vw;
+              transform: scale(0.9);
+              transform-origin: center center;
             }
             
             .vertical-text {
               font-size: 35vw;
-              letter-spacing: -1.4rem;
-              padding: 0 8vw;
-              width: 100%;
+              letter-spacing: -1.2rem;
+              padding: 0;
+              width: auto;
+              max-width: 100%;
+              transform: translateX(0);
+            }
+            
+            .giant-text-container, .giant-text-stroke {
+              overflow: visible;
             }
           }
           
           .seventh-text, .eighth-text {
             -webkit-text-stroke: none;
             text-shadow: none;
-            color: rgba(0, 0, 0, 0.5);
-            -webkit-text-fill-color: rgba(0, 0, 0, 0.5);
+            color: rgba(0, 0, 0, 0.4);
+            -webkit-text-fill-color: rgba(0, 0, 0, 0.4);
           }
         }
 
@@ -1278,25 +1360,28 @@ export default function ProfilePage() {
         @supports (-webkit-touch-callout: none) {
           .giant-text {
             -webkit-text-stroke: none;
-            color: rgba(0, 0, 0, 0.5) !important;
-            -webkit-text-fill-color: rgba(0, 0, 0, 0.5) !important;
-            opacity: 0.5 !important;
+            color: rgba(0, 0, 0, 0.4) !important;
+            -webkit-text-fill-color: rgba(0, 0, 0, 0.4) !important;
+            opacity: 0.4 !important;
             text-shadow: none;
+            font-weight: 300;
           }
           
           .first-char, .second-char, .third-char, .fourth-char,
           .fifth-char, .sixth-char {
-            color: rgba(0, 0, 0, 0.5) !important;
-            -webkit-text-fill-color: rgba(0, 0, 0, 0.5) !important;
+            color: rgba(0, 0, 0, 0.4) !important;
+            -webkit-text-fill-color: rgba(0, 0, 0, 0.4) !important;
             -webkit-text-stroke: none;
             text-shadow: none;
+            font-weight: 300;
           }
           
           .seventh-char, .eighth-char {
-            color: rgba(0, 0, 0, 0.5) !important;
-            -webkit-text-fill-color: rgba(0, 0, 0, 0.5) !important;
+            color: rgba(0, 0, 0, 0.4) !important;
+            -webkit-text-fill-color: rgba(0, 0, 0, 0.4) !important;
             -webkit-text-stroke: none;
             text-shadow: none;
+            font-weight: 300;
           }
         }
 
@@ -1305,8 +1390,9 @@ export default function ProfilePage() {
           .giant-text {
             -webkit-text-stroke: none;
             text-shadow: none;
-            color: rgba(0, 0, 0, 0.6);
-            opacity: 0.6;
+            color: rgba(0, 0, 0, 0.4);
+            opacity: 0.4;
+            font-weight: 300;
           }
         }
       `}</style>
