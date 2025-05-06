@@ -985,17 +985,19 @@ export default function ProfilePage() {
         /* 모바일에서 글자 크기 키우기 */
         @media (max-width: 768px) {
           .giant-text {
-            font-size: 50vw;
+            font-size: 40vw;
             white-space: nowrap;
             max-width: 100vw;
             overflow: visible;
+            transform: scale(0.8);
+            transform-origin: center center;
           }
           
           .vertical-text {
             writing-mode: vertical-lr;
             text-orientation: upright;
             letter-spacing: -1.5rem;
-            font-size: 40vw;
+            font-size: 35vw;
             white-space: nowrap;
             width: auto;
             max-width: none;
@@ -1003,12 +1005,27 @@ export default function ProfilePage() {
             padding: 0 8vw;
           }
           
-          /* 안드로이드용 특별 스타일 */
-          @supports not (-webkit-touch-callout: none) {
+          .giant-text-container {
+            width: 100%;
+            max-width: 100%;
+            overflow: visible;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 5%;
+          }
+          
+          /* 특별히 iOS 사파리를 위한 조정 */
+          @supports (-webkit-touch-callout: none) {
+            .giant-text {
+              font-size: 38vw;
+              transform: scale(0.9);
+              margin: 0 auto;
+            }
+            
             .vertical-text {
-              letter-spacing: -2rem;
-              text-orientation: upright;
-              writing-mode: vertical-lr;
+              font-size: 32vw;
+              letter-spacing: -1.2rem;
             }
           }
           
@@ -1079,23 +1096,32 @@ export default function ProfilePage() {
         /* 더 작은 모바일 디바이스 */
         @media (max-width: 480px) {
           .giant-text {
-            font-size: 60vw;
+            font-size: 50vw;
             white-space: nowrap;
+            transform: scale(0.75);
           }
           
           .vertical-text {
             writing-mode: vertical-lr;
             text-orientation: upright;
             letter-spacing: -1.8rem;
-            font-size: 50vw;
+            font-size: 40vw;
             line-height: 0.7;
             padding: 0 12vw;
           }
           
-          /* 안드로이드용 특별 스타일 */
-          @supports not (-webkit-touch-callout: none) {
+          /* iOS 사파리 특화 스타일 - 작은 모바일 */
+          @supports (-webkit-touch-callout: none) {
+            .giant-text {
+              font-size: 42vw;
+              transform: scale(0.85);
+            }
+            
             .vertical-text {
-              letter-spacing: -2.5rem;
+              font-size: 35vw;
+              letter-spacing: -1.4rem;
+              padding: 0 8vw;
+              width: 100%;
             }
           }
           
