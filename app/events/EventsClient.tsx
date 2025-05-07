@@ -282,11 +282,17 @@ export default function EventsClient({ events }: { events: Event[] }) {
   
   // 일정을 날짜별로 그룹화 (필터링 적용)
   const groupedEvents = filteredEvents.reduce((acc, event) => {
-    const date = new Date(event.start).toLocaleDateString();
-    if (!acc[date]) {
-      acc[date] = [];
+    // 날짜 문자열 대신 yyyy-MM-dd 형식으로 정규화
+    const eventDate = new Date(event.start);
+    if (!isNaN(eventDate.getTime())) { // 유효한 날짜인지 확인
+      const dateStr = eventDate.toISOString().split('T')[0]; // yyyy-MM-dd 형식 추출
+      if (!acc[dateStr]) {
+        acc[dateStr] = [];
+      }
+      acc[dateStr].push(event);
+    } else {
+      console.error('Invalid date:', event.start, 'for event:', event.title);
     }
-    acc[date].push(event);
     return acc;
   }, {} as Record<string, Event[]>);
   
@@ -477,273 +483,276 @@ export default function EventsClient({ events }: { events: Event[] }) {
       {viewMode === 'list' && (
         <div className="timeline-container position-relative pb-5">
           {sortedDates.length > 0 ? (
-            sortedDates.map((date, index) => (
-              <div key={date} className="timeline-day mb-4 fade-in-up" style={{animationDelay: `${index * 0.1}s`}}>
-                {/* 날짜 헤더 - 더 미니멀한 디자인 */}
-                <div className="date-header mb-3 d-flex align-items-center">
-                  <div className="date-badge me-3 d-flex flex-column justify-content-center align-items-center" 
-                       style={{
-                         width: '50px',
-                         height: '50px',
-                         backgroundColor: '#f8f9fa',
-                         borderRadius: '12px',
-                         boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-                       }}>
-                    <span className="fw-bold fs-4" style={{color: accentColor}}>{new Date(date).getDate()}</span>
-                    <span className="small text-secondary" style={{fontSize: '0.7rem'}}>
-                      {new Date(date).toLocaleDateString('ko-KR', { month: 'short' })}
-                    </span>
+            sortedDates.map((dateStr, index) => {
+              // 정규화된 ISO 문자열(yyyy-MM-dd)에서 Date 객체 생성
+              const date = new Date(dateStr);
+              return (
+                <div key={dateStr} className="timeline-day mb-4 fade-in-up" style={{animationDelay: `${index * 0.1}s`}}>
+                  {/* 날짜 헤더 - 더 미니멀한 디자인 */}
+                  <div className="date-header mb-3 d-flex align-items-center">
+                    <div className="date-badge me-3 d-flex flex-column justify-content-center align-items-center" 
+                         style={{
+                           width: '50px',
+                           height: '50px',
+                           backgroundColor: '#f8f9fa',
+                           borderRadius: '12px',
+                           boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                         }}>
+                      <span className="fw-bold fs-4" style={{color: accentColor}}>{date.getDate()}</span>
+                      <span className="small text-secondary" style={{fontSize: '0.7rem'}}>
+                        {date.toLocaleDateString('ko-KR', { month: 'short' })}
+                      </span>
+                    </div>
+                    <div>
+                      <h4 className="mb-0 fs-5 fw-bold">{date.toLocaleDateString('ko-KR', { weekday: 'long' })}</h4>
+                      <p className="text-secondary mb-0 small">{date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="mb-0 fs-5 fw-bold">{new Date(date).toLocaleDateString('ko-KR', { weekday: 'long' })}</h4>
-                    <p className="text-secondary mb-0 small">{new Date(date).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                  </div>
-                </div>
-                
-                {/* 타임라인 이벤트 */}
-                <div className="timeline-events position-relative ps-4 ms-3">
-                  {/* 타임라인 라인 - 더 얇게 */}
-                  <div className="timeline-line position-absolute top-0 bottom-0 start-0" 
-                       style={{
-                         width: '1px',
-                         backgroundColor: '#e9ecef',
-                         left: '25px'
-                       }}>
-              </div>
                   
-                  {/* 이벤트 항목들 */}
-                  {groupedEvents[date]
-                    .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
-                    .map((event, eventIndex) => (
-                  <div 
-                    key={event._id} 
-                      className="timeline-event mb-3 position-relative fade-in-up rounded-3 shadow-sm"
-                    style={{
-                        animationDelay: `${(index * 0.1) + (eventIndex * 0.05)}s`,
-                        border: '1px solid #f1f3f5',
-                        backgroundColor: 'white',
-                        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                      }}
-                    >
-                      {/* 타임라인 도트 */}
-                      <div className="timeline-dot position-absolute"
-                           style={{
-                             width: '10px',
-                             height: '10px',
-                             borderRadius: '50%',
-                             backgroundColor: event.isImportant ? '#ff3b30' : event.category ? categoryColors[event.category] : accentColor,
-                             border: '2px solid white',
-                             left: '-30px',
-                             top: '22px',
-                             zIndex: 2
-                           }}>
-                      </div>
-                      
-                      <div className="p-3">
-                        <div className="d-flex justify-content-between align-items-start mb-2">
-                          <h5 className="event-title mb-0 fs-5">
-                            {event.isImportant && <i className="bi bi-star-fill text-danger me-2 small"></i>}
-                          {event.title}
-                        </h5>
-                          <span className="time-badge py-1 px-2 rounded-pill small" 
-                                style={{
-                                  backgroundColor: '#f8f9fa',
-                                  color: accentColor,
-                                  fontSize: '0.75rem',
-                                  fontWeight: '500'
-                                }}>
+                  {/* 타임라인 이벤트 */}
+                  <div className="timeline-events position-relative ps-4 ms-3">
+                    {/* 타임라인 라인 - 더 얇게 */}
+                    <div className="timeline-line position-absolute top-0 bottom-0 start-0" 
+                         style={{
+                           width: '1px',
+                           backgroundColor: '#e9ecef',
+                           left: '25px'
+                         }}>
+                  </div>
+                    
+                    {/* 이벤트 항목들 */}
+                    {groupedEvents[dateStr]
+                      .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
+                      .map((event, eventIndex) => (
+                    <div 
+                      key={event._id} 
+                        className="timeline-event mb-3 position-relative fade-in-up rounded-3 shadow-sm"
+                      style={{
+                          animationDelay: `${(index * 0.1) + (eventIndex * 0.05)}s`,
+                          border: '1px solid #f1f3f5',
+                          backgroundColor: 'white',
+                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                        }}
+                      >
+                        {/* 타임라인 도트 */}
+                        <div className="timeline-dot position-absolute"
+                             style={{
+                               width: '10px',
+                               height: '10px',
+                               borderRadius: '50%',
+                               backgroundColor: event.isImportant ? '#ff3b30' : event.category ? categoryColors[event.category] : accentColor,
+                               border: '2px solid white',
+                               left: '-30px',
+                               top: '22px',
+                               zIndex: 2
+                             }}>
+                        </div>
+                        
+                        <div className="p-3">
+                          <div className="d-flex justify-content-between align-items-start mb-2">
+                            <h5 className="event-title mb-0 fs-5">
+                              {event.isImportant && <i className="bi bi-star-fill text-danger me-2 small"></i>}
+                            {event.title}
+                          </h5>
+                            <span className="time-badge py-1 px-2 rounded-pill small" 
+                                  style={{
+                                    backgroundColor: '#f8f9fa',
+                                    color: accentColor,
+                                    fontSize: '0.75rem',
+                                    fontWeight: '500'
+                                  }}>
                           {new Date(event.start).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                        </div>
-                        
-                        <p className="event-desc mb-2 text-secondary small">{event.description}</p>
-                        
-                        <div className="d-flex align-items-center text-muted small">
-                          <i className="bi bi-geo-alt me-2"></i>
-                          <span>{event.location}</span>
-                          {event.category && (
-                            <span className="ms-3 badge" style={{
-                              backgroundColor: event.category ? categoryColors[event.category] : '#757575',
-                              color: 'white',
-                              fontSize: '0.7rem',
-                              fontWeight: 'normal'
-                            }}>
-                              {categoryLabels[event.category] || '기타'}
-                            </span>
-                          )}
-                        </div>
-                        
-                        {/* 캘린더 추가 버튼들 */}
-                        <div className="d-flex mt-2 gap-2 justify-content-end">
-                          <a 
-                            href={getGoogleCalendarUrl(event)} 
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn btn-sm btn-outline-secondary"
-                            title="구글 캘린더에 추가"
-                            style={{
-                              fontSize: '0.75rem',
-                              borderRadius: '4px',
-                              flex: '1 1 auto'
-                            }}
-                          >
-                            <i className="bi bi-google me-1"></i> 캘린더 추가
-                          </a>
+                        </span>
+                          </div>
                           
-                          {/* 애플 캘린더 - 하이드레이션 불일치 해결을 위해 클라이언트에서만 링크 생성 */}
-                          <a 
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              addToAppleCalendar(event);
-                            }}
-                            className="btn btn-sm btn-outline-dark"
-                            title="ICS 파일 다운로드"
-                            style={{
-                              fontSize: '0.75rem',
-                              borderRadius: '4px',
-                              flex: '1 1 auto'
-                            }}
-                          >
-                            <i className="bi bi-apple me-1"></i> 캘린더 추가
-                          </a>
+                          <p className="event-desc mb-2 text-secondary small">{event.description}</p>
                           
-                          {/* 공유 드롭다운 버튼 */}
-                          <div className="dropdown">
-                            <button 
-                              className="btn btn-sm btn-outline-primary dropdown-toggle"
-                              type="button"
-                              data-bs-toggle="dropdown"
-                              data-bs-auto-close="outside"
-                              data-bs-display="static"
-                              data-bs-offset="0,10"
-                              data-bs-popper-config='{"placement": "top-end", "strategy": "fixed"}'
-                              aria-expanded="false"
-                              title="SNS로 공유하기"
+                          <div className="d-flex align-items-center text-muted small">
+                            <i className="bi bi-geo-alt me-2"></i>
+                            <span>{event.location}</span>
+                            {event.category && (
+                              <span className="ms-3 badge" style={{
+                                backgroundColor: event.category ? categoryColors[event.category] : '#757575',
+                                color: 'white',
+                                fontSize: '0.7rem',
+                                fontWeight: 'normal'
+                              }}>
+                                {categoryLabels[event.category] || '기타'}
+                              </span>
+                            )}
+                          </div>
+                          
+                          {/* 캘린더 추가 버튼들 */}
+                          <div className="d-flex mt-2 gap-2 justify-content-end">
+                            <a 
+                              href={getGoogleCalendarUrl(event)} 
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn btn-sm btn-outline-secondary"
+                              title="구글 캘린더에 추가"
                               style={{
                                 fontSize: '0.75rem',
-                                borderRadius: '4px'
+                                borderRadius: '4px',
+                                flex: '1 1 auto'
                               }}
                             >
-                              <i className="bi bi-share me-1"></i> 공유
-                            </button>
-                            <ul className="dropdown-menu dropdown-menu-end dropup-menu">
-                              <li>
-                                <a 
-                                  className="dropdown-item" 
-                                  href="#"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    if (typeof window !== 'undefined') {
-                                      const url = window.location.href;
-                                      const text = `[권영국 후보 일정] ${event.title} - ${new Date(event.start).toLocaleString('ko-KR')}, ${event.location}`;
-                                      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
-                                    }
-                                  }}
-                                >
-                                  <i className="bi bi-twitter me-2"></i> 트위터
-                                </a>
-                              </li>
-                              <li>
-                                <a 
-                                  className="dropdown-item" 
-                                  href="#"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    if (typeof window !== 'undefined') {
-                                      const url = window.location.href;
-                                      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
-                                    }
-                                  }}
-                                >
-                                  <i className="bi bi-facebook me-2"></i> 페이스북
-                                </a>
-                              </li>
-                              <li>
-                                <button 
-                                  className="dropdown-item"
-                                  onClick={() => {
-                                    if (typeof window !== 'undefined') {
-                                      const text = `[권영국 후보 일정] ${event.title}\n📅 ${new Date(event.start).toLocaleString('ko-KR')}\n📍 ${event.location}\n\n${event.description || ''}`;
-                                      navigator.clipboard.writeText(text)
-                                        .then(() => alert('인스타그램에는 직접 공유할 수 없습니다. 일정 정보가 클립보드에 복사되었습니다. 인스타그램 앱에 붙여넣기 해주세요.'))
-                                        .catch(err => console.error('클립보드 복사 실패:', err));
-                                    }
-                                  }}
-                                >
-                                  <i className="bi bi-instagram me-2"></i> 인스타그램
-                                </button>
-                              </li>
-                              <li>
-                                <a 
-                                  className="dropdown-item" 
-                                  href="#"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    if (typeof window !== 'undefined') {
-                                      const url = window.location.href;
-                                      window.open(`https://story.kakao.com/share?url=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
-                                    }
-                                  }}
-                                >
-                                  <i className="bi bi-chat-fill me-2"></i> 카카오톡
-                                </a>
-                              </li>
-                              <li>
-                                <a 
-                                  className="dropdown-item" 
-                                  href="#"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    if (typeof window !== 'undefined') {
-                                      const url = window.location.href;
-                                      const text = `[권영국 후보 일정] ${event.title} - ${new Date(event.start).toLocaleString('ko-KR')}, ${event.location}`;
-                                      window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
-                                    }
-                                  }}
-                                >
-                                  <i className="bi bi-telegram me-2"></i> 텔레그램
-                                </a>
-                              </li>
-                              <li>
-                                <a 
-                                  className="dropdown-item" 
-                                  href="#"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    if (typeof window !== 'undefined') {
-                                      const text = `[권영국 후보 일정] ${event.title} - ${new Date(event.start).toLocaleString('ko-KR')}, ${event.location} ${window.location.href}`;
-                                      window.location.href = `sms:?&body=${encodeURIComponent(text)}`;
-                                    }
-                                  }}
-                                >
-                                  <i className="bi bi-chat-text me-2"></i> 문자메시지
-                                </a>
-                              </li>
-                              <li><hr className="dropdown-divider" /></li>
-                              <li>
-                                <button 
-                                  className="dropdown-item" 
-                                  onClick={() => {
-                                    if (typeof window !== 'undefined') {
-                                      const text = `[권영국 후보 일정] ${event.title}\n📅 ${new Date(event.start).toLocaleString('ko-KR')}\n📍 ${event.location}\n\n${event.description || ''}`;
-                                      navigator.clipboard.writeText(text)
-                                        .then(() => alert('일정 정보가 클립보드에 복사되었습니다.'))
-                                        .catch(err => console.error('클립보드 복사 실패:', err));
-                                    }
-                                  }}
-                                >
-                                  <i className="bi bi-clipboard me-2"></i> 클립보드에 복사
-                                </button>
+                              <i className="bi bi-google me-1"></i> 캘린더 추가
+                            </a>
+                            
+                            {/* 애플 캘린더 - 하이드레이션 불일치 해결을 위해 클라이언트에서만 링크 생성 */}
+                            <a 
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                addToAppleCalendar(event);
+                              }}
+                              className="btn btn-sm btn-outline-dark"
+                              title="ICS 파일 다운로드"
+                              style={{
+                                fontSize: '0.75rem',
+                                borderRadius: '4px',
+                                flex: '1 1 auto'
+                              }}
+                            >
+                              <i className="bi bi-apple me-1"></i> 캘린더 추가
+                            </a>
+                            
+                            {/* 공유 드롭다운 버튼 */}
+                            <div className="dropdown">
+                              <button 
+                                className="btn btn-sm btn-outline-primary dropdown-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                data-bs-auto-close="outside"
+                                data-bs-display="static"
+                                data-bs-offset="0,10"
+                                data-bs-popper-config='{"placement": "top-end", "strategy": "fixed"}'
+                                aria-expanded="false"
+                                title="SNS로 공유하기"
+                                style={{
+                                  fontSize: '0.75rem',
+                                  borderRadius: '4px'
+                                }}
+                              >
+                                <i className="bi bi-share me-1"></i> 공유
+                              </button>
+                              <ul className="dropdown-menu dropdown-menu-end dropup-menu">
+                                <li>
+                                  <a 
+                                    className="dropdown-item" 
+                                    href="#"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      if (typeof window !== 'undefined') {
+                                        const url = window.location.href;
+                                        const text = `[권영국 후보 일정] ${event.title} - ${new Date(event.start).toLocaleString('ko-KR')}, ${event.location}`;
+                                        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
+                                      }
+                                    }}
+                                  >
+                                    <i className="bi bi-twitter me-2"></i> 트위터
+                                  </a>
+                                </li>
+                                <li>
+                                  <a 
+                                    className="dropdown-item" 
+                                    href="#"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      if (typeof window !== 'undefined') {
+                                        const url = window.location.href;
+                                        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
+                                      }
+                                    }}
+                                  >
+                                    <i className="bi bi-facebook me-2"></i> 페이스북
+                                  </a>
+                                </li>
+                                <li>
+                                  <button 
+                                    className="dropdown-item"
+                                    onClick={() => {
+                                      if (typeof window !== 'undefined') {
+                                        const text = `[권영국 후보 일정] ${event.title}\n📅 ${new Date(event.start).toLocaleString('ko-KR')}\n📍 ${event.location}\n\n${event.description || ''}`;
+                                        navigator.clipboard.writeText(text)
+                                          .then(() => alert('인스타그램에는 직접 공유할 수 없습니다. 일정 정보가 클립보드에 복사되었습니다. 인스타그램 앱에 붙여넣기 해주세요.'))
+                                          .catch(err => console.error('클립보드 복사 실패:', err));
+                                      }
+                                    }}
+                                  >
+                                    <i className="bi bi-instagram me-2"></i> 인스타그램
+                                  </button>
+                                </li>
+                                <li>
+                                  <a 
+                                    className="dropdown-item" 
+                                    href="#"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      if (typeof window !== 'undefined') {
+                                        const url = window.location.href;
+                                        window.open(`https://story.kakao.com/share?url=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
+                                      }
+                                    }}
+                                  >
+                                    <i className="bi bi-chat-fill me-2"></i> 카카오톡
+                                  </a>
+                                </li>
+                                <li>
+                                  <a 
+                                    className="dropdown-item" 
+                                    href="#"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      if (typeof window !== 'undefined') {
+                                        const url = window.location.href;
+                                        const text = `[권영국 후보 일정] ${event.title} - ${new Date(event.start).toLocaleString('ko-KR')}, ${event.location}`;
+                                        window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+                                      }
+                                    }}
+                                  >
+                                    <i className="bi bi-telegram me-2"></i> 텔레그램
+                                  </a>
+                                </li>
+                                <li>
+                                  <a 
+                                    className="dropdown-item" 
+                                    href="#"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      if (typeof window !== 'undefined') {
+                                        const text = `[권영국 후보 일정] ${event.title} - ${new Date(event.start).toLocaleString('ko-KR')}, ${event.location} ${window.location.href}`;
+                                        window.location.href = `sms:?&body=${encodeURIComponent(text)}`;
+                                      }
+                                    }}
+                                  >
+                                    <i className="bi bi-chat-text me-2"></i> 문자메시지
+                                  </a>
+                                </li>
+                                <li><hr className="dropdown-divider" /></li>
+                                <li>
+                                  <button 
+                                    className="dropdown-item" 
+                                    onClick={() => {
+                                      if (typeof window !== 'undefined') {
+                                        const text = `[권영국 후보 일정] ${event.title}\n📅 ${new Date(event.start).toLocaleString('ko-KR')}\n📍 ${event.location}\n\n${event.description || ''}`;
+                                        navigator.clipboard.writeText(text)
+                                          .then(() => alert('일정 정보가 클립보드에 복사되었습니다.'))
+                                          .catch(err => console.error('클립보드 복사 실패:', err));
+                                      }
+                                    }}
+                                  >
+                                    <i className="bi bi-clipboard me-2"></i> 클립보드에 복사
+                                  </button>
                               </li>
                             </ul>
                           </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )}
+                </div>
               </div>
-            </div>
             ))
           ) : (
             <div className="text-center p-5 fade-in-up">
