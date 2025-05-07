@@ -79,16 +79,24 @@ function parseDate(dateString) {
   }
 }
 
+// 진행 상황 표시용 카운터
+let processedCount = 0;
+
 // CSV 파일 읽기
 fs.createReadStream(eventsFile)
   .pipe(csv())
   .on('data', (data) => {
-    console.log('원본 데이터 행:', data); // 디버깅용
+    processedCount++;
+    if (processedCount <= 3) {
+      console.log('원본 데이터 행 샘플:', data); // 처음 세 행만 샘플로 출력
+    } else if (processedCount === 4) {
+      console.log('더 많은 데이터 행 처리 중...');
+    }
     
     // 각 행을 Sanity 문서 형식으로 변환
     try {
       const startDate = parseDate(data.start);
-      const endDate = parseDate(data.end);
+      const endDate = data.end ? parseDate(data.end) : new Date(startDate.getTime() + 60 * 60 * 1000);
       
       const event = {
         _type: 'event',
@@ -111,19 +119,29 @@ fs.createReadStream(eventsFile)
     try {
       // 데이터 하나씩 생성 (트랜잭션 대신)
       let successCount = 0;
+      let failCount = 0;
+      
       for (const event of events) {
         try {
           const result = await client.create(event);
           if (result && result._id) {
             successCount++;
-            console.log(`이벤트 생성 성공: ${event.title} (ID: ${result._id})`);
+            if (successCount <= 5) {
+              console.log(`이벤트 생성 성공: ${event.title} (ID: ${result._id})`);
+            } else if (successCount === 6) {
+              console.log('더 많은 이벤트 생성 중...');
+            }
           }
         } catch (itemError) {
+          failCount++;
           console.error(`이벤트 생성 실패: ${event.title}`, itemError.message);
         }
       }
       
       console.log(`성공적으로 ${successCount}개의 이벤트를 가져왔습니다.`);
+      if (failCount > 0) {
+        console.log(`${failCount}개의 이벤트를 가져오는데 실패했습니다.`);
+      }
     } catch (error) {
       console.error('데이터 가져오기 오류:', error.message);
     }

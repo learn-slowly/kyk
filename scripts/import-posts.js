@@ -79,11 +79,20 @@ function parseDate(dateString) {
   }
 }
 
+// 진행 상황 표시용 카운터
+let processedCount = 0;
+
 // CSV 파일 읽기
 fs.createReadStream(postsFile)
   .pipe(csv())
   .on('data', (data) => {
-    console.log('원본 데이터 행:', data); // 디버깅용
+    processedCount++;
+    
+    if (processedCount <= 3) {
+      console.log('원본 데이터 행 샘플:', data); // 처음 세 행만 샘플로 출력
+    } else if (processedCount === 4) {
+      console.log('더 많은 데이터 행 처리 중...');
+    }
     
     // 각 행을 Sanity 문서 형식으로 변환
     try {
@@ -98,7 +107,7 @@ fs.createReadStream(postsFile)
         body: data.body || convertToBlockContent(data.content),
         publishedAt: publishedDate.toISOString(),
         mainImage: data.mainImage ? { _type: 'image', asset: { _ref: data.mainImage } } : undefined,
-        category: data.category,
+        category: data.category || 'statement', // 기본값 추가
         summary: data.summary || '',
         source: data.source || ''
       };
@@ -113,19 +122,55 @@ fs.createReadStream(postsFile)
     try {
       // 데이터 하나씩 생성 (트랜잭션 대신)
       let successCount = 0;
-      for (const post of posts) {
-        try {
-          const result = await client.create(post);
-          if (result && result._id) {
-            successCount++;
-            console.log(`게시물 생성 성공: ${post.title} (ID: ${result._id})`);
+      let failCount = 0;
+      
+      // 배치 처리를 위한 설정
+      const batchSize = 10; // 한 번에 처리할 게시물 수
+      let i = 0;
+      
+      while (i < posts.length) {
+        const batch = posts.slice(i, i + batchSize);
+        const promises = batch.map(async (post) => {
+          try {
+            const result = await client.create(post);
+            if (result && result._id) {
+              successCount++;
+              return { success: true, title: post.title, id: result._id };
+            }
+            return { success: false, title: post.title, error: '결과 ID가 없음' };
+          } catch (itemError) {
+            failCount++;
+            return { success: false, title: post.title, error: itemError.message };
           }
-        } catch (itemError) {
-          console.error(`게시물 생성 실패: ${post.title}`, itemError.message);
+        });
+        
+        const results = await Promise.all(promises);
+        
+        // 처리 결과 로깅 (첫 번째 배치만 자세히 로깅)
+        if (i === 0) {
+          results.forEach(result => {
+            if (result.success) {
+              console.log(`게시물 생성 성공: ${result.title} (ID: ${result.id})`);
+            } else {
+              console.error(`게시물 생성 실패: ${result.title} - ${result.error}`);
+            }
+          });
+        } else if (i === batchSize) {
+          console.log(`계속해서 게시물 처리 중... (${successCount}개 완료)`);
         }
+        
+        // 50개마다 진행 상황 로깅
+        if (successCount % 50 === 0 && successCount > 0) {
+          console.log(`진행 상황: ${successCount}개 게시물 처리 완료...`);
+        }
+        
+        i += batchSize;
       }
       
       console.log(`성공적으로 ${successCount}개의 게시물을 가져왔습니다.`);
+      if (failCount > 0) {
+        console.log(`${failCount}개의 게시물을 가져오는데 실패했습니다.`);
+      }
     } catch (error) {
       console.error('데이터 가져오기 오류:', error.message);
     }
@@ -133,6 +178,8 @@ fs.createReadStream(postsFile)
 
 // 제목을 슬러그로 변환하는 함수
 function slugify(text) {
+  if (!text) return 'post-' + Date.now();
+  
   return text
     .toString()
     .toLowerCase()
