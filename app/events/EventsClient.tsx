@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Calendar from 'react-calendar';
 import { format, isSameDay } from 'date-fns';
+import ko from 'date-fns/locale/ko';
 import 'react-calendar/dist/Calendar.css';
 
 // 타입 정의
@@ -209,7 +210,30 @@ export default function EventsClient({ events }: { events: Event[] }) {
   
   // 날짜 목록 정렬
   const sortedDates = Object.keys(groupedEvents).sort((a, b) => {
-    return new Date(a).getTime() - new Date(b).getTime();
+    // 과거 일정일 경우 최근 날짜가 먼저 오도록 정렬 (내림차순)
+    // 미래 일정은 이전과 동일하게 오름차순 정렬
+    if (showPastEvents) {
+      const dateA = new Date(a);
+      const dateB = new Date(b);
+      
+      // 현재 날짜 기준으로 과거/미래 구분
+      const isPastA = dateA < today;
+      const isPastB = dateB < today;
+      
+      if (isPastA && isPastB) {
+        // 둘 다 과거 날짜면 최신 날짜가 먼저 오도록 (내림차순)
+        return dateB.getTime() - dateA.getTime();
+      } else if (!isPastA && !isPastB) {
+        // 둘 다 미래 날짜면 빠른 날짜가 먼저 오도록 (오름차순)
+        return dateA.getTime() - dateB.getTime();
+      } else {
+        // 과거와 미래가 섞여있으면 미래가 먼저 오도록
+        return isPastA ? 1 : -1;
+      }
+    } else {
+      // 미래 일정만 표시할 경우 오름차순 정렬
+      return new Date(a).getTime() - new Date(b).getTime();
+    }
   });
 
   // 과거 일정 개수 계산
@@ -224,7 +248,12 @@ export default function EventsClient({ events }: { events: Event[] }) {
     // 날짜 비교를 위해 년/월/일만 비교 (시간 정보 제거)
     const yearMonthDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     
-    return filteredEvents.filter(event => {
+    // 달력 보기에서는 과거/미래 일정 모두 표시 (카테고리 필터만 적용)
+    const eventsToFilter = viewMode === 'month' 
+      ? events.filter(event => !event.category || selectedCategories.includes(event.category)) 
+      : filteredEvents;
+    
+    return eventsToFilter.filter(event => {
       const eventDate = new Date(event.start);
       const eventYearMonthDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
       return yearMonthDay.getTime() === eventYearMonthDay.getTime();
@@ -257,56 +286,82 @@ export default function EventsClient({ events }: { events: Event[] }) {
         <div className="col-12">
           <p className="lead mb-4 text-secondary">대선 캠페인 공식 일정과 주요 행사를 확인하세요.</p>
           
-          {/* 뷰 모드 선택 - 미니멀한 디자인의 버튼 그룹 */}
-          <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-            <div className="btn-group mb-2 mb-md-0">
-              <button 
-                className={`btn ${viewMode === 'list' ? 'btn-primary' : 'btn-outline-primary'}`}
-                onClick={() => setViewMode('list')}
-                style={{
-                  backgroundColor: viewMode === 'list' ? accentColor : 'transparent',
-                  borderColor: accentColor,
-                  color: viewMode === 'list' ? 'white' : accentColor,
-                  boxShadow: 'none',
-                  borderRadius: '8px 0 0 8px',
-                  padding: '8px 16px',
-                  fontSize: '0.9rem'
-                }}
-              >
-                <i className="bi bi-list-ul me-2"></i> 목록보기
-              </button>
-              <button 
-                className={`btn ${viewMode === 'month' ? 'btn-primary' : 'btn-outline-primary'}`}
-                onClick={() => setViewMode('month')}
-                style={{
-                  backgroundColor: viewMode === 'month' ? accentColor : 'transparent',
-                  borderColor: accentColor,
-                  color: viewMode === 'month' ? 'white' : accentColor,
-                  boxShadow: 'none',
-                  borderRadius: '0 8px 8px 0',
-                  padding: '8px 16px',
-                  fontSize: '0.9rem'
-                }}
-              >
-                <i className="bi bi-calendar3 me-2"></i> 달력보기
-              </button>
+          {/* 뷰 모드 선택 및 필터 버튼 */}
+          <div className="d-flex justify-content-between align-items-start mb-4 flex-wrap">
+            <div className="mb-3 mb-md-0">
+              <div className="btn-group">
+                <button 
+                  className={`btn ${viewMode === 'list' ? 'btn-primary' : 'btn-outline-primary'}`}
+                  onClick={() => setViewMode('list')}
+                  style={{
+                    backgroundColor: viewMode === 'list' ? accentColor : 'transparent',
+                    borderColor: accentColor,
+                    color: viewMode === 'list' ? 'white' : accentColor,
+                    boxShadow: 'none',
+                    borderRadius: '8px 0 0 8px',
+                    padding: '8px 16px',
+                    fontSize: '0.9rem'
+                  }}
+                >
+                  <i className="bi bi-list-ul me-2"></i> 목록보기
+                </button>
+                <button 
+                  className={`btn ${viewMode === 'month' ? 'btn-primary' : 'btn-outline-primary'}`}
+                  onClick={() => setViewMode('month')}
+                  style={{
+                    backgroundColor: viewMode === 'month' ? accentColor : 'transparent',
+                    borderColor: accentColor,
+                    color: viewMode === 'month' ? 'white' : accentColor,
+                    boxShadow: 'none',
+                    borderRadius: '0 8px 8px 0',
+                    padding: '8px 16px',
+                    fontSize: '0.9rem'
+                  }}
+                >
+                  <i className="bi bi-calendar3 me-2"></i> 달력보기
+                </button>
+              </div>
             </div>
             
-            {/* 지난 일정 보기 토글 버튼 */}
-            {viewMode === 'list' && pastEventsCount > 0 && (
-              <button
-                className={`btn ${showPastEvents ? 'btn-secondary' : 'btn-outline-secondary'}`}
-                onClick={() => setShowPastEvents(!showPastEvents)}
-                style={{
-                  fontSize: '0.9rem',
-                  borderRadius: '8px',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                <i className={`bi ${showPastEvents ? 'bi-eye-slash' : 'bi-clock-history'} me-2`}></i>
-                {showPastEvents ? '앞으로의 일정만 보기' : `지난 일정 보기 (${pastEventsCount}개)`}
-              </button>
-            )}
+            <div className="d-flex flex-wrap gap-2">
+              {/* 카테고리 필터 버튼 */}
+              <div className="btn-group me-2 mb-2 mb-md-0">
+                {Object.entries(categoryLabels).map(([category, label]) => (
+                  <button
+                    key={category}
+                    className={`btn ${selectedCategories.includes(category) ? 'btn-outline-secondary active' : 'btn-outline-secondary'}`}
+                    onClick={() => toggleCategory(category)}
+                    style={{
+                      borderColor: categoryColors[category as keyof typeof categoryColors],
+                      color: selectedCategories.includes(category) ? 'white' : categoryColors[category as keyof typeof categoryColors],
+                      backgroundColor: selectedCategories.includes(category) ? categoryColors[category as keyof typeof categoryColors] : 'transparent',
+                      fontSize: '0.8rem',
+                      padding: '6px 10px',
+                      borderRadius: '4px',
+                      marginRight: '4px'
+                    }}
+                  >
+                    <i className="bi bi-tag-fill me-1"></i> {label}
+                  </button>
+                ))}
+              </div>
+              
+              {/* 지난 일정 보기 토글 버튼 */}
+              {pastEventsCount > 0 && (
+                <button
+                  className={`btn ${showPastEvents ? 'btn-secondary' : 'btn-outline-secondary'}`}
+                  onClick={() => setShowPastEvents(!showPastEvents)}
+                  style={{
+                    fontSize: '0.8rem',
+                    borderRadius: '4px',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <i className={`bi ${showPastEvents ? 'bi-eye-slash' : 'bi-clock-history'} me-2`}></i>
+                  {showPastEvents ? '앞으로의 일정만 보기' : `지난 일정 보기 (${pastEventsCount}개)`}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -415,7 +470,7 @@ export default function EventsClient({ events }: { events: Event[] }) {
                             </div>
                             
                             {/* 캘린더 추가 버튼들 */}
-                            <div className="d-flex mt-2 gap-2 justify-content-end">
+                            <div className="d-flex mt-2 gap-2 justify-content-end flex-wrap">
                               <a 
                                 href={getGoogleCalendarUrl(event)} 
                                 target="_blank"
@@ -425,7 +480,8 @@ export default function EventsClient({ events }: { events: Event[] }) {
                                 style={{
                                   fontSize: '0.75rem',
                                   borderRadius: '4px',
-                                  flex: '1 1 auto'
+                                  flex: '1 1 auto',
+                                  minWidth: '100px'
                                 }}
                               >
                                 <i className="bi bi-google me-1"></i> 캘린더 추가
@@ -443,7 +499,8 @@ export default function EventsClient({ events }: { events: Event[] }) {
                                 style={{
                                   fontSize: '0.75rem',
                                   borderRadius: '4px',
-                                  flex: '1 1 auto'
+                                  flex: '1 1 auto',
+                                  minWidth: '100px'
                                 }}
                               >
                                 <i className="bi bi-apple me-1"></i> 캘린더 추가
@@ -499,6 +556,257 @@ export default function EventsClient({ events }: { events: Event[] }) {
         </div>
       )}
       
+      {/* 달력 뷰 - 과거 일정도 항상 표시 */}
+      {viewMode === 'month' && (
+        <div className="row">
+          <div className="col-md-8 mb-4 mb-md-0">
+            <div className="calendar-wrapper bg-white p-4 rounded-4 shadow-sm">
+              <Calendar
+                onChange={handleDateClick}
+                value={date}
+                locale="ko-KR"
+                className="border-0 w-100"
+                tileContent={({ date, view }) => {
+                  if (view !== 'month') return null;
+                  const eventsOnDay = getEventsOnDay(date);
+                  if (eventsOnDay.length === 0) return null;
+                  
+                  // 이벤트 카테고리에 따른 색상 표시
+                  const hasImportantEvent = eventsOnDay.some(e => e.isImportant);
+                  const categoryDots = [...new Set(eventsOnDay.map(e => e.category))].filter(Boolean);
+                  
+                  return (
+                    <div className="position-relative d-flex flex-column align-items-center">
+                      {/* 다중 카테고리 표시용 점 */}
+                      {categoryDots.length > 0 ? (
+                        <div className="d-flex gap-1 mt-1 justify-content-center">
+                          {categoryDots.map((category, idx) => (
+                            <div 
+                              key={idx}
+                              style={{
+                                height: '4px',
+                                width: '4px',
+                                borderRadius: '50%',
+                                backgroundColor: categoryColors[category as keyof typeof categoryColors],
+                              }}
+                            />
+                          ))}
+                          {hasImportantEvent && (
+                            <div 
+                              style={{
+                                height: '4px',
+                                width: '4px',
+                                borderRadius: '50%',
+                                backgroundColor: '#ff3b30',
+                              }}
+                            />
+                          )}
+                        </div>
+                      ) : (
+                        <div 
+                          className="mt-1"
+                          style={{
+                            height: '4px',
+                            width: '4px',
+                            borderRadius: '50%',
+                            backgroundColor: hasImportantEvent ? '#ff3b30' : accentColor,
+                          }}
+                        />
+                      )}
+                      
+                      {eventsOnDay.length > 1 && (
+                        <span 
+                          className="position-absolute badge" 
+                          style={{
+                            top: '-4px',
+                            right: '-4px',
+                            fontSize: '0.65rem',
+                            padding: '1px 4px',
+                            backgroundColor: accentColor,
+                            color: 'white',
+                            fontWeight: 'normal',
+                            borderRadius: '4px',
+                            opacity: 0.9,
+                            minWidth: '16px',
+                            textAlign: 'center'
+                          }}
+                        >
+                          {eventsOnDay.length}
+                        </span>
+                      )}
+                    </div>
+                  );
+                }}
+                tileClassName={({ date, view }) => {
+                  if (view !== 'month') return '';
+                  const eventsOnDay = getEventsOnDay(date);
+                  
+                  // 오늘 날짜와 이벤트 있는 날짜에 다른 스타일 적용
+                  let classes = '';
+                  if (eventsOnDay.length > 0) classes += 'has-events ';
+                  
+                  return classes;
+                }}
+              />
+            </div>
+          </div>
+          
+          {/* 선택된 날짜의 일정 미리보기 */}
+          <div className="col-md-4">
+            <div className="event-preview p-4 h-100" 
+                 style={{
+                   backgroundColor: 'rgba(248, 249, 250, 0.5)',
+                   backdropFilter: 'blur(10px)',
+                   border: '1px solid rgba(0,0,0,0.05)'
+                 }}>
+              {selectedEvent ? (
+                <div className="fade-in">
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <h5 className="mb-0 fw-bold" style={{color: '#333'}}>
+                      {format(new Date(selectedEvent.start), 'yyyy년 MM월 dd일')}
+                    </h5>
+                    <span className="badge" style={{
+                      backgroundColor: selectedEvent.category ? 
+                        categoryColors[selectedEvent.category] : accentColor,
+                      paddingLeft: '12px',
+                      paddingRight: '12px'
+                    }}>
+                      {selectedEvent.category ? 
+                        categoryLabels[selectedEvent.category] : '일정'}
+                    </span>
+                  </div>
+                  
+                  <div className="event-card bg-white p-4 mb-3 shadow-sm" 
+                       style={{
+                         borderLeft: `4px solid ${selectedEvent.category ? 
+                           categoryColors[selectedEvent.category] : 
+                           (selectedEvent.isImportant ? '#ff3b30' : accentColor)}`
+                       }}>
+                    <h5 className="fw-bold mb-3">{selectedEvent.title}</h5>
+                    <div className="d-flex align-items-center mb-3 text-muted">
+                      <i className="bi bi-clock me-2"></i>
+                      <span className="fw-medium">
+                        {format(new Date(selectedEvent.start), 'a h:mm', { locale: ko })}
+                      </span>
+                    </div>
+                    {selectedEvent.description && (
+                      <div className="mb-3 p-3" style={{
+                        backgroundColor: '#f8f9fa',
+                        fontSize: '0.9rem'
+                      }}>
+                        {selectedEvent.description}
+                      </div>
+                    )}
+                    <div className="d-flex align-items-center text-muted">
+                      <i className="bi bi-geo-alt me-2"></i>
+                      <span>{selectedEvent.location}</span>
+                    </div>
+                    
+                    <div className="mt-3 d-flex justify-content-between" style={{ gap: '4px' }}>
+                      <a 
+                        href={getGoogleCalendarUrl(selectedEvent)} 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-sm btn-outline-secondary flex-grow-1"
+                        style={{
+                          padding: '4px 6px',
+                          fontSize: '0.75rem',
+                          fontWeight: '500',
+                          boxShadow: 'none'
+                        }}
+                      >
+                        <i className="bi bi-google me-1"></i> 구글
+                      </a>
+                      
+                      {/* 애플 캘린더 추가 버튼 */}
+                      <a 
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          addToAppleCalendar(selectedEvent);
+                        }}
+                        className="btn btn-sm btn-outline-dark flex-grow-1"
+                        style={{
+                          padding: '4px 6px',
+                          fontSize: '0.75rem',
+                          fontWeight: '500',
+                          boxShadow: 'none'
+                        }}
+                      >
+                        <i className="bi bi-apple me-1"></i> 애플
+                      </a>
+                      
+                      <button 
+                        className="btn btn-sm btn-outline-primary flex-grow-1" 
+                        onClick={() => copyEventToClipboard(selectedEvent)}
+                        style={{
+                          padding: '4px 6px',
+                          fontSize: '0.75rem',
+                          fontWeight: '500',
+                          boxShadow: 'none'
+                        }}
+                      >
+                        <i className="bi bi-clipboard me-1"></i> 복사
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* 같은 날 다른 일정 */}
+                  {getEventsOnDay(new Date(selectedEvent.start)).length > 1 && (
+                    <div>
+                      <h6 className="mb-3 fw-bold">같은 날 다른 일정</h6>
+                      {getEventsOnDay(new Date(selectedEvent.start))
+                        .filter(e => e._id !== selectedEvent._id)
+                        .map(otherEvent => (
+                          <div 
+                            key={otherEvent._id}
+                            className="other-event p-3 bg-white mb-2 shadow-sm"
+                            onClick={() => setSelectedEvent(otherEvent)}
+                            style={{
+                              cursor: 'pointer',
+                              transition: 'all 0.2s ease',
+                              borderLeft: `4px solid ${otherEvent.category ? 
+                                categoryColors[otherEvent.category] : 
+                                (otherEvent.isImportant ? '#ff3b30' : accentColor)}`
+                            }}
+                          >
+                            <div className="d-flex justify-content-between align-items-center">
+                              <div>
+                                <div className="small fw-medium">{otherEvent.title}</div>
+                                <div className="text-muted" style={{fontSize: '0.75rem'}}>
+                                  <i className="bi bi-geo-alt-fill me-1"></i> 
+                                  {otherEvent.location}
+                                </div>
+                              </div>
+                              <span className="badge bg-light text-dark" 
+                                    style={{ 
+                                      fontSize: '0.7rem',
+                                      padding: '4px 8px'
+                                    }}>
+                                {format(new Date(otherEvent.start), 'HH:mm')}
+                              </span>
+                            </div>
+                          </div>
+                        ))
+                      }
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center p-5">
+                  <div className="py-5">
+                    <i className="bi bi-calendar3-event fs-1 text-muted opacity-50"></i>
+                    <p className="mt-4 mb-0 lead text-secondary">
+                      일정을 보려면 달력에서 날짜를 선택하세요.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* 애니메이션 스타일 */}
       <style jsx>{`
         .fade-in-up {
@@ -536,6 +844,103 @@ export default function EventsClient({ events }: { events: Event[] }) {
           box-shadow: 0 3px 15px rgba(0, 122, 255, 0.15);
           transform: translateY(-2px);
           border-color: rgba(0, 122, 255, 0.3);
+        }
+        
+        /* 캘린더 커스텀 스타일 */
+        :global(.react-calendar) {
+          border: none;
+          font-family: system-ui, -apple-system, sans-serif;
+        }
+        
+        :global(.react-calendar__navigation) {
+          margin-bottom: 16px;
+        }
+        
+        :global(.react-calendar__navigation button) {
+          color: #333;
+          font-size: 1rem;
+          font-weight: 500;
+          min-width: 40px;
+          background: none;
+          border-radius: 8px;
+        }
+        
+        :global(.react-calendar__navigation button:enabled:hover,
+                .react-calendar__navigation button:enabled:focus) {
+          background-color: #f0f7ff;
+        }
+        
+        :global(.react-calendar__month-view__weekdays) {
+          text-transform: none;
+          font-weight: 500;
+        }
+        
+        :global(.react-calendar__month-view__weekdays__weekday) {
+          padding: 8px 0;
+          text-decoration: none;
+          font-size: 0.85rem;
+          color: #555;
+        }
+        
+        :global(.react-calendar__month-view__weekdays__weekday abbr) {
+          text-decoration: none;
+        }
+        
+        :global(.react-calendar__tile) {
+          padding: 14px 8px;
+          position: relative;
+          font-size: 0.9rem;
+          border-radius: 8px;
+          color: #333;
+          margin: 2px;
+          max-width: calc(100% - 4px);
+          transition: all 0.2s ease;
+        }
+        
+        :global(.react-calendar__tile:enabled:hover,
+                .react-calendar__tile:enabled:focus) {
+          background: #f0f7ff;
+          color: ${accentColor};
+        }
+        
+        :global(.react-calendar__tile--active) {
+          background: ${accentColor} !important;
+          border-radius: 8px;
+          color: white !important;
+        }
+        
+        :global(.react-calendar__tile--now) {
+          background: #e6f2ff;
+          border-radius: 8px;
+          font-weight: 500;
+        }
+        
+        :global(.react-calendar__tile--now.react-calendar__tile--active) {
+          background: ${accentColor} !important;
+          color: white;
+        }
+        
+        :global(.has-events) {
+          font-weight: 500;
+          color: #333;
+        }
+        
+        /* 모바일 최적화 */
+        @media (max-width: 768px) {
+          :global(.react-calendar__tile) {
+            padding: 12px 6px;
+            font-size: 0.8rem;
+          }
+          
+          :global(.react-calendar__navigation button) {
+            font-size: 0.9rem;
+          }
+        }
+        
+        /* 다른 일정 호버 효과 */
+        .other-event:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 3px 10px rgba(0,0,0,0.08);
         }
       `}</style>
     </div>
