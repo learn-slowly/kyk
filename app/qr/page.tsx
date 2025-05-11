@@ -4,9 +4,9 @@ import React, { useRef } from 'react';
 import QRCodeGenerator, { QRCodeGeneratorRef } from "@/app/components/QRCodeGenerator";
 
 export default function QRPage() {
-  const qrValue = "https://권영국.com"; // 변경된 URL (한글 직접 사용)
+  const qrValue = "https://www.xn--3e0b8b410h.com/"; // 변경된 Punycode URL
   const qrSize = 300;
-  const logoSize = qrSize * 0.2;
+  // const logoSize = qrSize * 0.2; // 로고 관련 변수 제거 또는 주석 처리
 
   const qrCodeRef = useRef<QRCodeGeneratorRef>(null);
 
@@ -23,13 +23,12 @@ export default function QRPage() {
         ref={qrCodeRef}
         value={qrValue}
         size={qrSize}
-        logoImage="/pi.png"
-        logoWidth={logoSize}
-        logoHeight={logoSize}
-        logoPadding={5}
-        logoBackgroundColor="white"
+        // logoImage="/pi.png" // 로고 관련 props 제거
+        // logoWidth={logoSize}
+        // logoHeight={logoSize}
+        // logoPadding={5}
+        // logoBackgroundColor="white"
         level="H"
-        // finderColorsProp를 명시하지 않으면 QRCodeGenerator 내부의 기본값(빨강,노랑,녹색)이 사용됩니다.
       />
       <button
         onClick={handleDownload}
