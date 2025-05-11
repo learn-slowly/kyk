@@ -5,10 +5,11 @@
  */
 
 import { defineConfig } from 'sanity'
-import { structure } from 'sanity/structure'
+import { deskTool } from 'sanity/desk'
 import { visionTool } from '@sanity/vision'
 import { schemaTypes } from './app/president2025/schemaTypes'
 import { apiVersion, dataset, projectId } from './sanity/env'
+import { structure as customStructure } from './sanity/structure'
 
 export default defineConfig({
   name: 'default',
@@ -19,7 +20,10 @@ export default defineConfig({
   
   basePath: '/studio',
   
-  plugins: [structure({}), visionTool({defaultApiVersion: apiVersion})],
+  plugins: [
+    deskTool({ structure: customStructure }),
+    visionTool({defaultApiVersion: apiVersion})
+  ],
   
   schema: {
     types: schemaTypes,
