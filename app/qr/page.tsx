@@ -1,7 +1,7 @@
 import QRCodeGenerator from "@/app/components/QRCodeGenerator"; // 경로 별칭(@) 사용
 
 export default function QRPage() {
-  const qrValue = "https://xn--9t4b11e83b.com"; // 변경된 URL (Punycode로 변환된 한글 도메인)
+  const qrValue = "https://권영국.com"; // 변경된 URL (Punycode로 변환된 한글 도메인)
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '20px', boxSizing: 'border-box' }}>
       <h1 style={{ marginBottom: '30px', textAlign: 'center' }}>웹사이트 QR 코드</h1>
