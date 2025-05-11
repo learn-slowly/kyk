@@ -9,11 +9,6 @@ interface QRCodeGeneratorProps {
   level?: "L" | "M" | "Q" | "H";
   bgColor?: string;
   fgColor?: string;
-  finderColorsProp?: {
-    topLeft?: string;
-    topRight?: string;
-    bottomLeft?: string;
-  };
 }
 
 export interface QRCodeGeneratorRef {
@@ -28,19 +23,10 @@ const QRCodeGenerator = forwardRef<QRCodeGeneratorRef, QRCodeGeneratorProps>(
       level = "H",
       bgColor = "#FFFFFF",
       fgColor = "#000000",
-      finderColorsProp,
     },
     ref
   ) => {
     const svgContainerRef = useRef<HTMLDivElement>(null);
-
-    const finderColors = finderColorsProp || {
-      topLeft: "#FF0000",
-      topRight: "#FFED00",
-      bottomLeft: "#00A366",
-    };
-
-    const finderPatternEdgeSize = size * (7 / 29);
 
     useImperativeHandle(ref, () => ({
       triggerDownload: async () => {
@@ -54,21 +40,13 @@ const QRCodeGenerator = forwardRef<QRCodeGeneratorRef, QRCodeGeneratorProps>(
           return;
         }
 
-        let svgString = new XMLSerializer().serializeToString(svgElement);
-        
-        const finderRectsString = `
-          <rect x="0" y="0" width="${finderPatternEdgeSize}" height="${finderPatternEdgeSize}" fill="${finderColors.topLeft}" />
-          <rect x="${size - finderPatternEdgeSize}" y="0" width="${finderPatternEdgeSize}" height="${finderPatternEdgeSize}" fill="${finderColors.topRight}" />
-          <rect x="0" y="${size - finderPatternEdgeSize}" width="${finderPatternEdgeSize}" height="${finderPatternEdgeSize}" fill="${finderColors.bottomLeft}" />
-        `;
-        
-        svgString = svgString.replace("</svg>", `${finderRectsString}</svg>`);
+        const svgString = new XMLSerializer().serializeToString(svgElement);
         
         const blob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "qr-code-colored.svg";
+        a.download = "qr-code.svg";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -83,14 +61,10 @@ const QRCodeGenerator = forwardRef<QRCodeGeneratorRef, QRCodeGeneratorProps>(
             value={value}
             size={size}
             level={level}
-            bgColor={"transparent"}
+            bgColor={bgColor}
             fgColor={fgColor}
             style={{ display: 'block' }}
           />
-          {/* Display Overlays for Finder Patterns */}
-          <div style={{position: 'absolute', top: 0, left: 0, width: finderPatternEdgeSize, height: finderPatternEdgeSize, backgroundColor: finderColors.topLeft, zIndex: 1}} />
-          <div style={{position: 'absolute', top: 0, right: 0, width: finderPatternEdgeSize, height: finderPatternEdgeSize, backgroundColor: finderColors.topRight, zIndex: 1}} />
-          <div style={{position: 'absolute', bottom: 0, left: 0, width: finderPatternEdgeSize, height: finderPatternEdgeSize, backgroundColor: finderColors.bottomLeft, zIndex: 1}} />
         </div>
       </div>
     );
