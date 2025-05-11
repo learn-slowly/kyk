@@ -686,16 +686,9 @@ export default function ProfilePage() {
         }
         
         .giant-text-container {
-          width: 90vw;
-          max-width: 90vw;
-          overflow: visible;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 70%;
+          width: 100%;
+          height: 100%;
           position: relative;
-          padding: 0;
-          margin: 0 auto;
         }
         
         .giant-text-stroke {
@@ -705,8 +698,7 @@ export default function ProfilePage() {
           display: flex;
           justify-content: center;
           align-items: center;
-          width: 90vw;
-          max-width: 90vw;
+          width: 100%;
           height: 100%;
           overflow: visible;
         }
@@ -1003,264 +995,113 @@ export default function ProfilePage() {
           }
         }
 
-        /* 모바일에서 글자 크기 키우기 */
-        @media (max-width: 768px) {
-          .giant-text {
-            font-size: 45vw;
-            white-space: nowrap;
-            max-width: 90vw;
-            overflow: visible;
-            transform: none;
-            transform-origin: center center;
-            width: 90vw;
-            text-align: center;
-          }
-          
-          .vertical-text {
-            writing-mode: vertical-lr;
-            text-orientation: upright;
-            letter-spacing: -1rem;
-            font-size: 38vw;
-            white-space: nowrap;
-            width: auto;
-            max-width: none;
-            margin: 0 auto;
-            padding: 0;
-          }
-          
-          .first-char {
-            font-size: 38vw;
-            text-shadow: 
-              0 0 30px rgba(0, 0, 0, 0.6),
-              3px 3px 5px rgba(0, 0, 0, 0.6),
-              -2px -2px 0 rgba(0, 0, 0, 0.5),
-              2px -2px 0 rgba(0, 0, 0, 0.5),
-              -2px 2px 0 rgba(0, 0, 0, 0.5),
-              2px 2px 0 rgba(0, 0, 0, 0.5);
-            -webkit-text-fill-color: rgba(0, 0, 0, 0.7);
-          }
-          
-          .second-text, .third-text, .fourth-text, .fifth-text, .sixth-text {
-            font-size: 38vw;
-          }
-          
-          .seventh-text, .eighth-text {
-            font-size: 32vw;
-            letter-spacing: -0.5rem;
-            padding: 0 15px;
-            color: rgba(0, 0, 0, 0.7);
-            -webkit-text-fill-color: rgba(0, 0, 0, 0.7);
-            -webkit-text-stroke: none;
-            text-shadow: none;
-            font-weight: 300;
-          }
-          
-          .giant-text-container {
-            width: 90vw;
-            max-width: 90vw;
-            overflow: visible;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0;
-            margin: 0 auto;
-            transform: none;
-          }
-          
-          .giant-text-stroke {
-            width: 90vw;
-            max-width: 90vw;
-            height: 100%;
-            overflow: visible;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-          
-          /* 특별히 iOS 사파리를 위한 조정 */
-          @supports (-webkit-touch-callout: none) {
-            .special-overlay {
-              overflow: hidden;
-              width: 100%;
-              height: 100%;
-              max-width: 100%;
-              max-height: 100%;
-            }
-            
-            .giant-text {
-              font-size: 38vw;
-              transform: none;
-              margin: 0 auto;
-              width: 90vw;
-              max-width: 90vw;
-              text-align: center;
-              transform-origin: center center;
-              max-height: 70vh;
-              line-height: 1;
-            }
-            
-            .vertical-text {
-              font-size: 38vw;
-              letter-spacing: -0.5rem;
-              padding: 0;
-              max-width: 90vw;
-              width: auto;
-              overflow: visible;
-              transform: none;
-              max-height: 70vh;
-            }
-            
-            .giant-text-container {
-              width: 90vw;
-              max-width: 90vw;
-              height: 70vh;
-              max-height: 70vh;
-              padding: 0;
-              margin: 0 auto;
-              overflow: visible;
-              transform: none;
-            }
-            
-            .giant-text-stroke {
-              width: 90vw;
-              max-width: 90vw;
-              height: 70vh;
-              max-height: 70vh;
-              overflow: visible;
-            }
-            
-            /* iOS 15 이상 Safari 버그 수정 */
-            .seventh-text, .eighth-text {
-              font-size: 32vw;
-            }
-          }
-          
-          /* 모바일에서 첫 문장 컨테이너 너비 확장 */
-          .quote-text-container {
-            padding-left: 5%;
-            padding-right: 5%;
-            width: 100%;
-            position: relative;
-            top: 0;
-          }
-          
-          .quote-text {
-            width: 90%;
-            font-size: 2rem;
-          }
-          
-          /* 모바일에서 두 번째 문단 조정 */
-          .bio-text-container {
-            padding-left: 5%;
-            padding-right: 5%;
-            position: relative;
-            top: auto;
-            margin-top: 20px;
-          }
-          
-          .bio-text {
-            width: 90%;
-            font-size: 1rem;
-          }
-          
-          /* n-layout 조정 - 첫 문장이 상단 10%에서 시작되도록 */
-          .n-layout {
-            padding-top: 10%;
-          }
-          
-          /* 안드로이드용 특별 스타일 */
-          @supports not (-webkit-touch-callout: none) {
-            .vertical-text {
-              letter-spacing: -2rem;
-              text-orientation: upright;
-              writing-mode: vertical-lr;
-            }
-          }
-          
-          .giant-text-container {
-            width: 100%;
-            max-width: 100%;
-            overflow: visible;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-          
-          /* 모바일에서 8번째 슬라이드의 오버레이 조정 */
-          .white-overlay-layer {
-            background-color: rgba(255, 255, 255, 0.15);
-          }
+        /* 모바일에서 글자 크기 키우기 - 통합 및 중앙 정렬 시도 */
+        .uniform-giant-text { /* 새로운 공통 클래스 또는 기존 .giant-text에 직접 적용 */
+          position: absolute !important;
+          top: 50% !important;
+          left: 50% !important;
+          transform: translate(-50%, -50%) !important;
+          width: 90vw !important;
+          max-width: 90vw !important;
+          text-align: center !important;
+          font-family: 'SBAggroB', sans-serif;
+          font-weight: 300;
+          color: rgba(0, 0, 0, 0.7);
+          -webkit-text-fill-color: rgba(0, 0, 0, 0.7);
+          -webkit-text-stroke: none;
+          text-shadow: none;
+          white-space: nowrap;
+          overflow: visible;
+          z-index: 3;
+          opacity: 0.7;
+          clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%); /* 애니메이션용 */
+          animation: revealChar 0.8s ease forwards 0.3s; /* 애니메이션용 */
+        }
+
+        /* 기존 .giant-text-container에서 위치/정렬 관련 스타일 제거 또는 수정 */
+        .giant-text-container {
+          width: 100%; /* 너비는 유지하거나, auto로 변경하여 .uniform-giant-text에 위임 */
+          height: 100%; /* 높이는 유지하거나, auto로 변경 */
+          /* display, justify-content, align-items 등은 .uniform-giant-text가 처리하므로 제거 고려 */
+          position: relative; /* 필요에 따라 유지 또는 static으로 */
+          /* margin, padding 기존 값 유지 또는 제거 */
         }
         
-        /* 더 작은 모바일 디바이스 */
-        @media (max-width: 480px) {
-          .giant-text {
-            font-size: 40vw;
-            white-space: nowrap;
-            transform: none;
-            width: 90vw;
-            line-height: 1;
+        /* 기존 .giant-text-stroke도 필요시 정렬 관련 스타일 확인 */
+        .giant-text-stroke {
+          /* 기존 스타일 유지하되, .uniform-giant-text와 충돌 없도록 */
+          position: relative; /* 유지 */
+          opacity: 0; /* 애니메이션용 */
+          animation: fadeIn 0.5s ease forwards 0.5s; /* 애니메이션용 */
+          display: flex; /* 이 부분은 .uniform-giant-text가 중앙 정렬을 하므로 불필요하거나, 내부 span 정렬용이라면 유지 */
+          justify-content: center;
+          align-items: center;
+          width: 100%; /* 내부 요소 크기에 맞추도록 auto 또는 100% */
+          height: 100%;
+          overflow: visible;
+        }
+
+        /* 기존 .giant-text, .first-char 등은 .uniform-giant-text 스타일을 상속받거나, 개별 폰트 크기만 미디어쿼리에서 조정 */
+        /* .giant-text의 기존 position, width, text-align 등은 .uniform-giant-text로 이전 */
+
+
+        @media (max-width: 768px) {
+          .giant-text, .first-char, .second-char, .third-char, .fourth-char,
+          .fifth-char, .sixth-char, .seventh-char, .eighth-char, .uniform-giant-text {
+            font-size: 50vw !important; 
+            line-height: 1 !important;
           }
-          
           .vertical-text {
+            font-size: 50vw !important;
             writing-mode: vertical-lr;
             text-orientation: upright;
-            letter-spacing: -0.8rem;
-            font-size: 35vw;
-            line-height: 0.9;
-            padding: 0;
+            letter-spacing: -1.5rem;
           }
-          
-          /* iOS 사파리 특화 스타일 - 작은 모바일 */
-          @supports (-webkit-touch-callout: none) {
-            .giant-text {
-              font-size: 35vw;
-              transform: none;
-              line-height: 1;
-              max-height: 70vh;
+        }
+
+        @media (max-width: 768px) {
+          @supports (-webkit-touch-callout: none) { /* iOS Safari */
+            .giant-text, .first-char, .second-char, .third-char, .fourth-char,
+            .fifth-char, .sixth-char, .seventh-char, .eighth-char, .uniform-giant-text {
+              font-size: 50vw !important;
+              color: rgba(0, 0, 0, 0.4) !important;
+              -webkit-text-fill-color: rgba(0, 0, 0, 0.4) !important;
+              opacity: 0.4 !important;
             }
-            
             .vertical-text {
-              font-size: 35vw;
-              letter-spacing: -0.5rem;
-              padding: 0;
-              width: auto;
-              max-width: 90vw;
-              transform: none;
-              max-height: 70vh;
-              line-height: 0.9;
+              font-size: 50vw !important;
+              letter-spacing: -1rem;
             }
-            
-            .giant-text-container, .giant-text-stroke {
-              overflow: visible;
-              width: 90vw;
-              max-width: 90vw;
-              height: 70vh;
-              max-height: 70vh;
-            }
-            
-            /* 특정 이슈가 있는 iOS 버전 대응 */
-            @supports (padding: max(0px)) {
-              .vertical-text {
-                font-size: 30vw;
-                letter-spacing: -0.3rem;
-              }
-              
-              .giant-text {
-                font-size: 30vw;
-              }
-              
-              .seventh-text, .eighth-text {
-                font-size: 28vw;
-              }
+            .seventh-text, .eighth-text { /* 이 두 클래스가 특별한 스타일을 가져야 한다면 유지, 아니면 위의 규칙에 통합 */
+               font-size: 45vw !important; /* 약간 작게 조정, 필요시 공통 크기로 통일 */
             }
           }
-          
-          .seventh-text, .eighth-text {
-            -webkit-text-stroke: none;
-            text-shadow: none;
-            color: rgba(0, 0, 0, 0.4);
-            -webkit-text-fill-color: rgba(0, 0, 0, 0.4);
+        }
+
+        @media (max-width: 480px) {
+          .giant-text, .first-char, .second-char, .third-char, .fourth-char,
+          .fifth-char, .sixth-char, .seventh-char, .eighth-char, .uniform-giant-text {
+            font-size: 55vw !important;
+          }
+          .vertical-text {
+            font-size: 55vw !important;
+            letter-spacing: -1.2rem;
+          }
+          @supports (-webkit-touch-callout: none) { /* iOS Safari - 작은 화면 */
+            .giant-text, .first-char, .second-char, .third-char, .fourth-char,
+            .fifth-char, .sixth-char, .seventh-char, .eighth-char, .uniform-giant-text {
+              font-size: 55vw !important;
+            }
+            .vertical-text {
+              font-size: 55vw !important;
+              letter-spacing: -1rem;
+            }
+            @supports (padding: max(0px)) { /* 특정 iOS */
+              .giant-text, .first-char, .second-char, .third-char, .fourth-char,
+              .fifth-char, .sixth-char, .seventh-char, .eighth-char, .uniform-giant-text, .vertical-text {
+                font-size: 50vw !important; 
+              }
+            }
           }
         }
 
