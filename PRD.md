@@ -181,7 +181,7 @@ SPC 파리바게뜨 노동자들과 쿠팡 노동자들,
 
 4.
 정치
-“나는 노동자였고 변호사였으며 정치적 존재였다.”
+"나는 노동자였고 변호사였으며 정치적 존재였다."
 2014년 11월 13일 쌍용차 정리해고 사건에서 노동자들에게 패배를 안긴 대법원 판결은 변호사 권영국을 현실 정치로 이끌었다. 판결을 통해 세상을 바꿔보겠다는 생각은 고상한 환상이라는 것을, 대법원의 판결은 기득권 질서를 비호하고 정당화하는 제도적 폭력임을 깨닫는 순간이었다. 그리고 기울어진 운동장을 바꾸기 위해 정치의 주인으로서 용기 있는 발걸음을 내딛었다. ('거리에 핀 정의' 책소개 중에서)
 
 5.
@@ -379,4 +379,4 @@ SPC 파리바게뜨 노동자들과 쿠팡 노동자들,
          url('https://cdn.jsdelivr.net/gh/fonts-archive/GamtanRoadGamtan/GamtanRoadGamtan.woff') format('woff'),
          url('https://cdn.jsdelivr.net/gh/fonts-archive/GamtanRoadGamtan/GamtanRoadGamtan.otf') format('opentype'),
          url('https://cdn.jsdelivr.net/gh/fonts-archive/GamtanRoadGamtan/GamtanRoadGamtan.ttf') format('truetype');
-}
+  }
