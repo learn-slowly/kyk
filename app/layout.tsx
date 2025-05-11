@@ -529,7 +529,7 @@ export default function RootLayout({
               </div>
               <div className="custom-col">
                 <p className="text-light">
-                  이메일: contact@kyk2027.kr<br />
+                  이메일: admin@justice21.org<br />
                   전화: 02-2038-0103<br />
                   FAX: 02-761-0103<br />
                   주소: (08376) 서울특별시 구로구 디지털로33길 55, 이앤씨벤처드림타워2차 1011호

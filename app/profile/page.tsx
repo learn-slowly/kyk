@@ -1006,7 +1006,7 @@ export default function ProfilePage() {
         /* 모바일에서 글자 크기 키우기 */
         @media (max-width: 768px) {
           .giant-text {
-            font-size: 35vw;
+            font-size: 45vw;
             white-space: nowrap;
             max-width: 90vw;
             overflow: visible;
@@ -1020,12 +1020,39 @@ export default function ProfilePage() {
             writing-mode: vertical-lr;
             text-orientation: upright;
             letter-spacing: -1rem;
-            font-size: 30vw;
+            font-size: 38vw;
             white-space: nowrap;
             width: auto;
             max-width: none;
             margin: 0 auto;
             padding: 0;
+          }
+          
+          .first-char {
+            font-size: 38vw;
+            text-shadow: 
+              0 0 30px rgba(0, 0, 0, 0.6),
+              3px 3px 5px rgba(0, 0, 0, 0.6),
+              -2px -2px 0 rgba(0, 0, 0, 0.5),
+              2px -2px 0 rgba(0, 0, 0, 0.5),
+              -2px 2px 0 rgba(0, 0, 0, 0.5),
+              2px 2px 0 rgba(0, 0, 0, 0.5);
+            -webkit-text-fill-color: rgba(0, 0, 0, 0.7);
+          }
+          
+          .second-text, .third-text, .fourth-text, .fifth-text, .sixth-text {
+            font-size: 38vw;
+          }
+          
+          .seventh-text, .eighth-text {
+            font-size: 32vw;
+            letter-spacing: -0.5rem;
+            padding: 0 15px;
+            color: rgba(0, 0, 0, 0.7);
+            -webkit-text-fill-color: rgba(0, 0, 0, 0.7);
+            -webkit-text-stroke: none;
+            text-shadow: none;
+            font-weight: 300;
           }
           
           .giant-text-container {
@@ -1061,7 +1088,7 @@ export default function ProfilePage() {
             }
             
             .giant-text {
-              font-size: 30vw;
+              font-size: 38vw;
               transform: none;
               margin: 0 auto;
               width: 90vw;
@@ -1073,7 +1100,7 @@ export default function ProfilePage() {
             }
             
             .vertical-text {
-              font-size: 30vw;
+              font-size: 38vw;
               letter-spacing: -0.5rem;
               padding: 0;
               max-width: 90vw;
@@ -1104,7 +1131,7 @@ export default function ProfilePage() {
             
             /* iOS 15 이상 Safari 버그 수정 */
             .seventh-text, .eighth-text {
-              font-size: 25vw;
+              font-size: 32vw;
             }
           }
           
@@ -1168,7 +1195,7 @@ export default function ProfilePage() {
         /* 더 작은 모바일 디바이스 */
         @media (max-width: 480px) {
           .giant-text {
-            font-size: 32vw;
+            font-size: 40vw;
             white-space: nowrap;
             transform: none;
             width: 90vw;
@@ -1179,7 +1206,7 @@ export default function ProfilePage() {
             writing-mode: vertical-lr;
             text-orientation: upright;
             letter-spacing: -0.8rem;
-            font-size: 28vw;
+            font-size: 35vw;
             line-height: 0.9;
             padding: 0;
           }
@@ -1187,14 +1214,14 @@ export default function ProfilePage() {
           /* iOS 사파리 특화 스타일 - 작은 모바일 */
           @supports (-webkit-touch-callout: none) {
             .giant-text {
-              font-size: 28vw;
+              font-size: 35vw;
               transform: none;
               line-height: 1;
               max-height: 70vh;
             }
             
             .vertical-text {
-              font-size: 28vw;
+              font-size: 35vw;
               letter-spacing: -0.5rem;
               padding: 0;
               width: auto;
@@ -1215,16 +1242,16 @@ export default function ProfilePage() {
             /* 특정 이슈가 있는 iOS 버전 대응 */
             @supports (padding: max(0px)) {
               .vertical-text {
-                font-size: 24vw;
+                font-size: 30vw;
                 letter-spacing: -0.3rem;
               }
               
               .giant-text {
-                font-size: 24vw;
+                font-size: 30vw;
               }
               
               .seventh-text, .eighth-text {
-                font-size: 22vw;
+                font-size: 28vw;
               }
             }
           }
