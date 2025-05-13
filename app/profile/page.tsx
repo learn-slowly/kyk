@@ -1057,27 +1057,28 @@ export default function ProfilePage() {
             text-orientation: upright;
             letter-spacing: -1.5rem;
           }
-        }
 
-        @media (max-width: 768px) {
-          @supports (-webkit-touch-callout: none) { /* iOS Safari */
-            .giant-text, .first-char, .second-char, .third-char, .fourth-char,
-            .fifth-char, .sixth-char, .seventh-char, .eighth-char, .uniform-giant-text {
-              font-size: 50vw !important;
-              color: rgba(0, 0, 0, 0.4) !important;
-              -webkit-text-fill-color: rgba(0, 0, 0, 0.4) !important;
-              opacity: 0.4 !important;
-            }
-            .vertical-text {
-              font-size: 50vw !important;
-              letter-spacing: -1rem;
-            }
-            .seventh-text, .eighth-text { /* 이 두 클래스가 특별한 스타일을 가져야 한다면 유지, 아니면 위의 규칙에 통합 */
-               font-size: 45vw !important; /* 약간 작게 조정, 필요시 공통 크기로 통일 */
-            }
+          .instructions {
+            display: block !important; 
+            position: fixed !important; 
+            bottom: 70px !important; /* slider-dots 보다 약간 위로 조정 */
+            left: 50% !important;
+            transform: translateX(-50%) !important; 
+            background-color: rgba(255, 0, 0, 0.8) !important; /* 눈에 잘 띄는 배경색 (약간 투명) */
+            color: white !important;
+            font-size: 14px !important; /* 폰트 크기 적절히 조정 */
+            opacity: 1 !important; 
+            z-index: 1000 !important; /* .slider-navigation의 z-index(10)보다 높게, vertical-nav(10)보다 높게 */
+            padding: 10px 15px !important;
+            width: auto !important; 
+            max-width: 90% !important;
+            border-radius: 8px !important; /* 기존 radius와 유사하게 */
+            text-align: center !important;
+            backdrop-filter: blur(5px); /* 기존 스타일 유지 */
           }
         }
 
+        /* 더 작은 모바일 디바이스 */
         @media (max-width: 480px) {
           .giant-text, .first-char, .second-char, .third-char, .fourth-char,
           .fifth-char, .sixth-char, .seventh-char, .eighth-char, .uniform-giant-text {
@@ -1102,6 +1103,11 @@ export default function ProfilePage() {
                 font-size: 50vw !important; 
               }
             }
+          }
+
+          .instructions {
+            font-size: 13px !important; /* 더 작은 화면에서 폰트 약간 줄임 */
+            bottom: 60px !important; /* 위치 미세 조정 */
           }
         }
 
