@@ -344,14 +344,14 @@ export default function HomeClient({ schedules = [] }: HomeClientProps) {
         {/* 오버레이 내부에 배경 이미지 추가 */}
         <Image 
           ref={overlayImageRef as any}
-          src="/images/6.png" 
+          src="/images/start.jpg" 
           alt="권영국 후보" 
           className="overlay-image"
           fill
           style={{
             position: 'absolute',
             objectFit: 'cover',
-            objectPosition: 'center',
+            objectPosition: 'center top',
             transition: 'transform 0.5s ease, opacity 0.5s ease',
             opacity: 1,
             transformOrigin: 'center center'
