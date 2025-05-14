@@ -23,6 +23,7 @@ type SanityPost = {
       _ref: string;
     } 
   };
+  author?: string;
 };
 
 // 클라이언트에 전달할 타입
@@ -40,12 +41,12 @@ export type ClientPost = {
       _ref: string;
     } 
   };
+  author?: string;
   imageUrl?: string; // 프론트엔드에서 사용할 URL
 };
 
 export default async function PostsPage() {
   // 서버에서 데이터 가져오기
-  // post 타입과 statement 타입 모두 가져오도록 수정
   const posts = await client.fetch<SanityPost[]>(
     `*[_type == "post" || _type == "statement"] | order(publishedAt desc) {
       _id,
@@ -56,23 +57,21 @@ export default async function PostsPage() {
       body,
       summary,
       source,
-      thumbnail
+      thumbnail,
+      author
     }`,
-    {}, // params (현재는 빈 객체)
-    { cache: 'no-store' } // next: { revalidate: 10 } 에서 변경
+    {},
+    { cache: 'no-store' }
   );
 
   console.log('Fetched posts:', posts.length, 'items');
 
-  // 이미지 URL 추가
   const postsWithImageUrls: ClientPost[] = posts.map(post => {
+    const clientPostData: SanityPost & { imageUrl?: string } = { ...post };
     if (post.thumbnail?.asset?._ref) {
-      return {
-        ...post,
-        imageUrl: urlFor(post.thumbnail).url()
-      };
+      clientPostData.imageUrl = urlFor(post.thumbnail).url();
     }
-    return post;
+    return clientPostData as ClientPost;
   });
 
   console.log('Posts with image URLs:', postsWithImageUrls.length, 'items');
