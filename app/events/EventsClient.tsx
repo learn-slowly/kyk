@@ -197,7 +197,7 @@ export default function EventsClient({ events }: { events: Event[] }) {
     // 날짜 문자열 대신 yyyy-MM-dd 형식으로 정규화
     const eventDate = new Date(event.start);
     if (!isNaN(eventDate.getTime())) { // 유효한 날짜인지 확인
-      const dateStr = eventDate.toISOString().split('T')[0]; // yyyy-MM-dd 형식 추출
+      const dateStr = format(eventDate, 'yyyy-MM-dd'); // 로컬 시간대 기준으로 yyyy-MM-dd 형식 추출
       if (!acc[dateStr]) {
         acc[dateStr] = [];
       }
