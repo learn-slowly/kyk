@@ -47,6 +47,7 @@ export default function RootLayout({
               position: relative;
               z-index: 1;
               transition: all 0.3s ease;
+              letter-spacing: -0.03em; /* 네비게이션 버튼 자간 조정 */
             }
             
             .nav-button::before {
@@ -104,8 +105,10 @@ export default function RootLayout({
                 font-weight: 400 !important; /* 폰트 무게 가볍게 */
                 border: none !important;
                 font-size: 0.95rem !important; /* 폰트 크기 축소 */
-                letter-spacing: -0.02em; /* 자간 좁게 */
+                letter-spacing: -0.02em; /* 모바일에서는 기존 자간 또는 약간만 조정 */
               }
+              
+              /* .nav-button의 모바일 스타일은 letter-spacing을 위 .navbar-nav .nav-link 에서 상속받거나, 필요시 여기에 명시 */
               
               .nav-button {
                 border: none !important;
@@ -177,8 +180,9 @@ export default function RootLayout({
               }
             }
 
-            .site-title {
+            .site-title, .brand-text { 
               font-family: 'GamtanRoad Gamtan', sans-serif;
+              letter-spacing: -0.03em; /* 헤더 주요 텍스트 자간 조정 */
             }
             
             /* 네비게이션 토글 버튼 아이콘 변환 - 완전히 새로운 방식 */
@@ -266,7 +270,7 @@ export default function RootLayout({
             
             /* 네비게이션 바 */
             .navbar {
-              padding-top: 3px !important;
+              padding-top: 0 !important;
               padding-bottom: 3px !important;
               position: static !important;
               transform: none !important;
@@ -319,7 +323,7 @@ export default function RootLayout({
               display: block !important;
               position: static !important;
               width: 100% !important;
-              margin-bottom: 4px !important;
+              margin-bottom: 1px !important;
               transform: none !important;
               transition: none !important;
               animation: none !important;
@@ -427,10 +431,10 @@ export default function RootLayout({
                   <div className="d-flex align-items-center">
                     <div className="logo-container">
                       <Image 
-                        src="/images/pi-l.png" 
-                        alt="민주노동당 로고" 
-                        width={240} 
-                        height={56} 
+                        src="/images/header.png"
+                        alt="민주노동당 권영국 후보 로고" 
+                        width={250} 
+                        height={36} 
                         className="header-logo"
                         style={{ marginRight: '8px' }} 
                         priority
@@ -522,7 +526,7 @@ export default function RootLayout({
                 <h3 className="fs-4 mb-3 site-title">사회대전환 연대회의 대통령 후보</h3> 
                 <div className="d-flex align-items-center mb-3">
                   <div className="d-flex align-items-center">
-                    <Image src="/images/pi-w.png" alt="민주노동당 로고" width={240} height={74} style={{ marginRight: '8px' }} />
+                    <Image src="/images/footer.png" alt="민주노동당 권영국 후보 푸터 로고" width={200} height={100} style={{ marginRight: '8px' }} />
                     <h3 className="fs-1 mb-0 site-title">권영국</h3>
                   </div>
                 </div>
