@@ -15,7 +15,7 @@ type Event = {
   end?: string;
   location: string;
   isImportant?: boolean;
-  category?: 'candidate' | 'election' | 'media';
+  category?: 'candidate' | 'election' | 'media' | 'campaign';
 };
 
 // iCalendar 포맷용 유틸리티 함수
@@ -149,13 +149,15 @@ const categoryColors = {
   candidate: '#4CAF50', // 후보일정 - 녹색
   election: '#2196F3',  // 선거일정 - 파란색
   media: '#FF9800',     // 미디어 - 주황색
+  campaign: '#800080',  // 유세일정 - 보라색
 };
 
 // 카테고리 표시명
 const categoryLabels = {
   candidate: '후보일정',
-  election: '선거일정', 
+  election: '선거일정',
   media: '미디어',
+  campaign: '유세일정',
 };
 
 export default function EventsClient({ events }: { events: Event[] }) {
@@ -163,7 +165,7 @@ export default function EventsClient({ events }: { events: Event[] }) {
   const [date, setDate] = useState<CalendarValue>(new Date());
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    ['candidate', 'election', 'media']
+    ['candidate', 'election', 'media', 'campaign']
   );
   const [showPastEvents, setShowPastEvents] = useState<boolean>(false);
   
