@@ -379,4 +379,4 @@ SPC 파리바게뜨 노동자들과 쿠팡 노동자들,
          url('https://cdn.jsdelivr.net/gh/fonts-archive/GamtanRoadGamtan/GamtanRoadGamtan.woff') format('woff'),
          url('https://cdn.jsdelivr.net/gh/fonts-archive/GamtanRoadGamtan/GamtanRoadGamtan.otf') format('opentype'),
          url('https://cdn.jsdelivr.net/gh/fonts-archive/GamtanRoadGamtan/GamtanRoadGamtan.ttf') format('truetype');
-  }
+}

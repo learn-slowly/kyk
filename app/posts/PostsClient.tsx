@@ -190,14 +190,22 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                     >
                       {CATEGORY_LABELS[post.category]}
                     </span>
-                    {post.category === 'media' && post.source && (
-                      <span className="ms-2 small text-secondary">
-                        출처: {post.source}
+                    {(post.category === 'media' || post.category === 'today') && post.source && (
+                      <span className="ms-2 small">
+                        <a 
+                          href={post.source} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-decoration-none" 
+                          style={{ color: CATEGORY_COLORS[post.category], fontWeight: '500' }}
+                        >
+                          📄 전문보기 <i className="bi bi-box-arrow-up-right" style={{ fontSize: '0.8em' }}></i>
+                        </a>
                       </span>
                     )}
                   </div>
                   
-                  {/* 타이틀 및 날짜 */}
+                  {/* 타이틀 및 날짜/글쓴이 */}
                   <h5 className="card-title mb-2">{post.title}</h5>
                   <div className="mb-3 text-secondary small">
                     {new Date(post.publishedAt).toLocaleDateString('ko-KR', {
@@ -205,6 +213,7 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                       month: 'long',
                       day: 'numeric'
                     })}
+                    {post.author && <span className="ms-2">| 글쓴이: {post.author}</span>}
                   </div>
                   
                   <p className="card-text text-secondary small">
@@ -258,9 +267,17 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                   >
                     {CATEGORY_LABELS[selectedPost.category]}
                   </span>
-                  {selectedPost.category === 'media' && selectedPost.source && (
-                    <span className="ms-2 text-secondary">
-                      출처: {selectedPost.source}
+                  {(selectedPost.category === 'media' || selectedPost.category === 'today') && selectedPost.source && (
+                    <span className="ms-2">
+                      <a 
+                        href={selectedPost.source} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-decoration-none"
+                        style={{ color: CATEGORY_COLORS[selectedPost.category], fontWeight: '500' }}
+                      >
+                        📄 전문보기 <i className="bi bi-box-arrow-up-right" style={{ fontSize: '0.8em' }}></i>
+                      </a>
                     </span>
                   )}
                 </div>
@@ -272,6 +289,11 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                     weekday: 'long', hour: '2-digit', minute: '2-digit'
                   })}
                 </p>
+                {selectedPost.author && (
+                  <p className="text-muted mb-3" style={{ fontSize: '0.9rem' }}>
+                    <i className="bi bi-person-fill me-1"></i> 글쓴이: {selectedPost.author}
+                  </p>
+                )}
                 
                 {selectedPost.imageUrl && (
                   <div className="mb-4 text-center">

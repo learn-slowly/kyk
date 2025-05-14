@@ -5,7 +5,7 @@ export const client = createClient({
   projectId: 'qpvtzhxq', // president2025의 projectId
   dataset: 'production',
   apiVersion: '2025-05-05',
-  useCdn: process.env.NODE_ENV === 'production'
+  useCdn: false // CDN 사용을 비활성화하여 최신 데이터를 가져오도록 수정
 })
 
 // Sanity 이미지 URL 빌더 생성

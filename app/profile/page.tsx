@@ -1010,8 +1010,8 @@ export default function ProfilePage() {
           -webkit-text-fill-color: rgba(0, 0, 0, 0.7);
           -webkit-text-stroke: none;
           text-shadow: none;
-          white-space: nowrap;
-          overflow: visible;
+            white-space: nowrap;
+            overflow: visible;
           z-index: 3;
           opacity: 0.7;
           clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%); /* 애니메이션용 */
@@ -1019,7 +1019,7 @@ export default function ProfilePage() {
         }
 
         /* 기존 .giant-text-container에서 위치/정렬 관련 스타일 제거 또는 수정 */
-        .giant-text-container {
+          .giant-text-container {
           width: 100%; /* 너비는 유지하거나, auto로 변경하여 .uniform-giant-text에 위임 */
           height: 100%; /* 높이는 유지하거나, auto로 변경 */
           /* display, justify-content, align-items 등은 .uniform-giant-text가 처리하므로 제거 고려 */
@@ -1028,17 +1028,17 @@ export default function ProfilePage() {
         }
         
         /* 기존 .giant-text-stroke도 필요시 정렬 관련 스타일 확인 */
-        .giant-text-stroke {
+          .giant-text-stroke {
           /* 기존 스타일 유지하되, .uniform-giant-text와 충돌 없도록 */
           position: relative; /* 유지 */
           opacity: 0; /* 애니메이션용 */
           animation: fadeIn 0.5s ease forwards 0.5s; /* 애니메이션용 */
           display: flex; /* 이 부분은 .uniform-giant-text가 중앙 정렬을 하므로 불필요하거나, 내부 span 정렬용이라면 유지 */
-          justify-content: center;
-          align-items: center;
+            justify-content: center;
+            align-items: center;
           width: 100%; /* 내부 요소 크기에 맞추도록 auto 또는 100% */
-          height: 100%;
-          overflow: visible;
+              height: 100%;
+              overflow: visible;
         }
 
         /* 기존 .giant-text, .first-char 등은 .uniform-giant-text 스타일을 상속받거나, 개별 폰트 크기만 미디어쿼리에서 조정 */
@@ -1051,9 +1051,9 @@ export default function ProfilePage() {
             font-size: 50vw !important; 
             line-height: 1 !important;
           }
-          .vertical-text {
+            .vertical-text {
             font-size: 50vw !important;
-            writing-mode: vertical-lr;
+              writing-mode: vertical-lr;
             text-orientation: upright;
             letter-spacing: -1.5rem;
           }
@@ -1077,7 +1077,7 @@ export default function ProfilePage() {
             backdrop-filter: blur(5px); /* 기존 스타일 유지 */
           }
         }
-
+        
         /* 더 작은 모바일 디바이스 */
         @media (max-width: 480px) {
           .giant-text, .first-char, .second-char, .third-char, .fourth-char,
@@ -1103,8 +1103,8 @@ export default function ProfilePage() {
                 font-size: 50vw !important; 
               }
             }
-          }
-
+              }
+              
           .instructions {
             font-size: 13px !important; /* 더 작은 화면에서 폰트 약간 줄임 */
             bottom: 60px !important; /* 위치 미세 조정 */
