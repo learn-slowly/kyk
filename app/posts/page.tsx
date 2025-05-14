@@ -59,7 +59,7 @@ export default async function PostsPage() {
       thumbnail
     }`,
     {}, // params (현재는 빈 객체)
-    { next: { revalidate: 10 } } // 10초마다 데이터 갱신 시도
+    { cache: 'no-store' } // next: { revalidate: 10 } 에서 변경
   );
 
   console.log('Fetched posts:', posts.length, 'items');
