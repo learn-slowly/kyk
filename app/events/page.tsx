@@ -32,7 +32,9 @@ export default async function EventsPage() {
       location,
       isImportant,
       category
-    }`
+    }`,
+    {}, // params (현재는 빈 객체)
+    { next: { revalidate: 10 } } // 10초마다 데이터 갱신 시도
   );
 
   // 디버깅용 로그
