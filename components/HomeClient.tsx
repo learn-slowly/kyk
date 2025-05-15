@@ -639,7 +639,7 @@ export default function HomeClient({ schedules = [] }: HomeClientProps) {
       <section className="cta-section">
         <div className="container">
           <h2 className="scroll-reveal interactive-text">차별없는 나라, 우리를 지키는 진보대통령!</h2>
-          <h2 className="scroll-reveal interactive-text thin-text">권영국과 함께 꿈을<br />현실로 만들어 갑시다</h2>
+          <h2 className="scroll-reveal interactive-text thin-text">권영국과 함께 꿈을 현실로 만들어 갑시다</h2>
         </div>
         
         {/* 애니메이션 원 */}
@@ -1186,9 +1186,6 @@ export default function HomeClient({ schedules = [] }: HomeClientProps) {
           color: #ff0000;
           text-align: right;
           margin-bottom: 15vh;
-          -webkit-text-stroke: 2px #ff0000;
-          text-stroke: 2px #ff0000;
-          color: transparent;
           line-height: 1.2;
         }
         
@@ -1219,7 +1216,7 @@ export default function HomeClient({ schedules = [] }: HomeClientProps) {
           margin: 3rem auto;
           padding: 1.5rem;
           border-radius: 8px;
-          animation: shake 3s cubic-bezier(.36,.07,.19,.97) infinite;
+          /* animation: shake 3s cubic-bezier(.36,.07,.19,.97) infinite; */
           transform-origin: center;
           letter-spacing: -0.03em;
         }

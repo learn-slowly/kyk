@@ -372,7 +372,8 @@ export default function RootLayout({
               }
               .header-logo {
                 width: 200px !important;
-                height: 47px !important;
+                height: auto !important; /* 비율 유지를 위해 auto로 변경 */
+                object-fit: contain !important; /* 비율 유지 */
               }
               .site-title {
                 font-size: 2rem !important;
@@ -389,7 +390,8 @@ export default function RootLayout({
               }
               .header-logo {
                 width: 160px !important;
-                height: 38px !important;
+                height: auto !important; /* 비율 유지를 위해 auto로 변경 */
+                object-fit: contain !important; /* 비율 유지 */
               }
               .site-title {
                 font-size: 1.7rem !important;
@@ -433,10 +435,10 @@ export default function RootLayout({
                       <Image 
                         src="/images/header.png"
                         alt="민주노동당 권영국 후보 로고" 
-                        width={250} 
-                        height={36} 
+                        width={280} 
+                        height={40} 
                         className="header-logo"
-                        style={{ marginRight: '8px' }} 
+                        style={{ marginRight: '8px', objectFit: 'contain' }}
                         priority
                       />
                     </div>
@@ -526,7 +528,7 @@ export default function RootLayout({
                 <h3 className="fs-4 mb-3 site-title">사회대전환 연대회의 대통령 후보</h3> 
                 <div className="d-flex align-items-center mb-3">
                   <div className="d-flex align-items-center">
-                    <Image src="/images/footer.png" alt="민주노동당 권영국 후보 푸터 로고" width={200} height={100} style={{ marginRight: '8px' }} />
+                    <Image src="/images/header.png" alt="민주노동당 권영국 후보 푸터 로고" width={266} height={38} style={{ marginRight: '8px' }} />
                     <h3 className="fs-1 mb-0 site-title">권영국</h3>
                   </div>
                 </div>
