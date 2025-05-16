@@ -3,13 +3,13 @@ import { TypedObject } from '@portabletext/types';
 export interface DetailPolicy {
   _key: string;
   title: string;
-  description: TypedObject | TypedObject[];
+  description: string;
 }
 
 export interface Policy {
   _id: string;
   title: string;
-  description: TypedObject | TypedObject[];
+  description: string;
   color: string;
   detailPolicies?: DetailPolicy[];
   orderRank: number;

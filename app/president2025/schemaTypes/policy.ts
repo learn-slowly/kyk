@@ -14,8 +14,7 @@ const policySchema = defineType({
     {
       name: 'description',
       title: '설명',
-      type: 'array',
-      of: [{ type: 'block' }],
+      type: 'markdown',
       validation: (rule) => rule.required(),
     },
     {
@@ -35,8 +34,7 @@ const policySchema = defineType({
             {
               name: 'description',
               title: '설명',
-              type: 'array',
-              of: [{ type: 'block' }],
+              type: 'markdown',
               validation: (rule) => rule.required(),
             },
           ],
@@ -77,22 +75,10 @@ const policySchema = defineType({
       description: 'description',
     },
     prepare(selection) {
-      const { title = '', description = [] } = selection;
-      // Portable Text 배열에서 텍스트만 추출
-      const subtitle = description
-        .filter((block: any) => block._type === 'block')
-        .map((block: any) => 
-          block.children
-            .filter((child: any) => child._type === 'span')
-            .map((span: any) => span.text)
-            .join('')
-        )
-        .join(' ')
-        .substring(0, 50);
-
+      const { title = '', description = '' } = selection;
       return {
         title,
-        subtitle: subtitle ? subtitle + '...' : '',
+        subtitle: description.substring(0, 50) + (description.length > 50 ? '...' : ''),
       };
     },
   },

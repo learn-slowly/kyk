@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Policy } from '@/types/policy';
-import { PortableText } from '@portabletext/react';
+import ReactMarkdown from 'react-markdown';
 
 interface PolicyCarouselProps {
   policies: Policy[];
@@ -641,7 +641,7 @@ export default function PolicyCarousel({ policies = [], onTestClick }: PolicyCar
                 <CardContent>
                   <h2>{policy.title}</h2>
                   <div className="description">
-                    <PortableText value={policy.description} />
+                    <ReactMarkdown>{policy.description}</ReactMarkdown>
                   </div>
                   
                   <AnimatePresence>
@@ -691,7 +691,7 @@ export default function PolicyCarousel({ policies = [], onTestClick }: PolicyCar
                                     exit={{ height: 0, opacity: 0 }}
                                     transition={{ duration: 0.2 }}
                                   >
-                                    <PortableText value={detail.description} />
+                                    <ReactMarkdown>{detail.description}</ReactMarkdown>
                                   </DetailPolicyContent>
                                 )}
                               </AnimatePresence>
