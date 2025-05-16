@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import PolicyFooter from '../components/PolicyFooter';
 import { HideDefaultFooter } from './StyledComponents';
 
 const Container = styled.div`
@@ -277,7 +276,6 @@ export default function PoliciesMainPage() {
             </Section>
           ))}
         </GridContainer>
-        <PolicyFooter />
       </Container>
     </HideDefaultFooter>
   );
