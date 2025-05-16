@@ -105,7 +105,7 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
       
       {/* 게시글 목록 - 미니멀 디자인 */}
       <div className="row g-4">
-        {filteredPosts.map((post) => {
+        {filteredPosts.map((post, index) => {
           // 요약 텍스트 준비 (summary가 없으면 body에서 추출)
           const summaryText = post.summary || 
             (post.body?.length > 120 ? post.body.substring(0, 120) + '...' : post.body);
@@ -128,14 +128,14 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                   e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.05)';
                 }}
               >
-                {post.imageUrl && (
+                {post.mainImage?.asset?.url && (
                   <div 
                     className="card-img-top position-relative" 
                     style={{ height: '180px', overflow: 'hidden' }}
                   >
                     <div 
                       className="image-overlay"
-                      onClick={(e) => post.imageUrl && openImageModal(post.imageUrl, e)}
+                      onClick={(e) => post.mainImage?.asset?.url && openImageModal(post.mainImage?.asset?.url, e)}
                       style={{
                         position: 'absolute',
                         top: 0,
@@ -165,15 +165,12 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                       </span>
                     </div>
                     <Image
-                      src={post.imageUrl}
+                      src={post.mainImage?.asset?.url}
                       alt={post.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      style={{ 
-                        objectFit: 'cover',
-                        transition: 'transform 0.3s ease'
-                      }}
-                      className="hover-zoom"
+                      width={800}
+                      height={400}
+                      className="w-full h-auto object-cover rounded-lg shadow-lg"
+                      priority={index < 2}
                     />
                   </div>
                 )}
@@ -295,16 +292,18 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                   </p>
                 )}
                 
-                {selectedPost.imageUrl && (
+                {selectedPost.mainImage?.asset?.url && (
                   <div className="mb-4 text-center">
                     <div 
                       className="position-relative d-inline-block"
                       style={{ cursor: 'zoom-in' }}
-                      onClick={(e) => selectedPost.imageUrl && openImageModal(selectedPost.imageUrl, e)}
+                      onClick={(e) => selectedPost.mainImage?.asset?.url && openImageModal(selectedPost.mainImage?.asset?.url, e)}
                     >
-                      <img 
-                        src={selectedPost.imageUrl} 
+                      <Image 
+                        src={selectedPost.mainImage?.asset?.url}
                         alt={selectedPost.title}
+                        width={800}
+                        height={400}
                         className="img-fluid rounded-3"
                         style={{ maxHeight: '400px' }}
                       />
@@ -370,7 +369,7 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
             onClick={(e) => e.stopPropagation()}
             style={{ maxWidth: '90%', maxHeight: '90vh' }}
           >
-            <img 
+            <Image 
               src={imageModalSrc} 
               alt="확대 이미지" 
               className="img-fluid" 

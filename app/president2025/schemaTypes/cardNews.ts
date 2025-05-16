@@ -1,3 +1,15 @@
+import { Rule } from '@sanity/types';
+
+interface PreviewProps {
+  title: string;
+  media: {
+    asset: {
+      url: string;
+    };
+  };
+  publishedAt: string;
+}
+
 export default {
   name: 'cardNews',
   title: '카드뉴스',
@@ -7,7 +19,7 @@ export default {
       name: 'title',
       title: '제목',
       type: 'string',
-      validation: (Rule: any) => Rule.required(),
+      validation: (rule: Rule) => rule.required(),
     },
     {
       name: 'slug',
@@ -17,13 +29,13 @@ export default {
         source: 'title',
         maxLength: 96,
       },
-      validation: (Rule: any) => Rule.required(),
+      validation: (rule: Rule) => rule.required(),
     },
     {
       name: 'publishedAt',
       title: '발행일',
       type: 'datetime',
-      validation: (Rule: any) => Rule.required(),
+      validation: (rule: Rule) => rule.required(),
     },
     {
       name: 'images',
@@ -37,13 +49,13 @@ export default {
           },
         },
       ],
-      validation: (Rule: any) => Rule.required().min(1),
+      validation: (rule: Rule) => rule.required().min(1),
     },
     {
       name: 'description',
       title: '설명',
       type: 'text',
-      validation: (Rule: any) => Rule.required(),
+      validation: (rule: Rule) => rule.required(),
     },
     {
       name: 'tags',
@@ -61,7 +73,7 @@ export default {
       media: 'images.0',
       publishedAt: 'publishedAt',
     },
-    prepare({ title, media, publishedAt }: any) {
+    prepare({ title, media, publishedAt }: PreviewProps) {
       return {
         title,
         subtitle: new Date(publishedAt).toLocaleDateString(),
