@@ -44,14 +44,13 @@ export default function PolicyFooter() {
   const [year, setYear] = useState('2024');
   const pathname = usePathname();
 
-  // Sanity Studio 페이지에서는 푸터를 표시하지 않음
-  if (pathname?.includes('/studio')) {
-    return null;
-  }
-
   useEffect(() => {
     setYear(new Date().getFullYear().toString());
   }, []);
+
+  if (pathname?.includes('/studio')) {
+    return null;
+  }
 
   return (
     <FooterWrapper>

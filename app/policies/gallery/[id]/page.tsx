@@ -105,7 +105,13 @@ interface CardNews {
   _id: string;
   title: string;
   description: string;
-  images: any[];
+  images: {
+    _type: string;
+    asset: {
+      _ref: string;
+      url: string;
+    };
+  }[];
   publishedAt: string;
   tags: string[];
 }

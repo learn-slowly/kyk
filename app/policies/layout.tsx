@@ -1,9 +1,11 @@
+'use client';
+
 import { metadata as pageMetadata } from './metadata';
-import Header from '../components/Header';
+import PolicyFooter from '@/app/components/PolicyFooter';
 
 export const metadata = pageMetadata;
 
-export default function PoliciesLayout({
+export default function PolicyLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -11,6 +13,7 @@ export default function PoliciesLayout({
   return (
     <>
       {children}
+      <PolicyFooter />
     </>
   );
 } 

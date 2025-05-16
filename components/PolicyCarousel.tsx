@@ -5,7 +5,6 @@ import { useState, Fragment } from 'react';
 import styled from 'styled-components';
 import { Policy } from '@/types/policy';
 import ReactMarkdown from 'react-markdown';
-import Image from 'next/image';
 
 interface PolicyCarouselProps {
   policies: Policy[];
