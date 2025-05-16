@@ -1,5 +1,6 @@
 import { createClient } from '@sanity/client'
 import imageUrlBuilder from '@sanity/image-url'
+import { SanityImageSource } from '@sanity/image-url/lib/types/types'
 
 export const client = createClient({
   projectId: 'qpvtzhxq', // president2025의 projectId
@@ -12,12 +13,12 @@ export const client = createClient({
 const builder = imageUrlBuilder(client)
 
 // 이미지 URL 생성 함수
-export function urlFor(source: any) {
+export function urlFor(source: SanityImageSource) {
   return builder.image(source)
 }
 
 // Generic 타입을 사용하는 fetchSanityData 함수
-export async function fetchSanityData<T>(query: string, params: Record<string, any> = {}): Promise<T> {
+export async function fetchSanityData<T>(query: string, params: Record<string, unknown> = {}): Promise<T> {
   return client.fetch<T>(query, params);
 }
 

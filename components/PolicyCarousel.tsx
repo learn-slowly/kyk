@@ -522,7 +522,7 @@ export default function PolicyCarousel({ policies = [], onTestClick }: PolicyCar
     return baseTransform;
   };
 
-  const handleCardClick = (policy: Policy, index: number, e: React.MouseEvent) => {
+  const handleCardClick = (policy: Policy, e: React.MouseEvent) => {
     if (isRotating) return;
     
     // 현재 선택된 카드를 다시 클릭한 경우
@@ -595,7 +595,7 @@ export default function PolicyCarousel({ policies = [], onTestClick }: PolicyCar
                 $color={policy.color}
                 $isExpanded={isSelected && isExpanded}
                 $total={policies.length}
-                onClick={(e: React.MouseEvent) => handleCardClick(policy, index, e)}
+                onClick={(e: React.MouseEvent) => handleCardClick(policy, e)}
                 initial={false}
                 animate={
                   isSelected && isExpanded

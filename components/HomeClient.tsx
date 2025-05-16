@@ -2,8 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { Schedule } from '../app/page'; // Schedule 타입을 app/page.tsx에서 임포트
+import { Schedule } from '../app/page';
 
 // black-box 스크롤 reveal 컴포넌트
 function BlackBoxReveal({ children }: { children: React.ReactNode }) {
@@ -64,7 +63,7 @@ interface HomeClientProps {
   schedules?: Schedule[]; // 선택적 프롭으로 일정 정보 받기
 }
 
-export default function HomeClient({ schedules = [] }: HomeClientProps) {
+export default function HomeClient() {
   const [scrollY, setScrollY] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [viewportHeight, setViewportHeight] = useState(1000); // 기본값으로 1000px 설정

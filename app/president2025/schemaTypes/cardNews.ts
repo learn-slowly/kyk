@@ -10,7 +10,7 @@ interface PreviewProps {
   publishedAt: string;
 }
 
-export default {
+const cardNewsSchema = {
   name: 'cardNews',
   title: '카드뉴스',
   type: 'document',
@@ -81,4 +81,6 @@ export default {
       };
     },
   },
-} 
+};
+
+export default cardNewsSchema; 

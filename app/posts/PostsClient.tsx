@@ -128,14 +128,14 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                   e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.05)';
                 }}
               >
-                {post.mainImage?.asset?.url && (
+                {post.thumbnail?.asset?._ref && (
                   <div 
                     className="card-img-top position-relative" 
                     style={{ height: '180px', overflow: 'hidden' }}
                   >
                     <div 
                       className="image-overlay"
-                      onClick={(e) => post.mainImage?.asset?.url && openImageModal(post.mainImage?.asset?.url, e)}
+                      onClick={(e) => post.imageUrl && openImageModal(post.imageUrl, e)}
                       style={{
                         position: 'absolute',
                         top: 0,
@@ -165,7 +165,7 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                       </span>
                     </div>
                     <Image
-                      src={post.mainImage?.asset?.url}
+                      src={post.imageUrl || ''}
                       alt={post.title}
                       width={800}
                       height={400}
@@ -292,15 +292,15 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                   </p>
                 )}
                 
-                {selectedPost.mainImage?.asset?.url && (
+                {selectedPost.thumbnail?.asset?._ref && (
                   <div className="mb-4 text-center">
                     <div 
                       className="position-relative d-inline-block"
                       style={{ cursor: 'zoom-in' }}
-                      onClick={(e) => selectedPost.mainImage?.asset?.url && openImageModal(selectedPost.mainImage?.asset?.url, e)}
+                      onClick={(e) => selectedPost.imageUrl && openImageModal(selectedPost.imageUrl, e)}
                     >
                       <Image 
-                        src={selectedPost.mainImage?.asset?.url}
+                        src={selectedPost.imageUrl || ''}
                         alt={selectedPost.title}
                         width={800}
                         height={400}
