@@ -1,16 +1,7 @@
 import { Rule } from '@sanity/types';
+import { defineType } from 'sanity';
 
-interface PreviewProps {
-  title: string;
-  media: {
-    asset: {
-      url: string;
-    };
-  };
-  publishedAt: string;
-}
-
-const cardNewsSchema = {
+const cardNewsSchema = defineType({
   name: 'cardNews',
   title: '카드뉴스',
   type: 'document',
@@ -73,14 +64,15 @@ const cardNewsSchema = {
       media: 'images.0',
       publishedAt: 'publishedAt',
     },
-    prepare({ title, media, publishedAt }: PreviewProps) {
+    prepare(selection) {
+      const { title = '', media, publishedAt = '' } = selection;
       return {
         title,
         subtitle: new Date(publishedAt).toLocaleDateString(),
-        media: media?.asset?.url || undefined
+        media
       };
     },
   },
-};
+});
 
 export default cardNewsSchema; 

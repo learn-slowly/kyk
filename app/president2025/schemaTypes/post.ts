@@ -1,3 +1,6 @@
+import { Rule } from '@sanity/types';
+import { defineType } from 'sanity';
+
 interface PreviewSelection {
   title?: string;
   category?: string;
@@ -10,7 +13,7 @@ interface PreviewSelection {
   author?: string;
 }
 
-const postSchema = {
+const postSchema = defineType({
   name: 'post',
   title: '뉴스',
   type: 'document',
@@ -63,8 +66,9 @@ const postSchema = {
       media: 'thumbnail',
       author: 'author'
     },
-    prepare(selection: PreviewSelection) {
-      const { title, category, publishedAt, media, author } = selection;
+    prepare(selection) {
+      const { title = '', category = '', publishedAt = '', media, author = '' } = selection;
+      
       const categoryLabel = 
         category === 'statement' ? '성명' :
         category === 'today' ? '오늘의 영국' :
@@ -73,7 +77,7 @@ const postSchema = {
       let date = '날짜 미정';
       if (publishedAt) {
         try {
-          const dateObj = typeof publishedAt === 'string' ? new Date(publishedAt) : publishedAt;
+          const dateObj = new Date(publishedAt);
           if (!isNaN(dateObj.getTime())) {
             date = dateObj.toLocaleDateString('ko-KR');
           }
@@ -85,10 +89,10 @@ const postSchema = {
       return {
         title,
         subtitle: `[${categoryLabel}] ${date} | ${author || '권영국후보'}`,
-        media: media?.asset?.url || undefined
+        media
       }
     }
   }
-};
+});
 
 export default postSchema;
