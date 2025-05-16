@@ -10,7 +10,7 @@ import ClientBootstrap from './components/ClientBootstrap'
 import { usePathname } from 'next/navigation'
 import { Analytics } from '@vercel/analytics/react'
 import StyledComponentsRegistry from './lib/registry'
-import PolicyFooter from './policies/components/PolicyFooter'
+import PolicyFooter from '@/app/components/PolicyFooter'
 
 export default function ClientLayout({
   children,

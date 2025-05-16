@@ -8,7 +8,6 @@ import ReactMarkdown from 'react-markdown';
 
 interface PolicyCarouselProps {
   policies: Policy[];
-  onTestClick?: () => void;
 }
 
 interface CardProps {
@@ -481,7 +480,7 @@ const Overlay = styled(motion.div)`
   z-index: 999;
 `;
 
-export default function PolicyCarousel({ policies = [], onTestClick }: PolicyCarouselProps) {
+export default function PolicyCarousel({ policies = [] }: PolicyCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedPolicy, setSelectedPolicy] = useState<Policy | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
