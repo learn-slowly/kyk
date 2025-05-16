@@ -90,20 +90,8 @@ export default {
             {
               name: 'description',
               title: '세부 내용',
-              type: 'markdown',
+              type: 'blockContent',
               validation: (Rule: any) => Rule.required(),
-              options: {
-                minHeight: 200,
-                maxHeight: 400,
-                imageUrl: false,
-                heading: true,
-                bulletList: true,
-                numberedList: true,
-                bold: true,
-                italic: true,
-                link: true,
-                blockquote: true,
-              }
             },
             {
               name: 'image',

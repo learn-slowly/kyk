@@ -14,6 +14,8 @@ const Container = styled.div`
 
   @media (max-width: 768px) {
     flex-direction: column;
+    height: 100vh;
+    overflow-y: hidden;
   }
 `;
 
@@ -32,7 +34,8 @@ const Section = styled(motion.div)<{ $bgColor: string }>`
 
   @media (max-width: 768px) {
     height: 33.333vh;
-    min-height: 300px;
+    min-height: unset;
+    padding: 1rem;
   }
 
   &:before {
@@ -138,7 +141,7 @@ export default function PoliciesPage() {
     },
     {
       title: 'SCTI 테스트',
-      description: '나와 가장 잘 맞는 정책 캐릭터를 찾아보세요',
+      description: '나와 가장 잘 맞는 사회대전환 캐릭터를 찾아보세요',
       path: '/policies/scti',
       bgColor: 'linear-gradient(135deg, #FFD43B 0%, #FFF3BF 100%)',
       preview: (
@@ -208,7 +211,7 @@ export default function PoliciesPage() {
     },
     {
       title: '분야별 세부 정책',
-      description: '8개 분야의 모든 정책을 자세히 살펴보세요',
+      description: '권영국의 모든 정책을 자세히 살펴보세요',
       path: '/policies/gallery',
       bgColor: 'linear-gradient(135deg, #69DB7C 0%, #B2F2BB 100%)',
       preview: (
@@ -272,11 +275,11 @@ export default function PoliciesPage() {
             onClick={() => handleSectionClick(index)}
             initial={false}
             animate={{
-              flex: selectedSection === index ? 20 : 1,
+              height: selectedSection === index ? '100vh' : '33.333vh',
               opacity: selectedSection === null || selectedSection === index ? 1 : 0,
             }}
             transition={{
-              flex: { duration: 0.5, ease: 'easeInOut' },
+              height: { duration: 0.5, ease: 'easeInOut' },
               opacity: { duration: 0.3 },
             }}
           >
