@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Policy } from '@/types/policy';
-import ReactMarkdown from 'react-markdown';
+import { PortableText } from '@portabletext/react';
 
 interface PolicyCarouselProps {
   policies: Policy[];
@@ -351,7 +351,7 @@ const TestButton = styled(motion.button)`
 
 const CardContent = styled.div`
   color: white;
-  text-align: center;
+  text-align: left;
   position: relative;
   z-index: 1;
   display: flex;
@@ -378,14 +378,37 @@ const CardContent = styled.div`
     }
   }
   
-  p {
+  .description {
     font-size: 16px;
     line-height: 1.6;
-    white-space: pre-wrap;
-    word-break: keep-all;
-    word-wrap: break-word;
     opacity: 0.95;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+    p {
+      margin: 0 0 1em;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    ul, ol {
+      margin: 0.5em 0;
+      padding-left: 1.5em;
+    }
+
+    li {
+      margin: 0.3em 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: underline;
+      opacity: 0.9;
+      
+      &:hover {
+        opacity: 1;
+      }
+    }
   }
 `;
 
@@ -617,7 +640,9 @@ export default function PolicyCarousel({ policies = [], onTestClick }: PolicyCar
               >
                 <CardContent>
                   <h2>{policy.title}</h2>
-                  <p>{policy.description}</p>
+                  <div className="description">
+                    <PortableText value={policy.description} />
+                  </div>
                   
                   <AnimatePresence>
                     {isSelected && isExpanded && (
@@ -666,7 +691,7 @@ export default function PolicyCarousel({ policies = [], onTestClick }: PolicyCar
                                     exit={{ height: 0, opacity: 0 }}
                                     transition={{ duration: 0.2 }}
                                   >
-                                    <ReactMarkdown>{detail.description}</ReactMarkdown>
+                                    <PortableText value={detail.description} />
                                   </DetailPolicyContent>
                                 )}
                               </AnimatePresence>
