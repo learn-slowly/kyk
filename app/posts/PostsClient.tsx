@@ -169,7 +169,8 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                       alt={post.title}
                       width={800}
                       height={400}
-                      className="w-full h-auto object-cover rounded-lg shadow-lg"
+                      className="w-100 h-100"
+                      style={{ objectFit: 'cover' }}
                       priority={index < 2}
                     />
                   </div>
