@@ -600,7 +600,7 @@ export default function PolicyCarousel({ policies = [], onTestClick }: PolicyCar
                 animate={
                   isSelected && isExpanded
                     ? {
-                        ...getCardTransform(index, policies.length),
+                        ...getCardTransform(currentIndex, policies.length),
                         transition: {
                           type: "spring",
                           stiffness: 400,
