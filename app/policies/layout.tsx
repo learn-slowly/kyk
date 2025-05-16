@@ -1,5 +1,5 @@
-import PolicyNavigation from './PolicyNavigation';
 import { metadata as pageMetadata } from './metadata';
+import Header from '../components/Header';
 
 export const metadata = pageMetadata;
 
@@ -10,7 +10,6 @@ export default function PoliciesLayout({
 }) {
   return (
     <>
-      <PolicyNavigation />
       {children}
     </>
   );

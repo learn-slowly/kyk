@@ -1,24 +1,127 @@
 'use client';
 
-import { useEffect } from 'react';
+import styled from 'styled-components';
+import Image from 'next/image';
 import Link from 'next/link';
 
-export default function JoinPage() {
-  // 페이지 제목 설정
-  useEffect(() => {
-    document.title = '함께하기 | 권영국 후보';
-  }, []);
+const Container = styled.div`
+  min-height: 100vh;
+  background: white;
+  position: relative;
+  padding-top: 85px;
+  overflow: hidden;
+`;
 
+const BackgroundImage = styled.div`
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 300px;
+  height: 300px;
+  background-image: url('/images/pi_bg.png');
+  background-size: contain;
+  background-position: bottom right;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  z-index: 1;
+`;
+
+const Content = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  position: relative;
+  z-index: 2;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+`;
+
+const ImageContainer = styled.div`
+  flex: 1;
+  position: relative;
+  height: 600px;
+  max-width: 500px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 400px;
+  }
+`;
+
+const StyledImage = styled(Image)`
+  object-fit: contain;
+`;
+
+const Title = styled.h1`
+  color: #333;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-family: 'GamtanRoad Gamtan', sans-serif;
+  position: relative;
+  z-index: 2;
+  padding: 0.5rem;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 3px;
+    background: #FF4B4B;
+    border-radius: 2px;
+    box-shadow: 30px 0 0 #FFD700, 60px 0 0 #4CAF50;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+    height: 40px;
+  }
+`;
+
+export default function JoinPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="text-center max-w-lg">
-        <h1 className="text-3xl font-bold mb-6">🚧 페이지 준비 중 🚧</h1>
-        <p className="text-xl mb-4">권영국 후보와 함께하기 페이지를 준비하고 있습니다.</p>
-        <p className="text-lg text-gray-600 mb-8">빠른 시일 내에 완성된 페이지로 찾아뵙겠습니다.</p>
-        <Link href="/" className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700">
-          홈으로 돌아가기
-        </Link>
-      </div>
-    </div>
+    <Container>
+      <BackgroundImage />
+      <Title>함께하기</Title>
+      <Content>
+        <ImageContainer>
+          <StyledImage
+            src="/images/mbanner_3_4_20250515094509.jpg"
+            alt="권영국 후보 이미지"
+            fill
+            priority
+          />
+        </ImageContainer>
+        <ImageContainer>
+          <Link 
+            href="https://docs.google.com/forms/d/e/1FAIpQLSfvzIqhazhg6NTzG3ptwAIkH-8osXiybjAZn1rNBoe2aZ_kxw/viewform"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <StyledImage
+              src="/images/mbanner_3_5_20250515212954.png"
+              alt="1만 선대위원 모집"
+              fill
+              priority
+            />
+          </Link>
+        </ImageContainer>
+      </Content>
+    </Container>
   );
 } 

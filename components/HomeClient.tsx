@@ -321,7 +321,14 @@ export default function HomeClient() {
   };
 
   return (
-    <div className="manifesto-page" style={{ backgroundColor: '#fff' }}>
+    <div className="manifesto-page" style={{ 
+      backgroundColor: '#fff',
+      marginTop: '-85px',  // 헤더 높이만큼 위로 올림
+      paddingTop: '85px',  // 다시 패딩으로 공간 확보
+      minHeight: '100vh',
+      width: '100vw',
+      overflow: 'hidden'
+    }}>
       {/* 회색 오버레이 (스크롤에 따라 사라짐) */}
       <div 
         ref={overlayRef}
