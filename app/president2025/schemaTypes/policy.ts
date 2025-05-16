@@ -14,8 +14,45 @@ const policySchema = defineType({
     {
       name: 'description',
       title: '설명',
-      type: 'text',
-      validation: (rule) => rule.required(),
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          styles: [
+            {title: '일반', value: 'normal'},
+            {title: '제목 2', value: 'h2'},
+            {title: '제목 3', value: 'h3'},
+            {title: '인용', value: 'blockquote'}
+          ],
+          lists: [
+            {title: '글머리 기호', value: 'bullet'},
+            {title: '번호 매기기', value: 'number'}
+          ],
+          marks: {
+            decorators: [
+              {title: '굵게', value: 'strong'},
+              {title: '기울임', value: 'em'},
+              {title: '밑줄', value: 'underline'},
+              {title: '취소선', value: 'strike-through'}
+            ],
+            annotations: [
+              {
+                title: '링크',
+                name: 'link',
+                type: 'object',
+                fields: [
+                  {
+                    title: 'URL',
+                    name: 'href',
+                    type: 'url'
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      validation: (rule) => rule.required()
     },
     {
       name: 'detailPolicies',
@@ -34,8 +71,45 @@ const policySchema = defineType({
             {
               name: 'description',
               title: '설명',
-              type: 'text',
-              validation: (rule) => rule.required(),
+              type: 'array',
+              of: [
+                {
+                  type: 'block',
+                  styles: [
+                    {title: '일반', value: 'normal'},
+                    {title: '제목 2', value: 'h2'},
+                    {title: '제목 3', value: 'h3'},
+                    {title: '인용', value: 'blockquote'}
+                  ],
+                  lists: [
+                    {title: '글머리 기호', value: 'bullet'},
+                    {title: '번호 매기기', value: 'number'}
+                  ],
+                  marks: {
+                    decorators: [
+                      {title: '굵게', value: 'strong'},
+                      {title: '기울임', value: 'em'},
+                      {title: '밑줄', value: 'underline'},
+                      {title: '취소선', value: 'strike-through'}
+                    ],
+                    annotations: [
+                      {
+                        title: '링크',
+                        name: 'link',
+                        type: 'object',
+                        fields: [
+                          {
+                            title: 'URL',
+                            name: 'href',
+                            type: 'url'
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              validation: (rule) => rule.required()
             },
           ],
         },
