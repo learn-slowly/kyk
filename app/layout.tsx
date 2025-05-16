@@ -8,6 +8,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import './globals.css'
 import ClientBootstrap from './components/ClientBootstrap'
 import { usePathname } from 'next/navigation'
+import { Analytics } from '@vercel/analytics/react'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -28,6 +29,7 @@ export default function RootLayout({
         </head>
         <body className={inter.className} style={{ margin: 0, padding: 0 }}>
           {children}
+          <Analytics />
         </body>
       </html>
     )
@@ -541,6 +543,7 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
+        <Analytics />
       </body>
     </html>
   )
