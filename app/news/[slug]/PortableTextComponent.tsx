@@ -22,6 +22,7 @@ interface FileValue {
 }
 
 interface LinkValue {
+  _type: 'link';
   href: string;
 }
 
@@ -73,7 +74,7 @@ const components: Partial<PortableTextReactComponents> = {
     },
   },
   marks: {
-    link: ({ children, value }: PortableTextMarkComponentProps<LinkValue>) => {
+    link: ({ children, value }: PortableTextMarkComponentProps) => {
       if (!value?.href) return <>{children}</>;
       
       const rel = !value.href.startsWith('/') ? 'noreferrer noopener' : undefined;
