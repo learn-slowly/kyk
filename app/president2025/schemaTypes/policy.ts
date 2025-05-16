@@ -34,7 +34,7 @@ const policySchema = defineType({
             {
               name: 'description',
               title: '설명',
-              type: 'markdown',
+              type: 'text',
               validation: (rule) => rule.required(),
             },
           ],
