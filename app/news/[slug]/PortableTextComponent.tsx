@@ -4,7 +4,18 @@ import { PortableText } from '@portabletext/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { TypedObject } from '@portabletext/types';
-import { PortableTextMarkComponentProps, PortableTextReactComponents, PortableTextComponentProps } from '@portabletext/react';
+import { 
+  PortableTextMarkComponentProps, 
+  PortableTextReactComponents, 
+  PortableTextComponentProps, 
+  PortableTextBlock,
+  PortableTextMarkDefinition,
+  ArbitraryTypedObject
+} from '@portabletext/react';
+
+type BlockComponentProps = PortableTextComponentProps<
+  PortableTextBlock<PortableTextMarkDefinition, ArbitraryTypedObject>
+>;
 
 interface ImageValue {
   asset?: {
@@ -84,34 +95,34 @@ const components: Partial<PortableTextReactComponents> = {
     },
   },
   block: {
-    h2: ({ children }: PortableTextComponentProps) => (
+    h2: ({ children }: BlockComponentProps) => (
       <h2 className="fs-2 fw-bold mt-5 mb-3">{children}</h2>
     ),
-    h3: ({ children }: PortableTextComponentProps) => (
+    h3: ({ children }: BlockComponentProps) => (
       <h3 className="fs-3 fw-bold mt-4 mb-3">{children}</h3>
     ),
-    normal: ({ children }: PortableTextComponentProps) => (
+    normal: ({ children }: BlockComponentProps) => (
       <p className="mb-4 fs-5">{children}</p>
     ),
-    blockquote: ({ children }: PortableTextComponentProps) => (
+    blockquote: ({ children }: BlockComponentProps) => (
       <blockquote className="blockquote border-start border-primary ps-4 py-2 my-4">
         <p className="mb-0 fs-5 fst-italic">{children}</p>
       </blockquote>
     ),
   },
   list: {
-    bullet: ({ children }: PortableTextComponentProps) => (
+    bullet: ({ children }: BlockComponentProps) => (
       <ul className="mb-4 ps-4 fs-5">{children}</ul>
     ),
-    number: ({ children }: PortableTextComponentProps) => (
+    number: ({ children }: BlockComponentProps) => (
       <ol className="mb-4 ps-4 fs-5">{children}</ol>
     ),
   },
   listItem: {
-    bullet: ({ children }: PortableTextComponentProps) => (
+    bullet: ({ children }: BlockComponentProps) => (
       <li className="mb-2">{children}</li>
     ),
-    number: ({ children }: PortableTextComponentProps) => (
+    number: ({ children }: BlockComponentProps) => (
       <li className="mb-2">{children}</li>
     ),
   }
