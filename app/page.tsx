@@ -1,18 +1,5 @@
 // 서버 컴포넌트
-import { getEvents } from './lib/sanity';
 import HomeClient from '../components/HomeClient';
-
-// 이벤트 타입 정의
-type Event = {
-  _id: string;
-  title: string;
-  description?: string;
-  start: string;
-  end?: string;
-  location?: string;
-  isImportant?: boolean;
-  category?: string;
-};
 
 // 일정 타입 정의 (여기에서 export하여 HomeClient에서 임포트할 수 있게 함)
 export type Schedule = {

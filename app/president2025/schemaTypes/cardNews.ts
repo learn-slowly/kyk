@@ -77,7 +77,7 @@ const cardNewsSchema = {
       return {
         title,
         subtitle: new Date(publishedAt).toLocaleDateString(),
-        media,
+        media: media?.asset?.url || undefined
       };
     },
   },

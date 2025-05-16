@@ -85,7 +85,7 @@ const postSchema = {
       return {
         title,
         subtitle: `[${categoryLabel}] ${date} | ${author || '권영국후보'}`,
-        media
+        media: media?.asset?.url || undefined
       }
     }
   }
