@@ -59,9 +59,9 @@ function BlackBoxReveal({ children }: { children: React.ReactNode }) {
 }
 
 // HomeClient 컴포넌트 프롭스 타입 정의
-interface HomeClientProps {
-  schedules?: Schedule[]; // 선택적 프롭으로 일정 정보 받기
-}
+// interface HomeClientProps {
+//   schedules?: Schedule[]; // 선택적 프롭으로 일정 정보 받기
+// }
 
 export default function HomeClient() {
   const [scrollY, setScrollY] = useState(0);
@@ -342,7 +342,7 @@ export default function HomeClient() {
       >
         {/* 오버레이 내부에 배경 이미지 추가 */}
         <Image 
-          ref={overlayImageRef as any}
+          ref={overlayImageRef as React.RefObject<HTMLImageElement>}
           src="/images/6.png" 
           alt="권영국 후보" 
           className="overlay-image"

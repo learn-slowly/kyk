@@ -3,6 +3,7 @@
 import { PortableText } from '@portabletext/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { TypedObject } from '@portabletext/types';
 
 interface ImageValue {
   asset?: {
@@ -123,7 +124,7 @@ const components = {
 };
 
 interface PortableTextContentProps {
-  content: unknown;
+  content: TypedObject | TypedObject[];
 }
 
 export function PortableTextContent({ content }: PortableTextContentProps) {
