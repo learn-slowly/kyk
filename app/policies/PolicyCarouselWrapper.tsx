@@ -4,15 +4,16 @@ import { useRouter } from 'next/navigation';
 import PolicyCarousel from '@/components/PolicyCarousel';
 import { Policy } from '@/types/policy';
 
-export default function PolicyCarouselWrapper({ policies }: { policies: Policy[] }) {
+interface PolicyCarouselWrapperProps {
+  policies: Policy[];
+}
+
+export default function PolicyCarouselWrapper({ policies }: PolicyCarouselWrapperProps) {
   const router = useRouter();
 
   return (
     <PolicyCarousel 
       policies={policies}
-      onTestClick={() => {
-        router.push('/scti');
-      }}
     />
   );
 } 
