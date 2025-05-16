@@ -15,44 +15,8 @@ const policySchema = defineType({
       name: 'description',
       title: '설명',
       type: 'array',
-      of: [
-        {
-          type: 'block',
-          styles: [
-            {title: '일반', value: 'normal'},
-            {title: '제목 2', value: 'h2'},
-            {title: '제목 3', value: 'h3'},
-            {title: '인용', value: 'blockquote'}
-          ],
-          lists: [
-            {title: '글머리 기호', value: 'bullet'},
-            {title: '번호 매기기', value: 'number'}
-          ],
-          marks: {
-            decorators: [
-              {title: '굵게', value: 'strong'},
-              {title: '기울임', value: 'em'},
-              {title: '밑줄', value: 'underline'},
-              {title: '취소선', value: 'strike-through'}
-            ],
-            annotations: [
-              {
-                title: '링크',
-                name: 'link',
-                type: 'object',
-                fields: [
-                  {
-                    title: 'URL',
-                    name: 'href',
-                    type: 'url'
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      ],
-      validation: (rule) => rule.required()
+      of: [{ type: 'block' }],
+      validation: (rule) => rule.required(),
     },
     {
       name: 'detailPolicies',
@@ -72,44 +36,8 @@ const policySchema = defineType({
               name: 'description',
               title: '설명',
               type: 'array',
-              of: [
-                {
-                  type: 'block',
-                  styles: [
-                    {title: '일반', value: 'normal'},
-                    {title: '제목 2', value: 'h2'},
-                    {title: '제목 3', value: 'h3'},
-                    {title: '인용', value: 'blockquote'}
-                  ],
-                  lists: [
-                    {title: '글머리 기호', value: 'bullet'},
-                    {title: '번호 매기기', value: 'number'}
-                  ],
-                  marks: {
-                    decorators: [
-                      {title: '굵게', value: 'strong'},
-                      {title: '기울임', value: 'em'},
-                      {title: '밑줄', value: 'underline'},
-                      {title: '취소선', value: 'strike-through'}
-                    ],
-                    annotations: [
-                      {
-                        title: '링크',
-                        name: 'link',
-                        type: 'object',
-                        fields: [
-                          {
-                            title: 'URL',
-                            name: 'href',
-                            type: 'url'
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                }
-              ],
-              validation: (rule) => rule.required()
+              of: [{ type: 'block' }],
+              validation: (rule) => rule.required(),
             },
           ],
         },
@@ -146,13 +74,25 @@ const policySchema = defineType({
   preview: {
     select: {
       title: 'title',
-      subtitle: 'description',
+      description: 'description',
     },
     prepare(selection) {
-      const { title = '', subtitle = '' } = selection;
+      const { title = '', description = [] } = selection;
+      // Portable Text 배열에서 텍스트만 추출
+      const subtitle = description
+        .filter((block: any) => block._type === 'block')
+        .map((block: any) => 
+          block.children
+            .filter((child: any) => child._type === 'span')
+            .map((span: any) => span.text)
+            .join('')
+        )
+        .join(' ')
+        .substring(0, 50);
+
       return {
         title,
-        subtitle: subtitle.length > 50 ? subtitle.substring(0, 50) + '...' : subtitle,
+        subtitle: subtitle ? subtitle + '...' : '',
       };
     },
   },
