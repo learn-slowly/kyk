@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { groq } from 'next-sanity';
 import { client } from '@/sanity/lib/client';
-import PolicyCarouselWrapper from '../PolicyCarouselWrapper';
+import PolicyCarouselWrapper from './PolicyCarouselWrapper';
 import { Policy } from '@/types/policy';
 
 export const metadata: Metadata = {
