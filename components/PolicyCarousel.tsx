@@ -8,6 +8,7 @@ import ReactMarkdown from 'react-markdown';
 
 interface PolicyCarouselProps {
   policies: Policy[];
+  onTestClick?: () => void;
 }
 
 interface CardProps {
@@ -18,14 +19,19 @@ interface CardProps {
 }
 
 // blockContent를 문자열로 변환하는 함수
-const blockContentToString = (content: any): string => {
+const blockContentToString = (content: string | {
+  _type: string;
+  children: {
+    text: string;
+  }[];
+}[]): string => {
   if (typeof content === 'string') return content;
   if (Array.isArray(content)) {
     return content
       .map(block => {
         if (block._type === 'block') {
           return block.children
-            .map((child: any) => child.text)
+            .map((child: { text: string }) => child.text)
             .join('');
         }
         return '';
@@ -475,7 +481,7 @@ const Overlay = styled(motion.div)`
   z-index: 999;
 `;
 
-export default function PolicyCarousel({ policies = [] }: PolicyCarouselProps) {
+export default function PolicyCarousel({ policies = [], onTestClick }: PolicyCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedPolicy, setSelectedPolicy] = useState<Policy | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
