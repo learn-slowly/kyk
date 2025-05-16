@@ -27,10 +27,11 @@ const Container = styled.div`
   position: relative;
   z-index: 1;
   overflow-x: hidden;
+  overflow-y: visible;
 
   &:before {
     content: '';
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -109,12 +110,14 @@ const CarouselContainer = styled.div<{ $isExpanded: boolean }>`
   padding: 0 20px;
   position: relative;
   margin-top: 70px;
-  padding-bottom: ${props => props.$isExpanded ? '100px' : '0'};
+  min-height: ${props => props.$isExpanded ? '150vh' : '100vh'};
+  padding-bottom: ${props => props.$isExpanded ? '100vh' : '0'};
 
   @media (max-width: 768px) {
     padding: 0 10px;
     margin-top: 40px;
-    padding-bottom: ${props => props.$isExpanded ? '80px' : '0'};
+    min-height: ${props => props.$isExpanded ? '120vh' : '100vh'};
+    padding-bottom: ${props => props.$isExpanded ? '80vh' : '0'};
   }
 `;
 
@@ -193,56 +196,25 @@ const DetailPolicyContent = styled(motion.div)`
   margin-top: 1px;
   border-radius: 0 0 8px 8px;
   transform-origin: top;
+  max-height: 60vh;
+  overflow-y: auto;
 
-  /* 마크다운 스타일링 */
-  h1, h2, h3, h4, h5, h6 {
-    color: white;
-    margin: 1em 0 0.5em;
+  /* 스크롤바 스타일링 */
+  &::-webkit-scrollbar {
+    width: 6px;
   }
-
-  p {
-    margin: 0.5em 0;
-  }
-
-  ul, ol {
-    margin: 0.5em 0;
-    padding-left: 1.5em;
-  }
-
-  li {
-    margin: 0.3em 0;
-  }
-
-  blockquote {
-    margin: 1em 0;
-    padding-left: 1em;
-    border-left: 3px solid rgba(255, 255, 255, 0.2);
-    font-style: italic;
-  }
-
-  a {
-    color: #4A90E2;
-    text-decoration: none;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  code {
+  
+  &::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.1);
-    padding: 0.2em 0.4em;
     border-radius: 3px;
-    font-size: 0.9em;
   }
-
-  pre {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 1em;
-    border-radius: 5px;
-    overflow-x: auto;
-    code {
-      background: none;
-      padding: 0;
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
     }
   }
 `;
@@ -358,6 +330,36 @@ const CardContent = styled.div`
   flex-direction: column;
   flex: 1;
   
+  .header {
+    padding: 25px 25px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .content {
+    padding: 20px 25px;
+    overflow-y: auto;
+    flex: 1;
+    
+    /* 스크롤바 스타일링 */
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
+  
   h2 {
     font-size: 24px;
     margin-bottom: 15px;
@@ -423,9 +425,9 @@ const Card = styled(motion.div)<CardProps>`
   overflow: visible;
   opacity: 1;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 25px;
+  border-radius: 16px;
   background: ${(props: CardProps) => props.$color};
-  padding: 25px;
+  padding: 0;
   cursor: pointer;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   display: flex;
@@ -433,37 +435,24 @@ const Card = styled(motion.div)<CardProps>`
 
   ${props => props.$isExpanded && `
     height: auto;
-    max-height: 80vh;
-    overflow-y: auto;
+    max-height: none;
+    overflow-y: visible;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) !important;
+    width: 90%;
+    max-width: 800px;
+    margin: 0 auto;
 
     @media (max-width: 768px) {
-      width: calc(100vw - 40px);
-      left: 50%;
-      transform: translateX(-50%) !important;
+      width: calc(100% - 40px);
+      max-height: 90vh;
     }
 
     @media (max-width: 480px) {
-      width: calc(100vw - 20px);
-    }
-
-    /* 스크롤바 스타일링 */
-    &::-webkit-scrollbar {
-      width: 8px;
-    }
-    
-    &::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 4px;
-      
-      &:hover {
-        background: rgba(255, 255, 255, 0.3);
-      }
+      width: calc(100% - 20px);
     }
   `}
 
@@ -639,68 +628,72 @@ export default function PolicyCarousel({ policies = [], onTestClick }: PolicyCar
                 }
               >
                 <CardContent>
-                  <h2>{policy.title}</h2>
-                  <div className="description">
-                    <ReactMarkdown>{policy.description}</ReactMarkdown>
+                  <div className="header">
+                    <h2>{policy.title}</h2>
                   </div>
-                  
-                  <AnimatePresence>
-                    {isSelected && isExpanded && (
-                      <>
-                        <CloseButton
-                          onClick={handleClose}
-                          initial={{ opacity: 0, scale: 0 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0 }}
-                          transition={{ duration: 0.2 }}
-                          title="카드 닫기"
-                        >
-                          ×
-                        </CloseButton>
-                        <DetailPolicies>
-                          {policy.detailPolicies?.map((detail, idx) => (
-                            <DetailPolicy
-                              key={detail._key}
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0 }}
-                              transition={{ delay: idx * 0.05 }}
-                            >
-                              <DetailPolicyHeader 
-                                onClick={(e) => toggleDetail(e, detail._key)}
-                                title="클릭하여 세부내용 보기"
+                  <div className="content">
+                    <div className="description">
+                      <ReactMarkdown>{policy.description}</ReactMarkdown>
+                    </div>
+                    
+                    <AnimatePresence>
+                      {isSelected && isExpanded && (
+                        <>
+                          <CloseButton
+                            onClick={handleClose}
+                            initial={{ opacity: 0, scale: 0 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0 }}
+                            transition={{ duration: 0.2 }}
+                            title="카드 닫기"
+                          >
+                            ×
+                          </CloseButton>
+                          <DetailPolicies>
+                            {policy.detailPolicies?.map((detail, idx) => (
+                              <DetailPolicy
+                                key={detail._key}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ delay: idx * 0.05 }}
                               >
-                                <h3>{detail.title}</h3>
-                                <svg 
-                                  viewBox="0 0 24 24"
-                                  className={expandedDetails.includes(detail._key) ? 'expanded' : ''}
+                                <DetailPolicyHeader 
+                                  onClick={(e) => toggleDetail(e, detail._key)}
+                                  title="클릭하여 세부내용 보기"
                                 >
-                                  <path 
-                                    d="M7 10l5 5 5-5" 
-                                    fill="none" 
-                                    stroke="currentColor" 
-                                    strokeWidth="2"
-                                  />
-                                </svg>
-                              </DetailPolicyHeader>
-                              <AnimatePresence>
-                                {expandedDetails.includes(detail._key) && (
-                                  <DetailPolicyContent
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.2 }}
+                                  <h3>{detail.title}</h3>
+                                  <svg 
+                                    viewBox="0 0 24 24"
+                                    className={expandedDetails.includes(detail._key) ? 'expanded' : ''}
                                   >
-                                    <ReactMarkdown>{detail.description}</ReactMarkdown>
-                                  </DetailPolicyContent>
-                                )}
-                              </AnimatePresence>
-                            </DetailPolicy>
-                          ))}
-                        </DetailPolicies>
-                      </>
-                    )}
-                  </AnimatePresence>
+                                    <path 
+                                      d="M7 10l5 5 5-5" 
+                                      fill="none" 
+                                      stroke="currentColor" 
+                                      strokeWidth="2"
+                                    />
+                                  </svg>
+                                </DetailPolicyHeader>
+                                <AnimatePresence>
+                                  {expandedDetails.includes(detail._key) && (
+                                    <DetailPolicyContent
+                                      initial={{ height: 0, opacity: 0 }}
+                                      animate={{ height: 'auto', opacity: 1 }}
+                                      exit={{ height: 0, opacity: 0 }}
+                                      transition={{ duration: 0.2 }}
+                                    >
+                                      <ReactMarkdown>{detail.description}</ReactMarkdown>
+                                    </DetailPolicyContent>
+                                  )}
+                                </AnimatePresence>
+                              </DetailPolicy>
+                            ))}
+                          </DetailPolicies>
+                        </>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </CardContent>
               </Card>
             );
