@@ -1,17 +1,4 @@
-import { Rule } from '@sanity/types';
 import { defineType } from 'sanity';
-
-interface PreviewSelection {
-  title?: string;
-  category?: string;
-  publishedAt?: string | Date;
-  media?: {
-    asset: {
-      url: string;
-    };
-  };
-  author?: string;
-}
 
 const postSchema = defineType({
   name: 'post',

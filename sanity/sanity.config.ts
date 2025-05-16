@@ -1,7 +1,7 @@
 import {defineConfig} from 'sanity'
 import {deskTool} from 'sanity/desk'
 import {visionTool} from '@sanity/vision'
-import {schemaTypes} from './schemas'
+import {schemaTypes} from '../app/president2025/schemaTypes'
 import {markdownSchema} from 'sanity-plugin-markdown'
 
 export default defineConfig({
