@@ -45,10 +45,10 @@ const CardContainer = styled.div`
   }
 `;
 
-const PreviewCard = styled(motion.div)<{ $isActive: boolean }>`
+const PreviewCard = styled(motion.div)<{ $isActive: boolean; $bgColor: string }>`
   width: 300px;
   height: 400px;
-  background: rgba(255, 255, 255, 0.1);
+  background: ${props => props.$bgColor};
   border-radius: 20px;
   padding: 0;
   position: relative;
@@ -65,6 +65,22 @@ const PreviewCard = styled(motion.div)<{ $isActive: boolean }>`
   @media (max-width: 768px) {
     width: 280px;
     height: 380px;
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover:before {
+    opacity: 1;
   }
 `;
 
@@ -119,6 +135,7 @@ export default function PoliciesPage() {
       title: '세상을 바꾸는 10가지 방법',
       description: '권영국의 핵심 정책을 3D 카드로 확인해보세요',
       path: '/policies/main',
+      bgColor: 'linear-gradient(135deg, #FF6B6B 0%, #FF8787 100%)',
       preview: (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           <div style={{ 
@@ -128,28 +145,39 @@ export default function PoliciesPage() {
             transform: 'translate(-50%, -50%) rotate(-15deg)',
             perspective: '1000px'
           }}>
-            {/* 미리보기용 작은 카드들 */}
             {[...Array(3)].map((_, i) => (
               <motion.div
                 key={i}
                 style={{
                   width: '120px',
                   height: '160px',
-                  background: 'rgba(255, 255, 255, 0.1)',
+                  background: 'rgba(255, 255, 255, 0.15)',
                   borderRadius: '10px',
                   position: 'absolute',
                   top: 0,
                   left: 0,
                   transformOrigin: 'center',
                   transform: `rotate(${i * 30}deg) translateY(-${i * 10}px)`,
+                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
                 }}
                 animate={{
                   rotate: [i * 30, i * 30 + 360],
+                  boxShadow: [
+                    '0 4px 15px rgba(0, 0, 0, 0.2)',
+                    '0 8px 25px rgba(0, 0, 0, 0.3)',
+                    '0 4px 15px rgba(0, 0, 0, 0.2)',
+                  ],
                 }}
                 transition={{
                   duration: 20,
                   repeat: Infinity,
                   ease: 'linear',
+                  boxShadow: {
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  },
                 }}
               />
             ))}
@@ -161,6 +189,7 @@ export default function PoliciesPage() {
       title: 'SCTI 테스트',
       description: '나와 가장 잘 맞는 정책 캐릭터를 찾아보세요',
       path: '/policies/scti',
+      bgColor: 'linear-gradient(135deg, #FFD43B 0%, #FFF3BF 100%)',
       preview: (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           <motion.div
@@ -171,17 +200,24 @@ export default function PoliciesPage() {
               transform: 'translate(-50%, -50%)',
               width: '80%',
               height: '60%',
-              background: 'rgba(255, 255, 255, 0.1)',
+              background: 'rgba(255, 255, 255, 0.15)',
               borderRadius: '15px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
-              gap: '10px',
+              gap: '20px',
               padding: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
             }}
             animate={{
               scale: [1, 1.05, 1],
+              boxShadow: [
+                '0 4px 15px rgba(0, 0, 0, 0.1)',
+                '0 8px 25px rgba(0, 0, 0, 0.2)',
+                '0 4px 15px rgba(0, 0, 0, 0.1)',
+              ],
             }}
             transition={{
               duration: 2,
@@ -189,23 +225,29 @@ export default function PoliciesPage() {
               ease: 'easeInOut',
             }}
           >
-            <div style={{ fontSize: '24px' }}>🎯</div>
+            <div style={{ fontSize: '32px' }}>🎯</div>
             <div style={{ 
               width: '80%', 
-              height: '10px', 
+              height: '12px', 
               background: 'rgba(255, 255, 255, 0.2)',
-              borderRadius: '5px',
+              borderRadius: '6px',
               overflow: 'hidden',
+              boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1)',
             }}>
               <motion.div
                 style={{
                   width: '30%',
                   height: '100%',
                   background: 'rgba(255, 255, 255, 0.5)',
-                  borderRadius: '5px',
+                  borderRadius: '6px',
                 }}
                 animate={{
                   x: ['0%', '170%'],
+                  backgroundColor: [
+                    'rgba(255, 255, 255, 0.5)',
+                    'rgba(255, 255, 255, 0.7)',
+                    'rgba(255, 255, 255, 0.5)',
+                  ],
                 }}
                 transition={{
                   duration: 2,
@@ -222,6 +264,7 @@ export default function PoliciesPage() {
       title: '분야별 세부 정책',
       description: '8개 분야의 모든 정책을 자세히 살펴보세요',
       path: '/policies/gallery',
+      bgColor: 'linear-gradient(135deg, #69DB7C 0%, #B2F2BB 100%)',
       preview: (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           <div style={{
@@ -231,20 +274,27 @@ export default function PoliciesPage() {
             transform: 'translate(-50%, -50%)',
             display: 'grid',
             gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '10px',
+            gap: '15px',
             padding: '20px',
           }}>
             {[...Array(4)].map((_, i) => (
               <motion.div
                 key={i}
                 style={{
-                  width: '60px',
-                  height: '60px',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  borderRadius: '10px',
+                  width: '70px',
+                  height: '70px',
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
                 }}
                 animate={{
                   scale: [1, 1.1, 1],
+                  boxShadow: [
+                    '0 4px 15px rgba(0, 0, 0, 0.1)',
+                    '0 8px 25px rgba(0, 0, 0, 0.2)',
+                    '0 4px 15px rgba(0, 0, 0, 0.1)',
+                  ],
                 }}
                 transition={{
                   duration: 2,
@@ -272,6 +322,7 @@ export default function PoliciesPage() {
           <PreviewCard
             key={index}
             $isActive={activeIndex === index}
+            $bgColor={section.bgColor}
             onClick={() => handleCardClick(index)}
             onHoverStart={() => setActiveIndex(index)}
             whileHover={{ scale: 1.05 }}
