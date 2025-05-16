@@ -8,6 +8,7 @@ import { fetchSanityData } from '../../lib/sanity';
 import { format, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { PortableTextContent } from './PortableTextComponent';
+import { TypedObject } from '@portabletext/types';
 
 interface NewsDetail {
   _id: string;
@@ -22,7 +23,7 @@ interface NewsDetail {
     } 
   };
   summary?: string;
-  content?: any[];
+  content?: TypedObject[];
   videoUrl?: string;
 }
 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Calendar from 'react-calendar';
-import { format, isSameDay } from 'date-fns';
+import { format } from 'date-fns';
 import ko from 'date-fns/locale/ko';
 import 'react-calendar/dist/Calendar.css';
 

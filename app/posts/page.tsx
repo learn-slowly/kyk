@@ -60,18 +60,20 @@ export default async function PostsPage() {
       thumbnail,
       author
     }`,
-    {},
-    { cache: 'no-store' }
+    {}, // params (현재는 빈 객체)
+    { cache: 'no-store' } // next: { revalidate: 10 } 에서 변경
   );
 
   console.log('Fetched posts:', posts.length, 'items');
 
+  // 이미지 URL 추가 및 author 필드 포함
   const postsWithImageUrls: ClientPost[] = posts.map(post => {
     const clientPostData: SanityPost & { imageUrl?: string } = { ...post };
     if (post.thumbnail?.asset?._ref) {
       clientPostData.imageUrl = urlFor(post.thumbnail).url();
     }
-    return clientPostData as ClientPost;
+    // SanityPost는 이미 author를 포함할 수 있으므로, ClientPost 타입 단언만으로 충분
+    return clientPostData as ClientPost; 
   });
 
   console.log('Posts with image URLs:', postsWithImageUrls.length, 'items');

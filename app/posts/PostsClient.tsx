@@ -105,7 +105,7 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
       
       {/* 게시글 목록 - 미니멀 디자인 */}
       <div className="row g-4">
-        {filteredPosts.map((post) => {
+        {filteredPosts.map((post, index) => {
           // 요약 텍스트 준비 (summary가 없으면 body에서 추출)
           const summaryText = post.summary || 
             (post.body?.length > 120 ? post.body.substring(0, 120) + '...' : post.body);
@@ -128,7 +128,7 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                   e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.05)';
                 }}
               >
-                {post.imageUrl && (
+                {post.thumbnail?.asset?._ref && (
                   <div 
                     className="card-img-top position-relative" 
                     style={{ height: '180px', overflow: 'hidden' }}
@@ -165,15 +165,12 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                       </span>
                     </div>
                     <Image
-                      src={post.imageUrl}
+                      src={post.imageUrl || ''}
                       alt={post.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      style={{ 
-                        objectFit: 'cover',
-                        transition: 'transform 0.3s ease'
-                      }}
-                      className="hover-zoom"
+                      width={800}
+                      height={400}
+                      className="w-full h-auto object-cover rounded-lg shadow-lg"
+                      priority={index < 2}
                     />
                   </div>
                 )}
@@ -190,46 +187,37 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                     >
                       {CATEGORY_LABELS[post.category]}
                     </span>
-                    {post.category === 'today' && post.source && (
-                      <a
-                        href={post.source}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-decoration-none small"
-                        style={{ color: CATEGORY_COLORS.today, fontWeight: '500' }}
-                      >
-                        📸 사진 더 보기 <i className="bi bi-box-arrow-up-right" style={{ fontSize: '0.8em' }}></i>
-                      </a>
-                    )}
-                    {post.category === 'media' && post.source && (
-                      <a
-                        href={post.source}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-decoration-none small"
-                        style={{ color: CATEGORY_COLORS.media, fontWeight: '500' }}
-                      >
-                        📰 전문 보기 <i className="bi bi-box-arrow-up-right" style={{ fontSize: '0.8em' }}></i>
-                      </a>
+                    {(post.category === 'media' || post.category === 'today') && post.source && (
+                      <span className="ms-2 small">
+                        <a 
+                          href={post.source} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-decoration-none" 
+                          style={{ color: CATEGORY_COLORS[post.category], fontWeight: '500' }}
+                        >
+                          📄 전문보기 <i className="bi bi-box-arrow-up-right" style={{ fontSize: '0.8em' }}></i>
+                        </a>
+                      </span>
                     )}
                   </div>
                   
                   {/* 타이틀 및 날짜/글쓴이 */}
-                  <h5 className="card-title mb-2" style={{ cursor: 'pointer' }} onClick={() => openPost(post)}>{post.title}</h5>
+                  <h5 className="card-title mb-2">{post.title}</h5>
                   <div className="mb-3 text-secondary small">
                     {new Date(post.publishedAt).toLocaleDateString('ko-KR', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric'
                     })}
-                    {post.author && <span className="ms-2">| {post.author}</span>} 
+                    {post.author && <span className="ms-2">| 글쓴이: {post.author}</span>}
                   </div>
                   
-                  <p className="card-text text-secondary small" style={{ cursor: 'pointer' }} onClick={() => openPost(post)}>
+                  <p className="card-text text-secondary small">
                     {summaryText}
                   </p>
                   
-                  <div className="text-end mt-2" style={{ cursor: 'pointer' }} onClick={() => openPost(post)}>
+                  <div className="text-end mt-2">
                     <span className="small text-primary d-inline-flex align-items-center">
                       자세히 보기 <i className="bi bi-arrow-right ms-1"></i>
                     </span>
@@ -276,27 +264,18 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                   >
                     {CATEGORY_LABELS[selectedPost.category]}
                   </span>
-                  {selectedPost.category === 'today' && selectedPost.source && (
-                    <a
-                      href={selectedPost.source}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-decoration-none small"
-                      style={{ color: CATEGORY_COLORS.today, fontWeight: '500' }}
-                    >
-                      📸 사진 더 보기 <i className="bi bi-box-arrow-up-right" style={{ fontSize: '0.8em' }}></i>
-                    </a>
-                  )}
-                  {selectedPost.category === 'media' && selectedPost.source && (
-                    <a
-                      href={selectedPost.source}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-decoration-none small"
-                      style={{ color: CATEGORY_COLORS.media, fontWeight: '500' }}
-                    >
-                      📰 전문 보기 <i className="bi bi-box-arrow-up-right" style={{ fontSize: '0.8em' }}></i>
-                    </a>
+                  {(selectedPost.category === 'media' || selectedPost.category === 'today') && selectedPost.source && (
+                    <span className="ms-2">
+                      <a 
+                        href={selectedPost.source} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-decoration-none"
+                        style={{ color: CATEGORY_COLORS[selectedPost.category], fontWeight: '500' }}
+                      >
+                        📄 전문보기 <i className="bi bi-box-arrow-up-right" style={{ fontSize: '0.8em' }}></i>
+                      </a>
+                    </span>
                   )}
                 </div>
                 
@@ -309,20 +288,22 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                 </p>
                 {selectedPost.author && (
                   <p className="text-muted mb-3" style={{ fontSize: '0.9rem' }}>
-                    <i className="bi bi-person-fill me-1"></i> {selectedPost.author} 
+                    <i className="bi bi-person-fill me-1"></i> 글쓴이: {selectedPost.author}
                   </p>
                 )}
                 
-                {selectedPost.imageUrl && (
+                {selectedPost.thumbnail?.asset?._ref && (
                   <div className="mb-4 text-center">
                     <div 
                       className="position-relative d-inline-block"
                       style={{ cursor: 'zoom-in' }}
                       onClick={(e) => selectedPost.imageUrl && openImageModal(selectedPost.imageUrl, e)}
                     >
-                      <img 
-                        src={selectedPost.imageUrl} 
+                      <Image 
+                        src={selectedPost.imageUrl || ''}
                         alt={selectedPost.title}
+                        width={800}
+                        height={400}
                         className="img-fluid rounded-3"
                         style={{ maxHeight: '400px' }}
                       />
@@ -388,7 +369,7 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
             onClick={(e) => e.stopPropagation()}
             style={{ maxWidth: '90%', maxHeight: '90vh' }}
           >
-            <img 
+            <Image 
               src={imageModalSrc} 
               alt="확대 이미지" 
               className="img-fluid" 

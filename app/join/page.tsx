@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Link from 'next/link';
 
 export default function JoinPage() {

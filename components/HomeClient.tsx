@@ -2,8 +2,6 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { Schedule } from '../app/page'; // Schedule 타입을 app/page.tsx에서 임포트
 
 // black-box 스크롤 reveal 컴포넌트
 function BlackBoxReveal({ children }: { children: React.ReactNode }) {
@@ -60,11 +58,11 @@ function BlackBoxReveal({ children }: { children: React.ReactNode }) {
 }
 
 // HomeClient 컴포넌트 프롭스 타입 정의
-interface HomeClientProps {
-  schedules?: Schedule[]; // 선택적 프롭으로 일정 정보 받기
-}
+// interface HomeClientProps {
+//   schedules?: Schedule[]; // 선택적 프롭으로 일정 정보 받기
+// }
 
-export default function HomeClient({ schedules = [] }: HomeClientProps) {
+export default function HomeClient() {
   const [scrollY, setScrollY] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [viewportHeight, setViewportHeight] = useState(1000); // 기본값으로 1000px 설정
@@ -343,8 +341,13 @@ export default function HomeClient({ schedules = [] }: HomeClientProps) {
       >
         {/* 오버레이 내부에 배경 이미지 추가 */}
         <Image 
+<<<<<<< HEAD
           ref={overlayImageRef as any}
           src="/images/start.jpg" 
+=======
+          ref={overlayImageRef as React.RefObject<HTMLImageElement>}
+          src="/images/6.png" 
+>>>>>>> dev
           alt="권영국 후보" 
           className="overlay-image"
           fill

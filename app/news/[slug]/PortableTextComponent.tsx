@@ -3,11 +3,36 @@
 import { PortableText } from '@portabletext/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { TypedObject, PortableTextBlock, PortableTextMarkDefinition } from '@portabletext/types';
+import { 
+  PortableTextMarkComponentProps, 
+  PortableTextReactComponents, 
+  PortableTextComponentProps
+} from '@portabletext/react';
+
+type BlockComponentProps = PortableTextComponentProps<
+  PortableTextBlock<PortableTextMarkDefinition, TypedObject>
+>;
+
+interface ImageValue {
+  asset?: {
+    url?: string;
+  };
+  alt?: string;
+  caption?: string;
+}
+
+interface FileValue {
+  asset?: {
+    url?: string;
+  };
+  description?: string;
+}
 
 // 포터블 텍스트 블록 커스텀 컴포넌트
-const components = {
+const components: Partial<PortableTextReactComponents> = {
   types: {
-    image: ({ value }: any) => {
+    image: ({ value }: { value: ImageValue }) => {
       if (!value?.asset?.url) {
         return null;
       }
@@ -28,7 +53,7 @@ const components = {
         </div>
       );
     },
-    file: ({ value }: any) => {
+    file: ({ value }: { value: FileValue }) => {
       if (!value?.asset?.url) {
         return null;
       }
@@ -48,7 +73,9 @@ const components = {
     },
   },
   marks: {
-    link: ({ children, value }: any) => {
+    link: ({ children, value }: PortableTextMarkComponentProps) => {
+      if (!value?.href) return <>{children}</>;
+      
       const rel = !value.href.startsWith('/') ? 'noreferrer noopener' : undefined;
       const target = !value.href.startsWith('/') ? '_blank' : undefined;
       
@@ -65,40 +92,44 @@ const components = {
     },
   },
   block: {
-    h2: ({ children }: any) => (
+    h2: ({ children }: BlockComponentProps) => (
       <h2 className="fs-2 fw-bold mt-5 mb-3">{children}</h2>
     ),
-    h3: ({ children }: any) => (
+    h3: ({ children }: BlockComponentProps) => (
       <h3 className="fs-3 fw-bold mt-4 mb-3">{children}</h3>
     ),
-    normal: ({ children }: any) => (
+    normal: ({ children }: BlockComponentProps) => (
       <p className="mb-4 fs-5">{children}</p>
     ),
-    blockquote: ({ children }: any) => (
+    blockquote: ({ children }: BlockComponentProps) => (
       <blockquote className="blockquote border-start border-primary ps-4 py-2 my-4">
         <p className="mb-0 fs-5 fst-italic">{children}</p>
       </blockquote>
     ),
   },
   list: {
-    bullet: ({ children }: any) => (
+    bullet: ({ children }: BlockComponentProps) => (
       <ul className="mb-4 ps-4 fs-5">{children}</ul>
     ),
-    number: ({ children }: any) => (
+    number: ({ children }: BlockComponentProps) => (
       <ol className="mb-4 ps-4 fs-5">{children}</ol>
     ),
   },
   listItem: {
-    bullet: ({ children }: any) => (
+    bullet: ({ children }: BlockComponentProps) => (
       <li className="mb-2">{children}</li>
     ),
-    number: ({ children }: any) => (
+    number: ({ children }: BlockComponentProps) => (
       <li className="mb-2">{children}</li>
     ),
   }
 };
 
-export function PortableTextContent({ content }: { content: any }) {
+interface PortableTextContentProps {
+  content: TypedObject | TypedObject[];
+}
+
+export function PortableTextContent({ content }: PortableTextContentProps) {
   if (!content) {
     return <p className="text-muted fs-5">콘텐츠가 없습니다.</p>;
   }
