@@ -3,18 +3,15 @@
 import { PortableText } from '@portabletext/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { TypedObject } from '@portabletext/types';
+import { TypedObject, PortableTextBlock, PortableTextMarkDefinition } from '@portabletext/types';
 import { 
   PortableTextMarkComponentProps, 
   PortableTextReactComponents, 
-  PortableTextComponentProps, 
-  PortableTextBlock,
-  PortableTextMarkDefinition,
-  ArbitraryTypedObject
+  PortableTextComponentProps
 } from '@portabletext/react';
 
 type BlockComponentProps = PortableTextComponentProps<
-  PortableTextBlock<PortableTextMarkDefinition, ArbitraryTypedObject>
+  PortableTextBlock<PortableTextMarkDefinition, TypedObject>
 >;
 
 interface ImageValue {
