@@ -11,7 +11,7 @@ import { usePathname } from 'next/navigation';
 import { Analytics } from '@vercel/analytics/react';
 import StyledComponentsRegistry from '../lib/registry';
 import styled from 'styled-components';
-import PolicyFooter from './PolicyFooter';
+import PolicyFooter from '@/app/components/PolicyFooter';
 
 export default function ClientLayout({
   children,
