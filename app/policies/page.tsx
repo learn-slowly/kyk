@@ -143,12 +143,6 @@ export default function PoliciesPage() {
       path: '/policies/main',
       preview: (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-          <Image
-            src="/images/policy-preview-1.jpg"
-            alt="정책 프리뷰"
-            fill
-            style={{ objectFit: 'cover' }}
-          />
           <div style={{ 
             position: 'absolute',
             top: '50%',
@@ -191,12 +185,6 @@ export default function PoliciesPage() {
       path: '/policies/scti',
       preview: (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-          <Image
-            src="/images/policy-preview-2.jpg"
-            alt="SCTI 프리뷰"
-            fill
-            style={{ objectFit: 'cover' }}
-          />
           <motion.div
             style={{
               position: 'absolute',
@@ -258,12 +246,6 @@ export default function PoliciesPage() {
       path: '/policies/gallery',
       preview: (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-          <Image
-            src="/images/policy-preview-3.jpg"
-            alt="정책 갤러리 프리뷰"
-            fill
-            style={{ objectFit: 'cover' }}
-          />
           <div style={{
             position: 'absolute',
             top: '50%',
