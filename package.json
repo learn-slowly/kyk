@@ -34,10 +34,12 @@
     "react-big-calendar": "^1.18.0",
     "react-calendar": "^5.1.0",
     "react-dom": "^19.0.0",
+    "react-markdown": "^10.1.0",
     "react-qr-code": "^2.0.15",
     "react-responsive": "^10.0.1",
     "rellax": "^1.12.1",
     "sanity": "^3.87.0",
+    "sanity-plugin-markdown": "^5.1.0",
     "sass": "^1.69.5",
     "styled-components": "^6.1.17"
   },
