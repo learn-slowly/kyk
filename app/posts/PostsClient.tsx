@@ -188,7 +188,7 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                     >
                       {CATEGORY_LABELS[post.category]}
                     </span>
-                    {(post.category === 'media' || post.category === 'today') && post.source && (
+                    {(post.category === 'media') && post.source && (
                       <span className="ms-2 small">
                         <a 
                           href={post.source} 
@@ -198,6 +198,19 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                           style={{ color: CATEGORY_COLORS[post.category], fontWeight: '500' }}
                         >
                           📄 전문보기 <i className="bi bi-box-arrow-up-right" style={{ fontSize: '0.8em' }}></i>
+                        </a>
+                      </span>
+                    )}
+                    {(post.category === 'today') && post.source && (
+                      <span className="ms-2 small">
+                        <a 
+                          href={post.source} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-decoration-none" 
+                          style={{ color: CATEGORY_COLORS[post.category], fontWeight: '500' }}
+                        >
+                          📸 사진 더 보기 <i className="bi bi-box-arrow-up-right" style={{ fontSize: '0.8em' }}></i>
                         </a>
                       </span>
                     )}
@@ -211,7 +224,7 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                       month: 'long',
                       day: 'numeric'
                     })}
-                    {post.author && <span className="ms-2">| 글쓴이: {post.author}</span>}
+                    {post.author && <span className="ms-2">| {post.author}</span>}
                   </div>
                   
                   <p className="card-text text-secondary small">
@@ -265,7 +278,7 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                   >
                     {CATEGORY_LABELS[selectedPost.category]}
                   </span>
-                  {(selectedPost.category === 'media' || selectedPost.category === 'today') && selectedPost.source && (
+                  {(selectedPost.category === 'media') && selectedPost.source && (
                     <span className="ms-2">
                       <a 
                         href={selectedPost.source} 
@@ -275,6 +288,19 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                         style={{ color: CATEGORY_COLORS[selectedPost.category], fontWeight: '500' }}
                       >
                         📄 전문보기 <i className="bi bi-box-arrow-up-right" style={{ fontSize: '0.8em' }}></i>
+                      </a>
+                    </span>
+                  )}
+                  {(selectedPost.category === 'today') && selectedPost.source && (
+                    <span className="ms-2">
+                      <a 
+                        href={selectedPost.source} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-decoration-none"
+                        style={{ color: CATEGORY_COLORS[selectedPost.category], fontWeight: '500' }}
+                      >
+                        📸 사진 더 보기 <i className="bi bi-box-arrow-up-right" style={{ fontSize: '0.8em' }}></i>
                       </a>
                     </span>
                   )}
@@ -289,7 +315,7 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                 </p>
                 {selectedPost.author && (
                   <p className="text-muted mb-3" style={{ fontSize: '0.9rem' }}>
-                    <i className="bi bi-person-fill me-1"></i> 글쓴이: {selectedPost.author}
+                    <i className="bi bi-person-fill me-1"></i> {selectedPost.author}
                   </p>
                 )}
                 
