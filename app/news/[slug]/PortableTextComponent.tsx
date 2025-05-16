@@ -4,6 +4,7 @@ import { PortableText } from '@portabletext/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { TypedObject } from '@portabletext/types';
+import { PortableTextMarkComponentProps, PortableTextReactComponents } from '@portabletext/react';
 
 interface ImageValue {
   asset?: {
@@ -22,7 +23,6 @@ interface FileValue {
 
 interface LinkValue {
   href: string;
-  children: React.ReactNode;
 }
 
 interface BlockProps {
@@ -30,7 +30,7 @@ interface BlockProps {
 }
 
 // 포터블 텍스트 블록 커스텀 컴포넌트
-const components = {
+const components: Partial<PortableTextReactComponents> = {
   types: {
     image: ({ value }: { value: ImageValue }) => {
       if (!value?.asset?.url) {
@@ -73,7 +73,9 @@ const components = {
     },
   },
   marks: {
-    link: ({ children, value }: { children: React.ReactNode; value: LinkValue }) => {
+    link: ({ children, value }: PortableTextMarkComponentProps<LinkValue>) => {
+      if (!value?.href) return <>{children}</>;
+      
       const rel = !value.href.startsWith('/') ? 'noreferrer noopener' : undefined;
       const target = !value.href.startsWith('/') ? '_blank' : undefined;
       

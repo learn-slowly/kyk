@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
-import { Schedule } from '../app/page';
 
 // black-box 스크롤 reveal 컴포넌트
 function BlackBoxReveal({ children }: { children: React.ReactNode }) {
