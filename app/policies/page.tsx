@@ -4,67 +4,35 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
 
 const Container = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  width: 100vw;
   display: flex;
-  flex-direction: column;
   position: relative;
   overflow: hidden;
-`;
-
-const Title = styled.h1`
-  color: white;
-  text-align: center;
-  font-size: 2rem;
-  margin: 2rem 0;
-  opacity: 0.9;
-  padding: 0 1rem;
 
   @media (max-width: 768px) {
-    font-size: 1.5rem;
-    margin: 1.5rem 0;
-  }
-`;
-
-const CardContainer = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  gap: 2rem;
-  position: relative;
-  touch-action: pan-y pinch-zoom;
-
-  @media (max-width: 768px) {
-    padding: 1rem;
     flex-direction: column;
   }
 `;
 
-const PreviewCard = styled(motion.div)<{ $isActive: boolean; $bgColor: string }>`
-  width: 300px;
-  height: 400px;
+const Section = styled(motion.div)<{ $bgColor: string }>`
+  flex: 1;
+  height: 100vh;
   background: ${props => props.$bgColor};
-  border-radius: 20px;
-  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  overflow: hidden;
   cursor: pointer;
-  flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-
-  ${props => props.$isActive && `
-    border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  `}
+  overflow: hidden;
+  padding: 2rem;
 
   @media (max-width: 768px) {
-    width: 280px;
-    height: 380px;
+    height: 33.333vh;
+    min-height: 300px;
   }
 
   &:before {
@@ -84,50 +52,43 @@ const PreviewCard = styled(motion.div)<{ $isActive: boolean; $bgColor: string }>
   }
 `;
 
-const CardOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, 
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.7) 50%,
-    rgba(0, 0, 0, 0.9) 100%
-  );
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 2rem;
+const Content = styled.div`
+  position: relative;
+  z-index: 1;
+  text-align: center;
   color: white;
+  max-width: 400px;
 `;
 
-const CardTitle = styled.h2`
-  font-size: 1.5rem;
-  margin: 0 0 0.5rem;
+const Title = styled.h2`
+  font-size: 2rem;
+  margin: 0 0 1rem;
   font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
 
-const CardDescription = styled.p`
-  font-size: 1rem;
+const Description = styled.p`
+  font-size: 1.1rem;
   margin: 0;
-  opacity: 0.8;
+  opacity: 0.9;
+  line-height: 1.5;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
-const PreviewContent = styled(motion.div)`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%;
-  height: 90%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+const PreviewAnimation = styled(motion.div)`
+  margin-bottom: 2rem;
 `;
 
 export default function PoliciesPage() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [transitioning, setTransitioning] = useState(false);
+  const [selectedSection, setSelectedSection] = useState<number | null>(null);
   const router = useRouter();
 
   const sections = [
@@ -137,32 +98,26 @@ export default function PoliciesPage() {
       path: '/policies/main',
       bgColor: 'linear-gradient(135deg, #FF6B6B 0%, #FF8787 100%)',
       preview: (
-        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-          <div style={{ 
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%) rotate(-15deg)',
-            perspective: '1000px'
-          }}>
+        <PreviewAnimation>
+          <div style={{ position: 'relative', perspective: '1000px' }}>
             {[...Array(3)].map((_, i) => (
               <motion.div
                 key={i}
                 style={{
-                  width: '120px',
-                  height: '160px',
+                  width: '80px',
+                  height: '120px',
                   background: 'rgba(255, 255, 255, 0.15)',
                   borderRadius: '10px',
                   position: 'absolute',
                   top: 0,
-                  left: 0,
+                  left: `${-40 + i * 40}px`,
                   transformOrigin: 'center',
-                  transform: `rotate(${i * 30}deg) translateY(-${i * 10}px)`,
+                  transform: `rotate(${i * 15 - 15}deg)`,
                   boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
                   border: '1px solid rgba(255, 255, 255, 0.2)',
                 }}
                 animate={{
-                  rotate: [i * 30, i * 30 + 360],
+                  y: [0, -10, 0],
                   boxShadow: [
                     '0 4px 15px rgba(0, 0, 0, 0.2)',
                     '0 8px 25px rgba(0, 0, 0, 0.3)',
@@ -170,19 +125,15 @@ export default function PoliciesPage() {
                   ],
                 }}
                 transition={{
-                  duration: 20,
+                  duration: 2,
                   repeat: Infinity,
-                  ease: 'linear',
-                  boxShadow: {
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  },
+                  ease: 'easeInOut',
+                  delay: i * 0.2,
                 }}
               />
             ))}
           </div>
-        </div>
+        </PreviewAnimation>
       ),
     },
     {
@@ -191,23 +142,18 @@ export default function PoliciesPage() {
       path: '/policies/scti',
       bgColor: 'linear-gradient(135deg, #FFD43B 0%, #FFF3BF 100%)',
       preview: (
-        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+        <PreviewAnimation>
           <motion.div
             style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '80%',
-              height: '60%',
+              width: '160px',
+              height: '100px',
               background: 'rgba(255, 255, 255, 0.15)',
               borderRadius: '15px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
-              gap: '20px',
-              padding: '20px',
+              gap: '15px',
               border: '1px solid rgba(255, 255, 255, 0.2)',
               boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
             }}
@@ -225,12 +171,12 @@ export default function PoliciesPage() {
               ease: 'easeInOut',
             }}
           >
-            <div style={{ fontSize: '32px' }}>🎯</div>
+            <div style={{ fontSize: '24px' }}>🎯</div>
             <div style={{ 
               width: '80%', 
-              height: '12px', 
+              height: '8px', 
               background: 'rgba(255, 255, 255, 0.2)',
-              borderRadius: '6px',
+              borderRadius: '4px',
               overflow: 'hidden',
               boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1)',
             }}>
@@ -239,7 +185,7 @@ export default function PoliciesPage() {
                   width: '30%',
                   height: '100%',
                   background: 'rgba(255, 255, 255, 0.5)',
-                  borderRadius: '6px',
+                  borderRadius: '4px',
                 }}
                 animate={{
                   x: ['0%', '170%'],
@@ -257,7 +203,7 @@ export default function PoliciesPage() {
               />
             </div>
           </motion.div>
-        </div>
+        </PreviewAnimation>
       ),
     },
     {
@@ -266,25 +212,20 @@ export default function PoliciesPage() {
       path: '/policies/gallery',
       bgColor: 'linear-gradient(135deg, #69DB7C 0%, #B2F2BB 100%)',
       preview: (
-        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+        <PreviewAnimation>
           <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
             display: 'grid',
             gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '15px',
-            padding: '20px',
+            gap: '10px',
           }}>
             {[...Array(4)].map((_, i) => (
               <motion.div
                 key={i}
                 style={{
-                  width: '70px',
-                  height: '70px',
+                  width: '40px',
+                  height: '40px',
                   background: 'rgba(255, 255, 255, 0.15)',
-                  borderRadius: '12px',
+                  borderRadius: '8px',
                   border: '1px solid rgba(255, 255, 255, 0.2)',
                   boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
                 }}
@@ -305,42 +246,48 @@ export default function PoliciesPage() {
               />
             ))}
           </div>
-        </div>
+        </PreviewAnimation>
       ),
     },
   ];
 
-  const handleCardClick = (index: number) => {
+  const handleSectionClick = async (index: number) => {
+    if (transitioning) return;
+    
+    setTransitioning(true);
+    setSelectedSection(index);
+
+    // 애니메이션 후 페이지 전환
+    await new Promise(resolve => setTimeout(resolve, 500));
     router.push(sections[index].path);
   };
 
   return (
     <Container>
-      <Title>정책 살펴보기</Title>
-      <CardContainer>
+      <AnimatePresence>
         {sections.map((section, index) => (
-          <PreviewCard
+          <Section
             key={index}
-            $isActive={activeIndex === index}
             $bgColor={section.bgColor}
-            onClick={() => handleCardClick(index)}
-            onHoverStart={() => setActiveIndex(index)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
+            onClick={() => handleSectionClick(index)}
+            initial={false}
+            animate={{
+              flex: selectedSection === index ? 20 : 1,
+              opacity: selectedSection === null || selectedSection === index ? 1 : 0,
+            }}
+            transition={{
+              flex: { duration: 0.5, ease: 'easeInOut' },
+              opacity: { duration: 0.3 },
+            }}
           >
-            <PreviewContent>
+            <Content>
               {section.preview}
-            </PreviewContent>
-            <CardOverlay>
-              <CardTitle>{section.title}</CardTitle>
-              <CardDescription>{section.description}</CardDescription>
-            </CardOverlay>
-          </PreviewCard>
+              <Title>{section.title}</Title>
+              <Description>{section.description}</Description>
+            </Content>
+          </Section>
         ))}
-      </CardContainer>
+      </AnimatePresence>
     </Container>
   );
 } 
