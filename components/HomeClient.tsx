@@ -341,13 +341,8 @@ export default function HomeClient() {
       >
         {/* 오버레이 내부에 배경 이미지 추가 */}
         <Image 
-<<<<<<< HEAD
-          ref={overlayImageRef as any}
-          src="/images/start.jpg" 
-=======
           ref={overlayImageRef as React.RefObject<HTMLImageElement>}
-          src="/images/6.png" 
->>>>>>> dev
+          src="/images/start.jpg" 
           alt="권영국 후보" 
           className="overlay-image"
           fill
