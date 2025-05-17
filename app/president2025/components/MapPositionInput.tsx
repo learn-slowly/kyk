@@ -10,11 +10,23 @@ import ReactFlow, {
   useEdgesState,
   NodeChange,
   NodePositionChange,
+  Node,
 } from 'reactflow'
 import 'reactflow/dist/style.css'
 
+// 노드 데이터 타입 정의
+interface PersonNodeData {
+  _id: string;
+  name: string;
+  position: string;
+  isCandidate?: boolean;
+  photo?: string;
+  isSelected?: boolean;
+  relations?: string[];
+}
+
 // 커스텀 노드 컴포넌트
-const PersonNode = ({ data }) => {
+const PersonNode: React.FC<{ data: PersonNodeData }> = ({ data }) => {
   return (
     <div 
       style={{
@@ -67,7 +79,22 @@ const nodeTypes = {
   person: PersonNode,
 }
 
-const MapPositionInput = (props) => {
+// 문서 타입 정의
+interface DocumentProps {
+  _id: string;
+  name: string;
+}
+
+// Input 컴포넌트 Props 타입 정의
+interface MapPositionInputProps {
+  onChange: (event: PatchEvent) => void;
+  value?: { x: number; y: number };
+  schemaType: any; // sanity 스키마 타입
+  readOnly?: boolean;
+  document: DocumentProps;
+}
+
+const MapPositionInput: React.FC<MapPositionInputProps> = (props) => {
   const { 
     onChange, 
     value = { x: 0, y: 0 },
@@ -77,11 +104,11 @@ const MapPositionInput = (props) => {
   } = props
   
   const client = useClient({ apiVersion: '2023-01-01' })
-  const [people, setPeople] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [people, setPeople] = useState<PersonNodeData[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges] = useEdgesState([])
-  const [selectedNode, setSelectedNode] = useState(null)
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null)
   
   // 현재 문서의 ID
   const documentId = documentProp._id.replace('drafts.', '')
@@ -103,7 +130,7 @@ const MapPositionInput = (props) => {
         mapPosition
       }`
       
-      const peopleData = await client.fetch(query)
+      const peopleData = await client.fetch<PersonNodeData[]>(query)
       setPeople(peopleData)
       
       // 노드와 엣지 생성
@@ -155,7 +182,7 @@ const MapPositionInput = (props) => {
   }, [fetchPeopleData])
   
   // 노드 위치 변경 감지
-  const handleNodesChange = useCallback((changes) => {
+  const handleNodesChange = useCallback((changes: NodeChange[]) => {
     onNodesChange(changes)
     
     // 위치 변경 감지
@@ -173,7 +200,7 @@ const MapPositionInput = (props) => {
   
   // 현재 노드로 뷰 중심 이동
   const focusCurrentNode = useCallback(() => {
-    const reactFlowInstance = document.querySelector('.react-flow')?.reactFlowInstance
+    const reactFlowInstance = document.querySelector('.react-flow')?.reactFlowInstance as any
     if (reactFlowInstance && selectedNode) {
       reactFlowInstance.fitView({
         nodes: [selectedNode],
@@ -185,7 +212,7 @@ const MapPositionInput = (props) => {
   
   // 모든 노드 표시
   const showAllNodes = useCallback(() => {
-    const reactFlowInstance = document.querySelector('.react-flow')?.reactFlowInstance
+    const reactFlowInstance = document.querySelector('.react-flow')?.reactFlowInstance as any
     if (reactFlowInstance) {
       reactFlowInstance.fitView({
         padding: 0.5,
