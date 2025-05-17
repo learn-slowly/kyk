@@ -227,7 +227,7 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                     {post.author && <span className="ms-2">| {post.author}</span>}
                   </div>
                   
-                  <p className="card-text text-secondary small">
+                  <p className="card-text text-secondary small" style={{ whiteSpace: 'pre-line' }}>
                     {summaryText}
                   </p>
                   
