@@ -15,7 +15,9 @@ import ReactFlow, {
   NodeChange,
   NodePositionChange
 } from 'reactflow';
-// 서버사이드 렌더링 시 CSS 임포트 문제를 방지하기 위해 useEffect 내에서 CSS 적용
+// 명시적으로 ReactFlow 스타일시트 불러오기
+import 'reactflow/dist/style.css';
+
 import styled from 'styled-components';
 import Image from 'next/image';
 
@@ -304,6 +306,7 @@ const createNodesAndEdges = (people: any[]) => {
     position: person.position,
     data: { ...person, visible: true },
     draggable: true,
+    selectable: true,
   }));
 
   const edges: Edge[] = [];
@@ -335,6 +338,13 @@ const PeopleMap = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedPerson, setSelectedPerson] = useState<any | null>(null);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  
+  // ReactFlow 인스턴스 초기화 함수
+  const onInit = useCallback((instance: any) => {
+    setReactFlowInstance(instance);
+    console.log('ReactFlow 초기화 완료');
+  }, []);
 
   // 초기 데이터 가져오기
   useEffect(() => {
@@ -520,6 +530,11 @@ const PeopleMap = () => {
         zoomOnPinch={true}
         panOnScroll={true}
         panOnDrag={true}
+        onLoad={onInit}
+        nodesDraggable={true}
+        minZoom={0.2}
+        maxZoom={4}
+        proOptions={{ hideAttribution: true }}
       >
         <Background />
         <Controls />
