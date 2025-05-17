@@ -13,7 +13,7 @@ import ReactFlow, {
   NodeMouseHandler,
   Panel
 } from 'reactflow';
-import 'reactflow/dist/style.css';
+// 서버사이드 렌더링 시 CSS 임포트 문제를 방지하기 위해 useEffect 내에서 CSS 적용
 import styled from 'styled-components';
 import Image from 'next/image';
 
@@ -191,32 +191,6 @@ const nodeTypes = {
   person: PersonNode,
 };
 
-// 노드와 엣지 생성 함수
-const createNodesAndEdges = (people: any[]) => {
-  const nodes = people.map(person => ({
-    id: person.id,
-    type: 'person',
-    position: person.position,
-    data: { ...person, visible: true },
-    draggable: true,
-  }));
-
-  const edges: Edge[] = [];
-  people.forEach(person => {
-    person.relations.forEach((targetId: string) => {
-      edges.push({
-        id: `${person.id}-${targetId}`,
-        source: person.id,
-        target: targetId,
-        animated: person.isCandidate,
-        style: { stroke: person.isCandidate ? '#FFD700' : '#aaa', strokeWidth: 2 },
-      });
-    });
-  });
-
-  return { nodes, edges };
-};
-
 // 기본 백업 데이터 - Sanity 연결 실패 시 사용
 const fallbackPeople = [
   {
@@ -271,8 +245,35 @@ const fallbackPeople = [
   }
 ];
 
+// 노드와 엣지 생성 함수
+const createNodesAndEdges = (people: any[]) => {
+  const nodes = people.map(person => ({
+    id: person.id,
+    type: 'person',
+    position: person.position,
+    data: { ...person, visible: true },
+    draggable: true,
+  }));
+
+  const edges: Edge[] = [];
+  people.forEach(person => {
+    person.relations.forEach((targetId: string) => {
+      edges.push({
+        id: `${person.id}-${targetId}`,
+        source: person.id,
+        target: targetId,
+        animated: person.isCandidate,
+        style: { stroke: person.isCandidate ? '#FFD700' : '#aaa', strokeWidth: 2 },
+      });
+    });
+  });
+
+  return { nodes, edges };
+};
+
 // 메인 관계도 컴포넌트
 const PeopleMap = () => {
+  const [cssLoaded, setCssLoaded] = useState(false);
   const [peopleData, setPeopleData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -281,6 +282,13 @@ const PeopleMap = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedPerson, setSelectedPerson] = useState<any | null>(null);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+
+  // CSS를 동적으로 가져오기
+  useEffect(() => {
+    import('reactflow/dist/style.css').then(() => {
+      setCssLoaded(true);
+    });
+  }, []);
 
   // 초기 데이터 가져오기
   useEffect(() => {
@@ -379,7 +387,7 @@ const PeopleMap = () => {
     console.log('노드 위치 저장:', nodes);
   };
 
-  if (loading) {
+  if (!cssLoaded || loading) {
     return <LoadingContainer>데이터를 불러오는 중입니다...</LoadingContainer>;
   }
 

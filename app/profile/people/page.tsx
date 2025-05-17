@@ -3,7 +3,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { PageTitle } from '@/app/components/CommonStyles';
-// import PeopleMap from '@/app/components/PeopleMap';
+import PeopleMapWrapper from '@/app/components/PeopleMapWrapper';
 
 const Container = styled.div`
   padding: 4rem 2rem;
@@ -33,31 +33,16 @@ const Description = styled.p`
   font-size: 1.1rem;
 `;
 
-const ComingSoon = styled.div`
-  text-align: center;
-  padding: 3rem;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  margin: 2rem auto;
-  max-width: 800px;
-  
-  h3 {
-    margin-bottom: 1rem;
-    color: #0b365f;
-  }
-`;
-
 export default function PeoplePage() {
   return (
     <Container>
       <Title>권영국과 함께하는 사람들</Title>
       <Description>
         대한민국의 미래를 함께 만들어갈 선거대책위원회 멤버들을 소개합니다.
+        원하는 인물을 클릭하여 자세히 알아보고, 드래그하여 위치를 조정할 수 있습니다.
+        각 직책별로 필터링도 가능합니다.
       </Description>
-      <ComingSoon>
-        <h3>인터랙티브 관계도</h3>
-        <p>선거대책위원회 멤버 관계도가 준비 중입니다. 조금만 기다려주세요!</p>
-      </ComingSoon>
+      <PeopleMapWrapper />
     </Container>
   );
 } 
