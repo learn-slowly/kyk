@@ -11,6 +11,7 @@ import { usePathname } from 'next/navigation';
 import { Analytics } from '@vercel/analytics/react';
 import StyledComponentsRegistry from '../lib/registry';
 import PolicyFooter from '@/app/components/PolicyFooter';
+import { useState, useEffect } from 'react';
 
 export default function ClientLayout({
   children,
@@ -19,6 +20,26 @@ export default function ClientLayout({
 }) {
   const pathname = usePathname();
   const isStudioRoute = pathname?.startsWith('/studio');
+  const [isPolicyExpanded, setIsPolicyExpanded] = useState(false);
+
+  // 메뉴 외부 클릭 시 닫기 처리
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const navbar = document.getElementById('navbarNav');
+      const toggler = document.querySelector('.navbar-toggler');
+      
+      if (navbar?.classList.contains('show') && 
+          !navbar.contains(event.target as Node) && 
+          !toggler?.contains(event.target as Node)) {
+        // Bootstrap의 collapse 인스턴스를 가져와서 닫기
+        const bsCollapse = new (window as any).bootstrap.Collapse(navbar);
+        bsCollapse.hide();
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   // 스튜디오 경로인 경우 헤더와 푸터 없이 그대로 렌더링
   if (isStudioRoute) {
@@ -85,7 +106,59 @@ export default function ClientLayout({
                   <li className="nav-item">
                     <Link href="/profile" className="nav-link nav-button text-white fw-normal fs-5 px-2 py-1 site-title">소개</Link>
                   </li>
-                  <li className="nav-item">
+                  <li className="nav-item d-lg-none">
+                    <button 
+                      className="nav-link nav-button text-white fw-normal fs-5 px-2 py-1 site-title w-100 text-start border-0 bg-transparent d-flex justify-content-between align-items-center"
+                      onClick={() => setIsPolicyExpanded(!isPolicyExpanded)}
+                    >
+                      정책
+                      <i className={`bi bi-chevron-${isPolicyExpanded ? 'up' : 'down'} ms-2`}></i>
+                    </button>
+                    {isPolicyExpanded && (
+                      <ul className="list-unstyled ms-3">
+                        <li>
+                          <Link 
+                            href="/policies/carousel" 
+                            className="nav-link text-white fw-normal fs-6 px-2 py-1"
+                            onClick={() => {
+                              const navbar = document.getElementById('navbarNav');
+                              const bsCollapse = new (window as any).bootstrap.Collapse(navbar);
+                              bsCollapse.hide();
+                            }}
+                          >
+                            10대정책
+                          </Link>
+                        </li>
+                        <li>
+                          <Link 
+                            href="/policies/scti" 
+                            className="nav-link text-white fw-normal fs-6 px-2 py-1"
+                            onClick={() => {
+                              const navbar = document.getElementById('navbarNav');
+                              const bsCollapse = new (window as any).bootstrap.Collapse(navbar);
+                              bsCollapse.hide();
+                            }}
+                          >
+                            유형테스트
+                          </Link>
+                        </li>
+                        <li>
+                          <Link 
+                            href="/policies/gallery" 
+                            className="nav-link text-white fw-normal fs-6 px-2 py-1"
+                            onClick={() => {
+                              const navbar = document.getElementById('navbarNav');
+                              const bsCollapse = new (window as any).bootstrap.Collapse(navbar);
+                              bsCollapse.hide();
+                            }}
+                          >
+                            정책갤러리
+                          </Link>
+                        </li>
+                      </ul>
+                    )}
+                  </li>
+                  <li className="nav-item d-none d-lg-block">
                     <Link href="/policies/main" className="nav-link nav-button text-white fw-normal fs-5 px-2 py-1 site-title">정책</Link>
                   </li>
                   <li className="nav-item">

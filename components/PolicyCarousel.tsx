@@ -248,7 +248,7 @@ const DetailPolicyContent = styled(motion.div)`
 
 const NavigationButton = styled.button`
   position: absolute;
-  top: 30%;
+  top: 20%;
   transform: translateY(-50%);
   background: rgba(255, 255, 255, 0.1);
   border: none;
@@ -282,7 +282,7 @@ const NavigationButton = styled.button`
   @media (max-width: 768px) {
     width: 40px;
     height: 40px;
-    top: 45%;
+    top: 20%;
     
     &.left {
       left: calc(50% - 180px);
@@ -340,6 +340,8 @@ const CardContent = styled.div`
     padding: 20px 25px;
     overflow-y: auto;
     flex: 1;
+    display: flex;
+    flex-direction: column;
     
     /* 스크롤바 스타일링 */
     &::-webkit-scrollbar {
@@ -386,6 +388,7 @@ const CardContent = styled.div`
     line-height: 1.6;
     opacity: 0.95;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: auto;
 
     p {
       margin: 0 0 1em;
@@ -412,6 +415,28 @@ const CardContent = styled.div`
         opacity: 1;
       }
     }
+  }
+`;
+
+const ViewMoreButton = styled.div`
+  text-align: center;
+  padding: 10px;
+  margin-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.9rem;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  i {
+    font-size: 1.1rem;
   }
 `;
 
@@ -634,6 +659,10 @@ export default function PolicyCarousel({ policies = [] }: PolicyCarouselProps) {
                         <div className="description">
                           <ReactMarkdown>{blockContentToString(policy.description)}</ReactMarkdown>
                         </div>
+                        <ViewMoreButton>
+                          <span>클릭해서 자세히 보기</span>
+                          <i className="bi bi-arrow-right-circle"></i>
+                        </ViewMoreButton>
                         
                         <AnimatePresence>
                           {isSelected && isExpanded && (

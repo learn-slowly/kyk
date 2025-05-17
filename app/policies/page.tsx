@@ -9,17 +9,26 @@ export const metadata = {
 
 async function getPolicies(): Promise<Policy[]> {
   const policies = await client.fetch(`
-    *[_type == "policy"] | order(order asc) {
+    *[_type == "policy"] | order(orderRank asc) {
       _id,
       title,
-      description,
+      description[] {
+        ...,
+        children[] {
+          ...,
+        }
+      },
       color,
-      order,
+      orderRank,
       detailPolicies[] {
         _key,
         title,
-        description,
-        "image": image.asset->
+        description[] {
+          ...,
+          children[] {
+            ...,
+          }
+        }
       }
     }
   `);

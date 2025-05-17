@@ -224,7 +224,7 @@ export default function PoliciesMainPage() {
       description: '분야별 세부정책을 확인하세요',
       color: '#45B7D1',
       path: '/policies/gallery',
-      isDisabled: false,
+      isDisabled: true,
       renderAnimation: () => (
         <AnimationContainer>
           <GalleryGrid>
