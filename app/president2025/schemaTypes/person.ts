@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+// import MapPositionInput from '../components/MapPositionInput'
 
 export default defineType({
   name: 'person',
@@ -78,9 +79,9 @@ export default defineType({
       type: 'object',
       description: '관계도에서 표시될 위치를 지정합니다',
       hidden: ({document}) => !document?.showOnMap,
-      components: {
-        input: () => import('../components/MapPositionInput').then(mod => mod.default)
-      },
+      // components: {
+      //   input: MapPositionInput
+      // },
       fields: [
         {
           name: 'x',
