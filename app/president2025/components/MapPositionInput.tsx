@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { set, PatchEvent } from 'sanity'
 import { Box, Card, Stack, Text, Button, Flex } from '@sanity/ui'
 import { useClient } from 'sanity'
@@ -12,6 +12,7 @@ import ReactFlow, {
   NodePositionChange,
   Node,
   Edge,
+  ReactFlowInstance,
 } from 'reactflow'
 import 'reactflow/dist/style.css'
 
@@ -111,6 +112,7 @@ const MapPositionInput: React.FC<MapPositionInputProps> = (props) => {
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges] = useEdgesState([])
   const [selectedNode, setSelectedNode] = useState<Node | null>(null)
+  const reactFlowInstanceRef = useRef<ReactFlowInstance | null>(null)
   
   // 현재 문서의 ID
   const documentId = documentProp._id.replace('drafts.', '')
@@ -204,9 +206,8 @@ const MapPositionInput: React.FC<MapPositionInputProps> = (props) => {
   
   // 현재 노드로 뷰 중심 이동
   const focusCurrentNode = useCallback(() => {
-    const reactFlowInstance = document.querySelector('.react-flow')?.reactFlowInstance as any
-    if (reactFlowInstance && selectedNode) {
-      reactFlowInstance.fitView({
+    if (reactFlowInstanceRef.current && selectedNode) {
+      reactFlowInstanceRef.current.fitView({
         nodes: [selectedNode],
         padding: 0.5,
         duration: 800
@@ -216,9 +217,8 @@ const MapPositionInput: React.FC<MapPositionInputProps> = (props) => {
   
   // 모든 노드 표시
   const showAllNodes = useCallback(() => {
-    const reactFlowInstance = document.querySelector('.react-flow')?.reactFlowInstance as any
-    if (reactFlowInstance) {
-      reactFlowInstance.fitView({
+    if (reactFlowInstanceRef.current) {
+      reactFlowInstanceRef.current.fitView({
         padding: 0.5,
         duration: 800
       })
@@ -270,6 +270,9 @@ const MapPositionInput: React.FC<MapPositionInputProps> = (props) => {
               maxZoom={4}
               style={{ background: '#f5f5f5' }}
               proOptions={{ hideAttribution: true }}
+              onInit={(instance) => {
+                reactFlowInstanceRef.current = instance;
+              }}
             >
               <Controls />
               <Background color="#aaa" gap={16} />
