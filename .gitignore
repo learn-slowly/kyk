@@ -36,5 +36,8 @@ next-env.d.ts
 # Sanity
 /dist
 .sanity
-sanity0000/
+# sanity0000/
+/backup-old/
 \n# local env files\n.env.local\n.env.development.local\n.env.test.local\n.env.production.local
+
+.vercel

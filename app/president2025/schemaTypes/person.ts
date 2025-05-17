@@ -23,14 +23,15 @@ export default defineType({
       type: 'string',
       options: {
         list: [
-          {title: '선대위고문', value: 'level1'},
-          {title: '총괄선대위원장', value: 'level2'},
-          {title: '후원회장', value: 'level3'},
-          {title: '공동후원회장', value: 'level4'},
-          {title: '공동선대위원장', value: 'level5'},
-          {title: '부문별 선대위원장', value: 'level6'},
-          {title: '특보', value: 'level7'},
-          {title: '지지자', value: 'level8'}
+          {title: '후보', value: 'level1'},
+          {title: '선대위고문', value: 'level2'},
+          {title: '총괄선대위원장', value: 'level3'},
+          {title: '후원회장', value: 'level4'},
+          {title: '공동후원회장', value: 'level5'},
+          {title: '공동선대위원장', value: 'level6'},
+          {title: '부문별 선대위원장', value: 'level7'},
+          {title: '특보', value: 'level8'},
+          {title: '지지자', value: 'level9'}
         ]
       },
       validation: Rule => Rule.required()

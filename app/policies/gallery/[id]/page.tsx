@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { client } from '@/sanity0000/lib/client';
-import { urlForImage } from '@/sanity0000/lib/image';
-import { useParams, useRouter } from 'next/navigation';
+import { client } from '@/app/president2025/config/lib/client';
+import { urlForImage } from '@/app/president2025/config/lib/image';
+import { useParams, useRouter, notFound } from 'next/navigation';
+import { Metadata } from 'next';
+import { groq } from 'next-sanity';
 
 const Container = styled.div`
   padding: 2rem;

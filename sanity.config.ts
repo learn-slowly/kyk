@@ -8,8 +8,8 @@ import { defineConfig } from 'sanity'
 import { deskTool } from 'sanity/desk'
 import { visionTool } from '@sanity/vision'
 import { schemaTypes } from './app/president2025/schemaTypes'
-import { apiVersion, dataset, projectId } from './sanity0000/env'
-import { structure as customStructure } from './sanity0000/structure'
+import { apiVersion, dataset, projectId } from './app/president2025/config/env'
+import { structure as customStructure } from './app/president2025/config/structure'
 
 export default defineConfig({
   name: 'default',

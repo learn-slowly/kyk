@@ -1,6 +1,8 @@
 'use client';// 빌드 오류 수정 - ref 콜백이 올바른 타입을 반환하도록 수정
 
-import { useState, useEffect, useRef } from 'react';import styled from 'styled-components';import { motion } from 'framer-motion';import { client, previewClient } from '@/sanity0000/lib/client';import { urlForImage } from '@/sanity0000/lib/image';import { useRouter } from 'next/navigation';import Image from 'next/image';import { PageTitle } from '@/app/components/CommonStyles';
+import { useState, useEffect, useRef } from 'react';import styled from 'styled-components';import { motion } from 'framer-motion';import { client, previewClient } from '@/app/president2025/config/lib/client';
+import { urlForImage } from '@/app/president2025/config/lib/image';
+import { useRouter } from 'next/navigation';import Image from 'next/image';import { PageTitle } from '@/app/components/CommonStyles';
 
 const Container = styled.div`
   width: 100%;
