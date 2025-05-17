@@ -800,7 +800,7 @@ const PeopleMap = () => {
           <DetailRole $isCandidate={selectedPerson.isCandidate}>
             {selectedPerson.role}
           </DetailRole>
-          <DetailDescription>"{selectedPerson.quote || '한마디가 없습니다.'}"</DetailDescription>
+          <DetailDescription>&ldquo;{selectedPerson.quote || '한마디가 없습니다.'}&rdquo;</DetailDescription>
           <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#777' }}>
             {selectedPerson.description || ''}
           </div>
