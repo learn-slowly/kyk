@@ -63,6 +63,65 @@ export default defineType({
       title: '순서',
       type: 'number',
       initialValue: 999
+    }),
+    defineField({
+      name: 'showOnMap',
+      title: '관계도에 표시',
+      type: 'boolean',
+      description: '관계도에 이 인물을 표시할지 여부를 선택합니다',
+      initialValue: false
+    }),
+    defineField({
+      name: 'mapPosition',
+      title: '관계도 위치',
+      type: 'object',
+      description: '관계도에서 표시될 위치를 지정합니다',
+      hidden: ({document}) => !document?.showOnMap,
+      fields: [
+        {
+          name: 'x',
+          title: 'X 좌표',
+          type: 'number',
+          initialValue: 0
+        },
+        {
+          name: 'y',
+          title: 'Y 좌표',
+          type: 'number',
+          initialValue: 0
+        }
+      ]
+    }),
+    defineField({
+      name: 'isCandidate',
+      title: '후보자',
+      type: 'boolean',
+      description: '이 인물이 후보자인지 여부를 선택합니다',
+      initialValue: false,
+      hidden: ({document}) => !document?.showOnMap
+    }),
+    defineField({
+      name: 'description',
+      title: '설명(관계도용)',
+      type: 'text',
+      description: '관계도에 표시될 간략한 설명을 입력합니다',
+      hidden: ({document}) => !document?.showOnMap
+    }),
+    defineField({
+      name: 'relations',
+      title: '관계',
+      description: '이 인물과 직접 관계된 다른 인물들을 선택합니다',
+      type: 'array',
+      hidden: ({document}) => !document?.showOnMap,
+      of: [
+        {
+          type: 'reference',
+          to: [{type: 'person'}],
+          options: {
+            disableNew: false
+          }
+        }
+      ]
     })
   ],
   preview: {
