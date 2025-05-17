@@ -78,6 +78,9 @@ export default defineType({
       type: 'object',
       description: '관계도에서 표시될 위치를 지정합니다',
       hidden: ({document}) => !document?.showOnMap,
+      components: {
+        input: () => import('../components/MapPositionInput').then(mod => mod.default)
+      },
       fields: [
         {
           name: 'x',
