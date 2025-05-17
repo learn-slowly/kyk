@@ -1,21 +1,77 @@
-import { defineType } from 'sanity';
-
-const policySchema = defineType({
+export default {
   name: 'policy',
   title: '정책',
   type: 'document',
   fields: [
     {
       name: 'title',
-      title: '제목',
+      title: '정책 제목',
       type: 'string',
-      validation: (rule) => rule.required(),
+      validation: (Rule: any) => Rule.required(),
     },
     {
       name: 'description',
-      title: '설명',
-      type: 'markdown',
-      validation: (rule) => rule.required(),
+      title: '간단 설명',
+      type: 'text',
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: 'color',
+      title: '카드 색상',
+      type: 'string',
+      options: {
+        list: [
+          {
+            title: '푸른 바다 🌊',
+            value: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+          },
+          {
+            title: '봄 하늘 🌤',
+            value: 'linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%)',
+          },
+          {
+            title: '따뜻한 햇살 ☀️',
+            value: 'linear-gradient(135deg, #f12711 0%, #f5af19 100%)',
+          },
+          {
+            title: '신선한 숲 🌳',
+            value: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
+          },
+          {
+            title: '차분한 저녁 🌆',
+            value: 'linear-gradient(135deg, #2c3e50 0%, #3498db 100%)',
+          },
+          {
+            title: '활기찬 아침 🌅',
+            value: 'linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%)',
+          },
+          {
+            title: '깊은 밤 🌙',
+            value: 'linear-gradient(135deg, #141e30 0%, #243b55 100%)',
+          },
+          {
+            title: '보라빛 꿈 💜',
+            value: 'linear-gradient(135deg, #834d9b 0%, #d04ed6 100%)',
+          },
+          {
+            title: '맑은 하늘 ⛅',
+            value: 'linear-gradient(135deg, #00c6fb 0%, #005bea 100%)',
+          },
+          {
+            title: '황금빛 들판 🌾',
+            value: 'linear-gradient(135deg, #FFD200 0%, #F7971E 100%)',
+          },
+        ],
+        layout: 'radio',
+        direction: 'horizontal',
+      },
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: 'order',
+      title: '순서',
+      type: 'number',
+      validation: (Rule: any) => Rule.required().min(1).max(10),
     },
     {
       name: 'detailPolicies',
@@ -27,61 +83,34 @@ const policySchema = defineType({
           fields: [
             {
               name: 'title',
-              title: '제목',
+              title: '세부 정책 제목',
               type: 'string',
-              validation: (rule) => rule.required(),
+              validation: (Rule: any) => Rule.required(),
             },
             {
               name: 'description',
-              title: '설명',
-              type: 'markdown',
-              validation: (rule) => rule.required(),
+              title: '세부 내용',
+              type: 'blockContent',
+              validation: (Rule: any) => Rule.required(),
+            },
+            {
+              name: 'image',
+              title: '관련 이미지',
+              type: 'image',
+              options: {
+                hotspot: true,
+              },
             },
           ],
         },
       ],
-      validation: (rule) => rule.required().min(1),
-    },
-    {
-      name: 'color',
-      title: '배경 색상',
-      type: 'string',
-      options: {
-        list: [
-          { title: '빨간색', value: 'linear-gradient(135deg, #FF6B6B 0%, #FF8787 100%)' },
-          { title: '주황색', value: 'linear-gradient(135deg, #FFA94D 0%, #FFD8A8 100%)' },
-          { title: '노란색', value: 'linear-gradient(135deg, #FFD43B 0%, #FFF3BF 100%)' },
-          { title: '초록색', value: 'linear-gradient(135deg, #69DB7C 0%, #B2F2BB 100%)' },
-          { title: '민트색', value: 'linear-gradient(135deg, #38D9A9 0%, #96F2D7 100%)' },
-          { title: '하늘색', value: 'linear-gradient(135deg, #4DABF7 0%, #A5D8FF 100%)' },
-          { title: '파란색', value: 'linear-gradient(135deg, #4C6EF5 0%, #BAC8FF 100%)' },
-          { title: '보라색', value: 'linear-gradient(135deg, #7950F2 0%, #E5DBFF 100%)' },
-          { title: '분홍색', value: 'linear-gradient(135deg, #E64980 0%, #FFD8E4 100%)' },
-        ],
-      },
-      validation: (rule) => rule.required(),
-    },
-    {
-      name: 'orderRank',
-      title: '정렬 순서',
-      type: 'number',
-      description: '숫자가 낮을수록 앞에 표시됩니다.',
-      validation: (rule) => rule.required(),
+      validation: (Rule: any) => Rule.required().min(1),
     },
   ],
   preview: {
     select: {
       title: 'title',
-      description: 'description',
-    },
-    prepare(selection) {
-      const { title = '', description = '' } = selection;
-      return {
-        title,
-        subtitle: description.substring(0, 50) + (description.length > 50 ? '...' : ''),
-      };
+      subtitle: 'description',
     },
   },
-});
-
-export default policySchema;
+} 
