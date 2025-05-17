@@ -3,6 +3,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
+import { PageTitle } from '@/app/components/CommonStyles';
 
 const Container = styled.div`
   padding: 4rem 2rem;
@@ -14,17 +15,8 @@ const Container = styled.div`
   }
 `;
 
-const Title = styled.h1`
-  font-size: 2.5rem;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 3rem;
+const Title = styled(PageTitle)`
   color: #333;
-  
-  @media (max-width: 768px) {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-  }
 `;
 
 const Grid = styled.div`

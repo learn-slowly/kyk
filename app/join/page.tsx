@@ -3,6 +3,7 @@
 import styled from 'styled-components';
 import Image from 'next/image';
 import Link from 'next/link';
+import { PageTitle } from '@/app/components/CommonStyles';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -60,33 +61,14 @@ const StyledImage = styled(Image)`
   object-fit: contain;
 `;
 
-const Title = styled.h1`
+const Title = styled(PageTitle)`
   color: #333;
-  font-size: 2rem;
-  text-align: center;
-  margin-bottom: 2rem;
-  font-family: 'GamtanRoad Gamtan', sans-serif;
-  position: relative;
-  z-index: 2;
   padding: 0.5rem;
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90px;
-    height: 3px;
-    background: #FF4B4B;
-    border-radius: 2px;
-    box-shadow: 30px 0 0 #FFD700, 60px 0 0 #4CAF50;
-  }
-
   @media (max-width: 768px) {
     font-size: 1.5rem;
     height: 40px;
