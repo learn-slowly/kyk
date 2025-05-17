@@ -55,7 +55,7 @@ export default function PolicyFooter() {
   return (
     <FooterWrapper>
       <BackgroundImage />
-      <div className="container position-relative" style={{ zIndex: 2 }}>
+      <div className="container-fluid position-relative" style={{ zIndex: 2 }}>
         <div className="row">
           <div className="col-lg-6 mb-4 mb-lg-0">
             <h3 className="fs-4 mb-3" style={{ fontFamily: 'GamtanRoad Gamtan, sans-serif' }}>
@@ -65,8 +65,8 @@ export default function PolicyFooter() {
               <Image 
                 src="/images/header.png" 
                 alt="민주노동당 권영국 후보 푸터 로고" 
-                width={266} 
-                height={38} 
+                width={220} 
+                height={32} 
                 style={{ marginRight: '8px' }} 
               />
               <span className="fs-1" style={{ fontFamily: 'GamtanRoad Gamtan, sans-serif' }}>권영국</span>

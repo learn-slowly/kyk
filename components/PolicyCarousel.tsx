@@ -1,7 +1,7 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, Fragment } from 'react';
+import { motion, AnimatePresence, useAnimation } from 'framer-motion';
+import { useState, Fragment, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Policy } from '@/types/policy';
 import ReactMarkdown from 'react-markdown';
@@ -15,6 +15,7 @@ interface CardProps {
   $color: string;
   $isExpanded: boolean;
   $total: number;
+  $isCenter: boolean;
 }
 
 // blockContent를 문자열로 변환하는 함수
@@ -160,6 +161,11 @@ const CardsContainer = styled(motion.div)`
   transform-style: preserve-3d;
   margin: 0 auto;
   perspective: 2000px;
+
+  @media (max-width: 768px) {
+    width: 260px;
+    height: 360px;
+  }
 `;
 
 const DetailPolicies = styled(motion.div)`
@@ -255,7 +261,7 @@ const NavigationButton = styled.button`
   position: absolute;
   top: 20%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   border: none;
   border-radius: 50%;
   width: 50px;
@@ -263,17 +269,28 @@ const NavigationButton = styled.button`
   color: white;
   cursor: pointer;
   z-index: 2;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
   &:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
     transform: translateY(-50%) scale(1.1);
+    border-color: rgba(255, 255, 255, 0.3);
   }
   
   &:active {
     transform: translateY(-50%) scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0;
+    cursor: default;
+    pointer-events: none;
   }
   
   &.left {
@@ -287,6 +304,7 @@ const NavigationButton = styled.button`
   @media (max-width: 768px) {
     width: 40px;
     height: 40px;
+    font-size: 1.2rem;
     top: 20%;
     
     &.left {
@@ -334,7 +352,7 @@ const CardContent = styled.div`
   z-index: 1;
   display: flex;
   flex-direction: column;
-  flex: 1;
+  height: 100%;
   
   .header {
     padding: 25px 25px 15px;
@@ -393,32 +411,12 @@ const CardContent = styled.div`
     line-height: 1.6;
     opacity: 0.95;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    margin-bottom: auto;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 
-    p {
-      margin: 0 0 1em;
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    ul, ol {
-      margin: 0.5em 0;
-      padding-left: 1.5em;
-    }
-
-    li {
-      margin: 0.3em 0;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: underline;
-      opacity: 0.9;
-      
-      &:hover {
-        opacity: 1;
-      }
+    @media (max-width: 768px) {
+      font-size: 14px;
     }
   }
 `;
@@ -426,7 +424,7 @@ const CardContent = styled.div`
 const ViewMoreButton = styled.div`
   text-align: center;
   padding: 10px;
-  margin-top: 15px;
+  margin-top: auto;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 0.9rem;
   opacity: 0.8;
@@ -435,6 +433,7 @@ const ViewMoreButton = styled.div`
   justify-content: center;
   gap: 5px;
   transition: opacity 0.2s ease;
+  background: inherit;
 
   &:hover {
     opacity: 1;
@@ -442,6 +441,11 @@ const ViewMoreButton = styled.div`
 
   i {
     font-size: 1.1rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 8px;
+    font-size: 0.8rem;
   }
 `;
 
@@ -460,10 +464,21 @@ const Card = styled(motion.div)<CardProps>`
   background: ${(props: CardProps) => props.$color};
   padding: 0;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: ${props => props.$isCenter ? `
+    0 15px 35px rgba(0, 0, 0, 0.4),
+    0 3px 10px rgba(0, 0, 0, 0.3),
+    -10px 0 20px rgba(0, 0, 0, 0.2),
+    10px 0 20px rgba(0, 0, 0, 0.2)
+  ` : '0 10px 30px rgba(0, 0, 0, 0.3)'};
   display: flex;
   flex-direction: column;
   transition: box-shadow 0.3s ease;
+
+  @media (max-width: 768px) {
+    width: 260px;
+    height: ${(props: CardProps) => props.$isExpanded ? 'auto' : '360px'};
+    min-height: 360px;
+  }
 
   ${props => props.$isExpanded && `
     position: fixed;
@@ -474,10 +489,17 @@ const Card = styled(motion.div)<CardProps>`
     max-height: 80vh;
     overflow-y: auto;
     box-shadow: 
-      0 10px 50px rgba(0, 0, 0, 0.5),
-      0 20px 100px rgba(0, 0, 0, 0.3);
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      0 10px 30px rgba(0, 0, 0, 0.3),
+      -15px 0 30px rgba(0, 0, 0, 0.2),
+      15px 0 30px rgba(0, 0, 0, 0.2);
     margin: 0;
     z-index: 1000;
+
+    @media (max-width: 768px) {
+      width: 90%;
+      max-width: 320px;
+    }
 
     /* 스크롤바 스타일링 */
     &::-webkit-scrollbar {
@@ -516,6 +538,68 @@ export default function PolicyCarousel({ policies = [] }: PolicyCarouselProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isRotating, setIsRotating] = useState(false);
   const [expandedDetails, setExpandedDetails] = useState<string[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // 모바일 여부 감지
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // 외부 클릭 감지
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isExpanded && containerRef.current) {
+        const expandedCard = containerRef.current.querySelector('[data-expanded="true"]');
+        if (expandedCard && !expandedCard.contains(event.target as Node)) {
+          handleClose();
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isExpanded]);
+
+  // 터치 이벤트 핸들러
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchEndX.current = null;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current !== null && touchEndX.current !== null) {
+      const diff = touchStartX.current - touchEndX.current;
+      const threshold = 50; // 스와이프 감지 임계값
+
+      if (Math.abs(diff) > threshold) {
+        if (diff > 0) {
+          // 왼쪽으로 스와이프
+          rotateRight();
+        } else {
+          // 오른쪽으로 스와이프
+          rotateLeft();
+        }
+      }
+    }
+    
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
 
   const toggleDetail = (e: React.MouseEvent, detailKey: string) => {
     e.stopPropagation();
@@ -527,30 +611,23 @@ export default function PolicyCarousel({ policies = [] }: PolicyCarouselProps) {
   };
 
   const getCardTransform = (index: number, total: number) => {
-    // 기본 설정
-    const radius = 400;  // 원통의 반지름
-    const angleRange = Math.PI / 2;  // 90도
-    
-    // 현재 인덱스를 기준으로 상대적 위치 계산
+    const radius = isMobile ? 250 : 400;  // 모바일에서는 더 작은 반경 사용
+    const angleRange = Math.PI / 2;
     const relativeIndex = ((index - currentIndex + total) % total);
     const theta = (relativeIndex / (total - 1) - 0.5) * angleRange;
     
-    // 좌표 계산
     let xPos, zPos, rotateY;
     
     if (relativeIndex === 0) {
-      // 현재 선택된 카드는 정중앙에 정면으로
       xPos = 0;
       zPos = 100;
       rotateY = 0;
     } else {
-      // 나머지 카드들은 원형으로 배치
       xPos = radius * Math.sin(theta);
       zPos = -Math.abs(radius * Math.cos(theta)) - (Math.abs(relativeIndex) * 20);
       rotateY = (theta * 180) / Math.PI;
     }
     
-    // z-index 계산
     const zIndex = relativeIndex === 0 ? 1000 : (90 - Math.abs(relativeIndex) * 5);
     
     return {
@@ -558,12 +635,13 @@ export default function PolicyCarousel({ policies = [] }: PolicyCarouselProps) {
       y: 0,
       z: zPos,
       rotateY,
-      scale: 1,
+      scale: isMobile ? 0.85 : 1,  // 모바일에서는 카드를 약간 더 축소
       zIndex,
       transition: {
         type: "spring",
-        stiffness: 300,
-        damping: 25
+        stiffness: 400,
+        damping: 30,
+        mass: 0.8,
       }
     } as const;
   };
@@ -593,7 +671,7 @@ export default function PolicyCarousel({ policies = [] }: PolicyCarouselProps) {
     if (!isExpanded && !isRotating && policies.length > 0) {
       setIsRotating(true);
       setCurrentIndex((prev) => (prev - 1 + policies.length) % policies.length);
-      setTimeout(() => setIsRotating(false), 800);
+      setTimeout(() => setIsRotating(false), 500); // 애니메이션 시간 단축
     }
   };
 
@@ -601,7 +679,7 @@ export default function PolicyCarousel({ policies = [] }: PolicyCarouselProps) {
     if (!isExpanded && !isRotating && policies.length > 0) {
       setIsRotating(true);
       setCurrentIndex((prev) => (prev + 1) % policies.length);
-      setTimeout(() => setIsRotating(false), 800);
+      setTimeout(() => setIsRotating(false), 500); // 애니메이션 시간 단축
     }
   };
 
@@ -620,128 +698,136 @@ export default function PolicyCarousel({ policies = [] }: PolicyCarouselProps) {
   }
 
   return (
-    <>
-      <Container $isExpanded={isExpanded}>
-        <Title>세상을 바꾸는 10가지 방법</Title>
-        <CarouselContainer $isExpanded={isExpanded}>
-          <NavigationButton 
-            className="left" 
-            onClick={rotateLeft}
-            style={{ opacity: isExpanded || isRotating ? 0 : 1 }}
-          >
-            ←
-          </NavigationButton>
-          <CardsContainer>
-            <AnimatePresence>
-              {isExpanded && (
-                <Overlay
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  onClick={handleClose}
-                />
-              )}
-            </AnimatePresence>
-            {policies.map((policy, index) => {
-              const isSelected = policy._id === selectedPolicy?._id;
-              
-              return (
-                <Fragment key={policy._id}>
-                  <Card
-                    $index={index}
-                    $color={policy.color}
-                    $isExpanded={isSelected && isExpanded}
-                    $total={policies.length}
-                    onClick={() => handleCardClick(policy)}
-                    initial={false}
-                    animate={getCardTransform(index, policies.length)}
-                  >
-                    <CardContent>
-                      <div className="header">
-                        <h2>{policy.title}</h2>
+    <Container 
+      $isExpanded={isExpanded}
+      ref={containerRef}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      <Title>세상을 바꾸는 10가지 방법</Title>
+      <CarouselContainer $isExpanded={isExpanded}>
+        <NavigationButton 
+          className="left" 
+          onClick={rotateLeft}
+          disabled={isExpanded || isRotating}
+        >
+          ‹
+        </NavigationButton>
+        <CardsContainer>
+          <AnimatePresence>
+            {isExpanded && (
+              <Overlay
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={handleClose}
+              />
+            )}
+          </AnimatePresence>
+          {policies.map((policy, index) => {
+            const isSelected = policy._id === selectedPolicy?._id;
+            const relativeIndex = ((index - currentIndex + policies.length) % policies.length);
+            const isCenter = relativeIndex === 0;
+            
+            return (
+              <Fragment key={policy._id}>
+                <Card
+                  $index={index}
+                  $color={policy.color}
+                  $isExpanded={isSelected && isExpanded}
+                  $total={policies.length}
+                  $isCenter={isCenter}
+                  onClick={() => handleCardClick(policy)}
+                  initial={false}
+                  animate={getCardTransform(index, policies.length)}
+                  data-expanded={isSelected && isExpanded}
+                >
+                  <CardContent>
+                    <div className="header">
+                      <h2>{policy.title}</h2>
+                    </div>
+                    <div className="content">
+                      <div className="description">
+                        <ReactMarkdown>{blockContentToString(policy.description)}</ReactMarkdown>
                       </div>
-                      <div className="content">
-                        <div className="description">
-                          <ReactMarkdown>{blockContentToString(policy.description)}</ReactMarkdown>
-                        </div>
-                        <ViewMoreButton>
-                          <span>클릭해서 자세히 보기</span>
-                          <i className="bi bi-arrow-right-circle"></i>
-                        </ViewMoreButton>
-                        
-                        <AnimatePresence>
-                          {isSelected && isExpanded && (
-                            <>
-                              <CloseButton
-                                onClick={handleClose}
-                                initial={{ opacity: 0, scale: 0 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0 }}
-                                transition={{ duration: 0.2 }}
-                                title="카드 닫기"
-                              >
-                                ×
-                              </CloseButton>
-                              <DetailPolicies>
-                                {policy.detailPolicies?.map((detail, idx) => (
-                                  <DetailPolicy
-                                    key={detail._key}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ delay: idx * 0.05 }}
+                      <ViewMoreButton>
+                        <span>클릭해서 자세히 보기</span>
+                        <i className="bi bi-arrow-right-circle"></i>
+                      </ViewMoreButton>
+                      
+                      <AnimatePresence>
+                        {isSelected && isExpanded && (
+                          <>
+                            <CloseButton
+                              onClick={handleClose}
+                              initial={{ opacity: 0, scale: 0 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0 }}
+                              transition={{ duration: 0.2 }}
+                              title="카드 닫기"
+                            >
+                              ×
+                            </CloseButton>
+                            <DetailPolicies>
+                              {policy.detailPolicies?.map((detail, idx) => (
+                                <DetailPolicy
+                                  key={detail._key}
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  exit={{ opacity: 0 }}
+                                  transition={{ delay: idx * 0.05 }}
+                                >
+                                  <DetailPolicyHeader 
+                                    onClick={(e) => toggleDetail(e, detail._key)}
+                                    title="클릭하여 세부내용 보기"
                                   >
-                                    <DetailPolicyHeader 
-                                      onClick={(e) => toggleDetail(e, detail._key)}
-                                      title="클릭하여 세부내용 보기"
+                                    <h3>{detail.title}</h3>
+                                    <svg 
+                                      viewBox="0 0 24 24"
+                                      className={expandedDetails.includes(detail._key) ? 'expanded' : ''}
                                     >
-                                      <h3>{detail.title}</h3>
-                                      <svg 
-                                        viewBox="0 0 24 24"
-                                        className={expandedDetails.includes(detail._key) ? 'expanded' : ''}
+                                      <path 
+                                        d="M7 10l5 5 5-5" 
+                                        fill="none" 
+                                        stroke="currentColor" 
+                                        strokeWidth="2"
+                                      />
+                                    </svg>
+                                  </DetailPolicyHeader>
+                                  <AnimatePresence>
+                                    {expandedDetails.includes(detail._key) && (
+                                      <DetailPolicyContent
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.2 }}
                                       >
-                                        <path 
-                                          d="M7 10l5 5 5-5" 
-                                          fill="none" 
-                                          stroke="currentColor" 
-                                          strokeWidth="2"
-                                        />
-                                      </svg>
-                                    </DetailPolicyHeader>
-                                    <AnimatePresence>
-                                      {expandedDetails.includes(detail._key) && (
-                                        <DetailPolicyContent
-                                          initial={{ height: 0, opacity: 0 }}
-                                          animate={{ height: 'auto', opacity: 1 }}
-                                          exit={{ height: 0, opacity: 0 }}
-                                          transition={{ duration: 0.2 }}
-                                        >
-                                          <ReactMarkdown>{blockContentToString(detail.description)}</ReactMarkdown>
-                                        </DetailPolicyContent>
-                                      )}
-                                    </AnimatePresence>
-                                  </DetailPolicy>
-                                ))}
-                              </DetailPolicies>
-                            </>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Fragment>
-              );
-            })}
-          </CardsContainer>
-          <NavigationButton 
-            className="right" 
-            onClick={rotateRight}
-            style={{ opacity: isExpanded || isRotating ? 0 : 1 }}
-          >
-            →
-          </NavigationButton>
-        </CarouselContainer>
-      </Container>
-    </>
+                                        <ReactMarkdown>{blockContentToString(detail.description)}</ReactMarkdown>
+                                      </DetailPolicyContent>
+                                    )}
+                                  </AnimatePresence>
+                                </DetailPolicy>
+                              ))}
+                            </DetailPolicies>
+                          </>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Fragment>
+            );
+          })}
+        </CardsContainer>
+        <NavigationButton 
+          className="right" 
+          onClick={rotateRight}
+          disabled={isExpanded || isRotating}
+        >
+          ›
+        </NavigationButton>
+      </CarouselContainer>
+    </Container>
   );
 } 

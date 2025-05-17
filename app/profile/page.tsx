@@ -365,7 +365,7 @@ export default function ProfilePage() {
                       </div>
                       <div className="bio-text-container">
                         <div className="bio-text">
-                          <p>&ldquo;하지만 아무리 광장의 불꽃이 타오른다 하여도 그 불꽃이 정치권력의 변화를 수반해내지 못하는 한 촛불은 언제든 배반당할 수 있음을 우리는 목격하고 있습니다. 해고된 노동자와 그 가족의 고통, 차별받는 비정규직 노동자의 한숨, 위험의 외주화로 죽어가는 하청 노동자의 죽음의 행렬, 끊임없이 반복되는 비인간적인 노동현실을 멈추게 하려면 어떻게 해야 할 것인지에 대한 제 고민은 매우 절박하고 간절한 것이었습니다.&rdquo; (2019년 10월 28일, 정의당 입당의 변)</p>
+                          <p>&ldquo;하지만 아무리 광장의 불꽃이 타오른다 하여도 그 불꽃이 정치권력의 변화를 수반해내지 못하는 한 촛불은 언제든 배반당할 수 있음을 우리는 목격하고 있습니다.&rdquo; (2019년 10월 28일, 정의당 입당의 변)</p>
                         </div>
                       </div>
                     </div>
@@ -387,7 +387,7 @@ export default function ProfilePage() {
                       </div>
                       <div className="bio-text-container">
                         <div className="bio-text">
-                          <p>2024년 녹색정의당의 뼈아픈 총선 실패 이후, 정의당을 다시 일으켜 세우기 위해 당대표로 출마한다. &ldquo;20년 동안 지속되었던 정의당의 원내정치는 실패했다. 하지만 정의당의 원내정치가 실패했다고 해서 진보정치가 실패한 것은 아닐 것이다. 정의당을 혁신하고 진보정치를 살려야 한다는 당원과 지지자분들의 간절함을 모아 용기를 내어 정의당 당대표 선거에 출마하게 되었다&rdquo; (2024년 05월 21일, SBS뉴스)</p>
+                          <p>&ldquo;20년 동안 지속되었던 정의당의 원내정치는 실패했다. 하지만 정의당의 원내정치가 실패했다고 해서 진보정치가 실패한 것은 아닐 것이다. 정의당을 혁신하고 진보정치를 살려야 한다는 당원과 지지자분들의 간절함을 모아 용기를 내어 정의당 당대표 선거에 출마하게 되었다&rdquo; (2024년 05월 21일, SBS뉴스)</p>
                         </div>
                       </div>
                     </div>
@@ -455,9 +455,9 @@ export default function ProfilePage() {
               />
             ))}
           </div>
-          
           <div className="instructions">
-            <p>슬라이드를 넘기려면 스크롤하거나 화살표를 클릭하세요</p>
+            <p className="mobile-instruction">스크롤하여 더보기</p>
+            <p className="desktop-instruction">슬라이드를 넘기려면 스크롤하거나 화살표를 클릭하세요</p>
             <p className="key-instructions">또는 키보드 방향키를 사용하세요</p>
           </div>
         </div>
@@ -907,15 +907,23 @@ export default function ProfilePage() {
         
         .instructions {
           color: white;
-          font-size: 12px;
           text-align: center;
           opacity: 0.7;
           background-color: rgba(0, 0, 0, 0.5);
           padding: 8px 15px;
           border-radius: 20px;
-          margin-bottom: 20px;
           backdrop-filter: blur(5px);
           max-width: 90%;
+          margin-bottom: 20px;
+        }
+        
+        .mobile-instruction {
+          display: none;
+        }
+        
+        .desktop-instruction, .key-instructions {
+          margin: 0;
+          font-size: 12px;
         }
         
         .key-instructions {
@@ -1058,23 +1066,38 @@ export default function ProfilePage() {
             letter-spacing: -1.5rem;
           }
 
+          .desktop-instruction, .key-instructions {
+            display: none;
+          }
+
+          .mobile-instruction {
+            display: block;
+            font-size: 13px;
+            margin: 0;
+          }
+
           .instructions {
-            display: block !important; 
-            position: fixed !important; 
-            bottom: 70px !important; /* slider-dots 보다 약간 위로 조정 */
-            left: 50% !important;
-            transform: translateX(-50%) !important; 
-            background-color: rgba(255, 0, 0, 0.8) !important; /* 눈에 잘 띄는 배경색 (약간 투명) */
-            color: white !important;
-            font-size: 14px !important; /* 폰트 크기 적절히 조정 */
-            opacity: 1 !important; 
-            z-index: 1000 !important; /* .slider-navigation의 z-index(10)보다 높게, vertical-nav(10)보다 높게 */
-            padding: 10px 15px !important;
-            width: auto !important; 
-            max-width: 90% !important;
-            border-radius: 8px !important; /* 기존 radius와 유사하게 */
-            text-align: center !important;
-            backdrop-filter: blur(5px); /* 기존 스타일 유지 */
+            position: fixed;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 6px 12px;
+            margin-bottom: 0;
+          }
+
+          .quote-text {
+            width: 80%;
+            font-size: 1.5rem;
+            line-height: 1.3;
+            margin-bottom: 1.5rem;
+          }
+
+          .bio-text {
+            width: 90%;
+            font-size: 0.95rem;
+            line-height: 1.4;
           }
         }
         
@@ -1106,8 +1129,31 @@ export default function ProfilePage() {
               }
               
           .instructions {
-            font-size: 13px !important; /* 더 작은 화면에서 폰트 약간 줄임 */
-            bottom: 60px !important; /* 위치 미세 조정 */
+            top: 85px;
+            font-size: 12px;
+            padding: 5px 10px;
+          }
+
+          .quote-text {
+            width: 85%;
+            font-size: 1.5rem;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+          }
+
+          .bio-text {
+            width: 95%;
+            font-size: 1rem;
+            line-height: 1.4;
+          }
+
+          .quote-text-container {
+            padding-left: 8%;
+          }
+
+          .bio-text-container {
+            padding-left: 35%;
+            padding-right: 8%;
           }
         }
 
