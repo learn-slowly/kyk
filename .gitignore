@@ -36,4 +36,5 @@ next-env.d.ts
 # Sanity
 /dist
 .sanity
+sanity0000/
 \n# local env files\n.env.local\n.env.development.local\n.env.test.local\n.env.production.local
