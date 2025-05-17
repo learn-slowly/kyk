@@ -2,46 +2,35 @@
 
 import React from 'react';
 import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
 import styled from 'styled-components';
 
-// 로딩 중 표시할 컴포넌트
-const LoadingFallback = styled.div`
+// ReactFlow를 동적으로 import하여 SSR 문제를 방지합니다
+const PeopleMap = dynamic(() => import('./PeopleMap'), {
+  ssr: false, // 서버 사이드 렌더링 비활성화
+  loading: () => <LoadingContainer>관계도를 불러오는 중입니다...</LoadingContainer>
+});
+
+const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 80vh;
   font-size: 1.2rem;
   color: #666;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  
-  .loader {
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #0b365f;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    margin-right: 20px;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
 `;
 
-// ReactFlow 컴포넌트를 클라이언트 사이드에서만 로드하도록 설정
-const PeopleMap = dynamic(() => import('./PeopleMap'), {
-  ssr: false,
-  loading: () => (
-    <LoadingFallback>
-      <div className="loader"></div>
-      <div>관계도를 로딩 중입니다...</div>
-    </LoadingFallback>
-  )
-});
+const MapContainer = styled.div`
+  width: 100%;
+  height: 80vh;
+  position: relative;
+  z-index: 1; /* z-index 추가 */
+`;
 
 export default function PeopleMapWrapper() {
-  return <PeopleMap />;
+  return (
+    <MapContainer>
+      <PeopleMap />
+    </MapContainer>
+  );
 } 

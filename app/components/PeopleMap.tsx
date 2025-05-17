@@ -31,6 +31,7 @@ const NodeCard = styled.div<{ $isCandidate?: boolean; $isVisible?: boolean }>`
   border: ${props => props.$isCandidate ? '2px solid #FFD700' : 'none'};
   transition: all 0.3s ease;
   opacity: ${props => props.$isVisible === false ? 0.4 : 1};
+  pointer-events: all;
   
   &:hover {
     transform: scale(1.05);
@@ -513,6 +514,12 @@ const PeopleMap = () => {
         onNodeClick={onNodeClick}
         nodeTypes={nodeTypes}
         fitView
+        elementsSelectable={true}
+        selectNodesOnDrag={false}
+        zoomOnScroll={true}
+        zoomOnPinch={true}
+        panOnScroll={true}
+        panOnDrag={true}
       >
         <Background />
         <Controls />
