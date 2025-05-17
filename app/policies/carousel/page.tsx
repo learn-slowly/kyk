@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { groq } from 'next-sanity';
-import { client, previewClient } from '@/sanity/lib/client';
+import { client, previewClient } from '@/sanity0000/lib/client';
 import { Policy } from '@/types/policy';
 import CarouselContainer from './CarouselContainer';
 

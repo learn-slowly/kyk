@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { client } from '@/sanity/lib/client';
-import { urlForImage } from '@/sanity/lib/image';
+import { client } from '@/sanity0000/lib/client';
+import { urlForImage } from '@/sanity0000/lib/image';
 import { useParams, useRouter } from 'next/navigation';
 
 const Container = styled.div`

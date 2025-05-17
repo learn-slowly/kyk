@@ -1,4 +1,4 @@
-import { client } from '@/sanity/lib/client';
+import { client } from '@/sanity0000/lib/client';
 import PolicyCarousel from '@/components/PolicyCarousel';
 import { Policy } from '@/types/policy';
 
