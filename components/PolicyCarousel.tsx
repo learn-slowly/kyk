@@ -5,6 +5,7 @@ import { useState, Fragment, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Policy } from '@/types/policy';
 import ReactMarkdown from 'react-markdown';
+import { PageTitle } from '@/app/components/CommonStyles';
 
 interface PolicyCarouselProps {
   policies: Policy[];
@@ -81,35 +82,16 @@ const Container = styled.div<{ $isExpanded: boolean }>`
   }
 `;
 
-const Title = styled.h1`
+// PageTitle에서 상속받아 색상만 변경
+const Title = styled(PageTitle)`
   color: white;
-  font-size: 2rem;
-  padding: 0.5rem;
-  margin: 0;
-  font-weight: 400;
-  text-align: center;
   opacity: 0.9;
-  letter-spacing: -0.03em;
-  font-family: 'GamtanRoad Gamtan', sans-serif;
-  position: relative;
+  margin: 0;
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90px;
-    height: 3px;
-    background: #FF4B4B;
-    border-radius: 2px;
-    box-shadow: 30px 0 0 #FFD700, 60px 0 0 #4CAF50;
-  }
-
   @media (max-width: 768px) {
     font-size: 1.5rem;
     height: 40px;
