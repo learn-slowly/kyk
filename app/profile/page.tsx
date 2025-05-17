@@ -56,6 +56,7 @@ const EmptySlide = styled.div`
   align-items: center;
   background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
   padding: 2rem;
+  overflow: hidden; /* 스크롤이 넘치지 않도록 설정 */
 `;
 
 const ButtonContainer = styled.div`
@@ -102,6 +103,7 @@ export default function ProfilePage() {
   // 다음 이미지로 이동
   const nextSlide = useCallback(() => {
     if (currentIndex === slides.length - 1) {
+      // 마지막 슬라이드에서 빈 슬라이드로 그대로 이동 (스크롤 제한 없음)
       setShowEmptySlide(true);
     } else {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
@@ -124,13 +126,12 @@ export default function ProfilePage() {
     setShowEmptySlide(false);
   }, []);
 
-  // 터치 이벤트 처리를 위한 변수
+  // 터치 시작 위치 기록
   const touchStartY = useRef(0);
   const touchEndY = useRef(0);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   
-  // 터치 시작 위치 기록
   const handleTouchStart = (e: TouchEvent) => {
     touchStartY.current = e.touches[0].clientY;
     touchStartX.current = e.touches[0].clientX;
@@ -245,17 +246,26 @@ export default function ProfilePage() {
       handleWheel(e);
     };
     
+    // body에 이벤트 등록 (모든 페이지에서 스크롤 동작하도록)
+    body.addEventListener('wheel', wheelHandler, { passive: false });
+    body.addEventListener('touchstart', handleTouchStart as EventListener);
+    body.addEventListener('touchmove', handleTouchMove as EventListener);
+    body.addEventListener('touchend', handleTouchEnd as EventListener);
+    
     if (slider) {
       slider.addEventListener('wheel', wheelHandler, { passive: false });
       slider.addEventListener('touchstart', handleTouchStart as EventListener);
       slider.addEventListener('touchmove', handleTouchMove as EventListener);
       slider.addEventListener('touchend', handleTouchEnd as EventListener);
-      
-      // body에도 이벤트 등록
-      body.addEventListener('wheel', wheelHandler, { passive: false });
     }
     
     return () => {
+      // body의 이벤트 리스너 제거
+      body.removeEventListener('wheel', wheelHandler);
+      body.removeEventListener('touchstart', handleTouchStart as EventListener);
+      body.removeEventListener('touchmove', handleTouchMove as EventListener);
+      body.removeEventListener('touchend', handleTouchEnd as EventListener);
+      
       if (slider) {
         slider.removeEventListener('wheel', wheelHandler);
         slider.removeEventListener('touchstart', handleTouchStart as EventListener);
@@ -263,30 +273,29 @@ export default function ProfilePage() {
         slider.removeEventListener('touchend', handleTouchEnd as EventListener);
       }
       
-      // body의 이벤트 리스너도 제거
-      body.removeEventListener('wheel', wheelHandler);
-      
       if (scrollTimeout.current) {
         clearTimeout(scrollTimeout.current);
       }
     };
-  }, [handleWheel, handleTouchEnd]);
+  }, [handleWheel, handleTouchEnd, handleTouchStart, handleTouchMove]);
 
   if (showEmptySlide) {
     return (
-      <EmptySlide>
-        <ButtonContainer>
-          <NavigationButton href="/profile">
-            권영국 이야기 다시보기
-          </NavigationButton>
-          <NavigationButton href="/profile/history">
-            권영국 살아온 길
-          </NavigationButton>
-          <NavigationButton href="/profile/people">
-            권영국과 함께하는 사람들
-          </NavigationButton>
-        </ButtonContainer>
-      </EmptySlide>
+      <div className="profile-page" ref={sliderRef}>
+        <EmptySlide>
+          <ButtonContainer>
+            <NavigationButton href="/profile">
+              권영국 이야기 다시보기
+            </NavigationButton>
+            <NavigationButton href="/profile/history">
+              권영국 살아온 길
+            </NavigationButton>
+            <NavigationButton href="/profile/people">
+              권영국과 함께하는 사람들
+            </NavigationButton>
+          </ButtonContainer>
+        </EmptySlide>
+      </div>
     );
   }
 
