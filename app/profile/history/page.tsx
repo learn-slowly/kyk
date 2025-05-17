@@ -79,7 +79,7 @@ const TimelineItem = styled(motion.div)<{ $isEven: boolean }>`
   }
 `;
 
-const TimelineContent = styled(motion.div)<{ $isImportant: boolean }>`
+const TimelineContent = styled(motion.div)<{ $isImportant: boolean, $isEven?: boolean }>`
   background: #fff;
   padding: 1.5rem;
   border-radius: 12px;
