@@ -39,6 +39,19 @@ const NodeCard = styled.div<{ $isCandidate?: boolean; $isVisible?: boolean }>`
     transform: scale(1.05);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   }
+  
+  /* 모바일 최적화 */
+  @media (max-width: 768px) {
+    width: 180px;
+    
+    &:hover, &:active {
+      transform: scale(1.03);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    width: 160px;
+  }
 `;
 
 const ImageContainer = styled.div`
@@ -46,10 +59,26 @@ const ImageContainer = styled.div`
   width: 100%;
   height: 220px;
   background: #f5f5f5;
+  
+  @media (max-width: 768px) {
+    height: 180px;
+  }
+  
+  @media (max-width: 480px) {
+    height: 160px;
+  }
 `;
 
 const Content = styled.div`
   padding: 1rem;
+  
+  @media (max-width: 768px) {
+    padding: 0.75rem;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+  }
 `;
 
 const Name = styled.h3`
@@ -58,6 +87,16 @@ const Name = styled.h3`
   margin-bottom: 0.5rem;
   color: #333;
   text-align: center;
+  
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
+  }
 `;
 
 const Role = styled.p<{ $isCandidate?: boolean }>`
@@ -66,6 +105,16 @@ const Role = styled.p<{ $isCandidate?: boolean }>`
   margin-bottom: 0.8rem;
   font-weight: ${props => props.$isCandidate ? 'bold' : 'normal'};
   text-align: center;
+  
+  @media (max-width: 768px) {
+    font-size: ${props => props.$isCandidate ? '1.1rem' : '0.9rem'};
+    margin-bottom: 0.6rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: ${props => props.$isCandidate ? '1rem' : '0.8rem'};
+    margin-bottom: 0.4rem;
+  }
 `;
 
 const Description = styled.p`
@@ -79,6 +128,19 @@ const Description = styled.p`
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    max-height: 50px;
+    -webkit-line-clamp: 2;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.75rem;
+    line-height: 1.3;
+    -webkit-line-clamp: 2;
+  }
 `;
 
 const DetailPanel = styled.div<{ $isVisible: boolean }>`
@@ -93,6 +155,20 @@ const DetailPanel = styled.div<{ $isVisible: boolean }>`
   z-index: 10;
   display: ${props => props.$isVisible ? 'block' : 'none'};
   transition: all 0.3s ease;
+  
+  @media (max-width: 768px) {
+    width: 280px;
+    padding: 1.2rem;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+  }
+  
+  @media (max-width: 480px) {
+    width: 90%;
+    max-width: 300px;
+    padding: 1rem;
+  }
 `;
 
 const DetailImage = styled.div`
@@ -216,6 +292,28 @@ const FlowContainer = styled.div`
     background-color: #fff;
     border: 1px solid #f0f0f0;
   }
+
+  /* 모바일 최적화 스타일 */
+  @media (max-width: 768px) {
+    height: calc(100vh - 120px);
+    
+    .react-flow__controls {
+      bottom: 10px;
+      right: 10px;
+      top: auto;
+      left: auto;
+    }
+    
+    .react-flow__controls-button {
+      width: 24px;
+      height: 24px;
+      padding: 8px;
+    }
+    
+    .react-flow__minimap {
+      display: none;
+    }
+  }
 `;
 
 // 커스텀 노드 컴포넌트
@@ -333,18 +431,42 @@ const PeopleMap = () => {
   const [error, setError] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const [showOverview, setShowOverview] = useState<boolean>(true);
   
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedPerson, setSelectedPerson] = useState<any | null>(null);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
-  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
+  
+  // 모바일 환경 감지
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
   
   // ReactFlow 인스턴스 초기화 함수
   const onInit = useCallback((instance: any) => {
     setReactFlowInstance(instance);
-    console.log('ReactFlow 초기화 완료');
-  }, []);
+    console.log('ReactFlow 초기화 완료', isMobile ? '(모바일)' : '(데스크톱)');
+    
+    // 모바일이면 초기 줌 레벨을 조정
+    if (isMobile && instance) {
+      setTimeout(() => {
+        instance.fitView({ padding: 0.2 });
+      }, 100);
+    }
+  }, [isMobile]);
 
   // 초기 데이터 가져오기
   useEffect(() => {
@@ -435,11 +557,54 @@ const PeopleMap = () => {
     [setEdges]
   );
 
+  // 노드 클릭 이벤트 핸들러를 Prezi 스타일로 수정
   const onNodeClick: NodeMouseHandler = useCallback((_, node) => {
-    if (node.data) {
+    if (node.data && reactFlowInstance) {
+      setIsAnimating(true);
+      
+      // 개요 보기 모드였으면 닫기
+      setShowOverview(false);
+      
+      // 노드 데이터 설정
       setSelectedPerson(node.data);
+      
+      // 클릭된 노드로 확대 이동 (Prezi 효과)
+      const zoomLevel = 1.8;  // 확대 레벨
+      
+      reactFlowInstance.setCenter(
+        node.position.x + (node.width ?? 0) / 2, 
+        node.position.y + (node.height ?? 0) / 2, 
+        { 
+          zoom: zoomLevel,
+          duration: 800 
+        }
+      );
+      
+      // 애니메이션 완료 후 상태 업데이트
+      setTimeout(() => {
+        setIsAnimating(false);
+      }, 1000);
     }
-  }, []);
+  }, [reactFlowInstance]);
+
+  // 개요 보기 (모든 노드가 보이도록)
+  const showAllNodes = useCallback(() => {
+    if (reactFlowInstance) {
+      setIsAnimating(true);
+      setShowOverview(true);
+      setSelectedPerson(null);
+      
+      // 모든 노드가 보이도록 뷰 조정
+      reactFlowInstance.fitView({
+        padding: 0.5,
+        duration: 800
+      });
+      
+      setTimeout(() => {
+        setIsAnimating(false);
+      }, 1000);
+    }
+  }, [reactFlowInstance]);
 
   const closeDetails = () => {
     setSelectedPerson(null);
@@ -526,15 +691,16 @@ const PeopleMap = () => {
         fitView
         elementsSelectable={true}
         selectNodesOnDrag={false}
-        zoomOnScroll={true}
+        zoomOnScroll={!isMobile}
         zoomOnPinch={true}
-        panOnScroll={true}
+        panOnScroll={!isMobile}
         panOnDrag={true}
         onLoad={onInit}
-        nodesDraggable={true}
-        minZoom={0.2}
+        nodesDraggable={!isMobile}
+        minZoom={isMobile ? 0.5 : 0.2}
         maxZoom={4}
         proOptions={{ hideAttribution: true }}
+        fitViewOptions={{ padding: isMobile ? 0.2 : 0.4 }}
       >
         <Background />
         <Controls />
@@ -572,6 +738,24 @@ const PeopleMap = () => {
             </div>
           </ControlPanel>
         </Panel>
+        
+        {/* 모바일 사용자를 위한 안내 메시지 */}
+        {isMobile && (
+          <Panel position="top-center">
+            <div style={{ 
+              background: 'rgba(0,0,0,0.7)', 
+              color: 'white', 
+              padding: '8px 16px', 
+              borderRadius: '20px',
+              fontSize: '0.8rem',
+              textAlign: 'center',
+              marginTop: '10px',
+              maxWidth: '280px'
+            }}>
+              손가락으로 확대/축소하고 드래그하여 이동할 수 있습니다
+            </div>
+          </Panel>
+        )}
         
         {/* 저장 상태 표시 패널 */}
         {saveStatus && (

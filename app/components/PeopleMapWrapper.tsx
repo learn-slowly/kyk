@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 import styled from 'styled-components';
@@ -24,13 +24,55 @@ const MapContainer = styled.div`
   width: 100%;
   height: 80vh;
   position: relative;
-  z-index: 1; /* z-index 추가 */
+  z-index: 1;
+  
+  @media (max-width: 768px) {
+    height: calc(100vh - 120px);
+  }
+`;
+
+const MobileNotice = styled.div`
+  display: none;
+  
+  @media (max-width: 768px) {
+    display: block;
+    background-color: #f5f5f5;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    color: #666;
+    text-align: center;
+  }
 `;
 
 export default function PeopleMapWrapper() {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+  
   return (
-    <MapContainer>
-      <PeopleMap />
-    </MapContainer>
+    <>
+      {isMobile && (
+        <MobileNotice>
+          모바일 환경에서는 일부 기능이 제한될 수 있습니다. 
+          더 나은 경험을 위해 데스크톱 환경을 권장합니다.
+        </MobileNotice>
+      )}
+      <MapContainer>
+        <PeopleMap />
+      </MapContainer>
+    </>
   );
 } 
