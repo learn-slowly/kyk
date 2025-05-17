@@ -11,6 +11,7 @@ import ReactFlow, {
   NodeChange,
   NodePositionChange,
   Node,
+  Edge,
 } from 'reactflow'
 import 'reactflow/dist/style.css'
 
@@ -148,7 +149,7 @@ const MapPositionInput: React.FC<MapPositionInputProps> = (props) => {
       }))
       
       // 엣지(관계선) 생성
-      const edges = []
+      const edges: Edge[] = []
       peopleData.forEach(person => {
         if (Array.isArray(person.relations)) {
           person.relations.forEach(targetId => {
