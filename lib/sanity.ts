@@ -38,6 +38,22 @@ export async function getPeopleForMap() {
   }));
 }
 
+// 인물 위치 업데이트 함수
+export async function updatePersonPosition(personId: string, position: { x: number, y: number }) {
+  try {
+    const result = await client
+      .patch(personId)
+      .set({ mapPosition: position })
+      .commit();
+    
+    console.log(`${result.name}의 위치가 업데이트되었습니다.`);
+    return true;
+  } catch (error) {
+    console.error('위치 업데이트 오류:', error);
+    return false;
+  }
+}
+
 // 모든 인물 정보 가져오기 (목록 페이지용)
 export async function getAllPeople() {
   const query = `*[_type == "person"] {

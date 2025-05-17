@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -11,7 +11,9 @@ import ReactFlow, {
   Connection,
   Edge,
   NodeMouseHandler,
-  Panel
+  Panel,
+  NodeChange,
+  NodePositionChange
 } from 'reactflow';
 // 서버사이드 렌더링 시 CSS 임포트 문제를 방지하기 위해 useEffect 내에서 CSS 적용
 import styled from 'styled-components';
@@ -325,6 +327,8 @@ const PeopleMap = () => {
   const [peopleData, setPeopleData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -386,6 +390,32 @@ const PeopleMap = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [setNodes]);
 
+  // 노드 위치 변경 시 저장 타이머를 관리하기 위한 ref
+  const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 노드 위치 변경 처리 함수
+  const handleNodesChange = useCallback((changes: NodeChange[]) => {
+    // 기본 노드 변경 처리
+    onNodesChange(changes);
+    
+    // 위치 변경 감지 및 저장 로직
+    const positionChanges = changes.filter(
+      change => change.type === 'position' && change.position
+    ) as NodePositionChange[];
+    
+    if (positionChanges.length > 0) {
+      // 이전 타이머가 있으면 취소
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
+      }
+      
+      // 마지막 위치 변경 후 0.5초 뒤에 저장 실행 (디바운싱)
+      saveTimerRef.current = setTimeout(() => {
+        savePositionsToSanity(positionChanges);
+      }, 500);
+    }
+  }, [onNodesChange]);
+
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge({
       ...connection,
@@ -422,10 +452,46 @@ const PeopleMap = () => {
     });
   };
   
-  // 노드 위치 변경시 Sanity에 저장하는 함수 (실제 구현은 추후 개발)
-  const savePositionsToSanity = (nodes: any[]) => {
-    // 나중에 구현할 위치 저장 기능을 위한 자리입니다
-    console.log('노드 위치 저장:', nodes);
+  // 노드 위치 변경시 Sanity에 저장하는 함수
+  const savePositionsToSanity = async (positionChanges: NodePositionChange[]) => {
+    try {
+      setIsSaving(true);
+      setSaveStatus('저장 중...');
+      
+      const { updatePersonPosition } = await import('@/lib/sanity');
+      
+      // 모든 위치 변경 저장 작업 병렬 처리
+      const updatePromises = positionChanges.map(async (change) => {
+        const nodeId = change.id;
+        const position = change.position;
+        
+        if (!nodeId || !position) return false;
+        
+        // Sanity에 위치 업데이트 요청
+        return updatePersonPosition(nodeId as string, position);
+      });
+      
+      // 모든 업데이트 완료 대기
+      const results = await Promise.all(updatePromises);
+      
+      // 업데이트 결과 확인
+      const allSuccessful = results.every(result => result === true);
+      
+      if (allSuccessful) {
+        setSaveStatus('저장 완료');
+        // 3초 후 상태 메시지 제거
+        setTimeout(() => setSaveStatus(null), 3000);
+      } else {
+        setSaveStatus('일부 항목 저장 실패');
+        setTimeout(() => setSaveStatus(null), 3000);
+      }
+    } catch (error) {
+      console.error('위치 저장 오류:', error);
+      setSaveStatus('저장 실패');
+      setTimeout(() => setSaveStatus(null), 3000);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   if (!cssLoaded || loading) {
@@ -441,7 +507,7 @@ const PeopleMap = () => {
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange}
+        onNodesChange={handleNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onNodeClick={onNodeClick}
@@ -484,6 +550,33 @@ const PeopleMap = () => {
             </div>
           </ControlPanel>
         </Panel>
+        
+        {/* 저장 상태 표시 패널 */}
+        {saveStatus && (
+          <Panel position="bottom-center">
+            <div style={{ 
+              background: 'rgba(0,0,0,0.7)', 
+              color: 'white', 
+              padding: '8px 16px', 
+              borderRadius: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              {isSaving && (
+                <div style={{ 
+                  width: '12px', 
+                  height: '12px', 
+                  borderRadius: '50%', 
+                  border: '2px solid white',
+                  borderTopColor: 'transparent',
+                  animation: 'spin 1s linear infinite'
+                }} />
+              )}
+              {saveStatus}
+            </div>
+          </Panel>
+        )}
       </ReactFlow>
 
       {selectedPerson && (
@@ -504,6 +597,13 @@ const PeopleMap = () => {
           <DetailDescription>{selectedPerson.description}</DetailDescription>
         </DetailPanel>
       )}
+      
+      <style jsx global>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </FlowContainer>
   );
 };
