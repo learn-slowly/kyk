@@ -17,6 +17,10 @@ const Container = styled.div`
 
 const Title = styled(PageTitle)`
   color: #333;
+  
+  &::after {
+    bottom: -10px; /* 밑줄과 글씨 사이 간격 늘림 */
+  }
 `;
 
 const Grid = styled.div`
@@ -27,15 +31,21 @@ const Grid = styled.div`
   max-width: 1000px;
 `;
 
-const Card = styled.div`
+const Card = styled.div<{ $isCandidate?: boolean }>`
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: ${props => props.$isCandidate 
+    ? '0 5px 15px rgba(0, 0, 0, 0.2)' 
+    : '0 2px 4px rgba(0, 0, 0, 0.1)'};
   transition: transform 0.2s ease;
+  border: ${props => props.$isCandidate ? '2px solid #FFD700' : 'none'};
+  transform: ${props => props.$isCandidate ? 'scale(1.05)' : 'none'};
   
   &:hover {
-    transform: translateY(-5px);
+    transform: ${props => props.$isCandidate 
+      ? 'translateY(-5px) scale(1.05)' 
+      : 'translateY(-5px)'};
   }
 `;
 
@@ -57,10 +67,11 @@ const Name = styled.h3`
   color: #333;
 `;
 
-const Role = styled.p`
-  font-size: 1rem;
-  color: #666;
+const Role = styled.p<{ $isCandidate?: boolean }>`
+  font-size: ${props => props.$isCandidate ? '1.2rem' : '1rem'};
+  color: ${props => props.$isCandidate ? '#D4AF37' : '#666'};
   margin-bottom: 1rem;
+  font-weight: ${props => props.$isCandidate ? 'bold' : 'normal'};
 `;
 
 const Description = styled.p`
@@ -72,6 +83,12 @@ const Description = styled.p`
 
 export default function PeoplePage() {
   const people = [
+    {
+      name: '권영국',
+      role: '후보',
+      description: '대한민국의 변화를 이끌고 국민의 목소리를 대변하는 대통령 후보입니다.',
+      image: '/images/kyk_profile.jpg'
+    },
     {
       name: '김00',
       role: '선거대책본부장',
@@ -103,7 +120,7 @@ export default function PeoplePage() {
       <Title>권영국과 함께하는 사람들</Title>
       <Grid>
         {people.map((person, index) => (
-          <Card key={index}>
+          <Card key={index} $isCandidate={person.role === '후보'}>
             <ImageContainer>
               <Image
                 src={person.image}
@@ -114,7 +131,7 @@ export default function PeoplePage() {
             </ImageContainer>
             <Content>
               <Name>{person.name}</Name>
-              <Role>{person.role}</Role>
+              <Role $isCandidate={person.role === '후보'}>{person.role}</Role>
               <Description>{person.description}</Description>
             </Content>
           </Card>
