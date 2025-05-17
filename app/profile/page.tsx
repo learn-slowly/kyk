@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import styled from 'styled-components';
+import Link from 'next/link';
 
 const slides = [
   {
@@ -46,29 +48,80 @@ const slides = [
   }
 ];
 
+const EmptySlide = styled.div`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+  padding: 2rem;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 400px;
+  width: 100%;
+`;
+
+const NavigationButton = styled(Link)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: white;
+  border: none;
+  border-radius: 8px;
+  color: #333;
+  font-size: 1.1rem;
+  text-decoration: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateX(5px);
+    background: #f8f8f8;
+  }
+
+  &::after {
+    content: '→';
+    margin-left: 1rem;
+  }
+`;
+
 export default function ProfilePage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
   const scrolling = useRef(false);
   const [animationKey, setAnimationKey] = useState(0);
+  const [showEmptySlide, setShowEmptySlide] = useState(false);
 
   // 다음 이미지로 이동
   const nextSlide = useCallback(() => {
-    setCurrentIndex((prevIndex) => (prevIndex === slides.length - 1 ? 0 : prevIndex + 1));
-    setAnimationKey(prev => prev + 1);
-  }, []);
+    if (currentIndex === slides.length - 1) {
+      setShowEmptySlide(true);
+    } else {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
+    }
+  }, [currentIndex, slides.length]);
 
   // 이전 이미지로 이동
   const prevSlide = useCallback(() => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? slides.length - 1 : prevIndex - 1));
-    setAnimationKey(prev => prev + 1);
-  }, []);
+    if (showEmptySlide) {
+      setShowEmptySlide(false);
+      setCurrentIndex(slides.length - 1);
+    } else {
+      setCurrentIndex((prevIndex) => (prevIndex - 1 + slides.length) % slides.length);
+    }
+  }, [showEmptySlide, slides.length]);
 
   // 특정 이미지로 이동
   const goToSlide = useCallback((index: number) => {
     setCurrentIndex(index);
-    setAnimationKey(prev => prev + 1);
+    setShowEmptySlide(false);
   }, []);
 
   // 터치 이벤트 처리를 위한 변수
@@ -218,6 +271,24 @@ export default function ProfilePage() {
       }
     };
   }, [handleWheel, handleTouchEnd]);
+
+  if (showEmptySlide) {
+    return (
+      <EmptySlide>
+        <ButtonContainer>
+          <NavigationButton href="/profile">
+            권영국 이야기 다시보기
+          </NavigationButton>
+          <NavigationButton href="/profile/history">
+            권영국 살아온 길
+          </NavigationButton>
+          <NavigationButton href="/profile/people">
+            권영국과 함께하는 사람들
+          </NavigationButton>
+        </ButtonContainer>
+      </EmptySlide>
+    );
+  }
 
   return (
     <div className="profile-page">

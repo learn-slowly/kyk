@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { groq } from 'next-sanity';
-import { client } from '@/sanity/lib/client';
+import { client, previewClient } from '@/sanity/lib/client';
 import { Policy } from '@/types/policy';
 import CarouselContainer from './CarouselContainer';
 
@@ -23,6 +23,6 @@ const policiesQuery = groq`*[_type == "policy"] | order(order asc) {
 }`;
 
 export default async function PoliciesCarouselPage() {
-  const policies = await client.fetch<Policy[]>(policiesQuery);
+  const policies = await previewClient.fetch<Policy[]>(policiesQuery);
   return <CarouselContainer policies={policies} />;
 } 

@@ -199,7 +199,7 @@ const NavMenu = styled.ul`
 
     @media (min-width: 992px) {
       padding: 0.5rem;
-      font-size: 1.15rem !important;
+      font-size: 1.3rem !important;
       font-weight: 600 !important;
 
       &:hover {
@@ -232,52 +232,62 @@ const NavMenu = styled.ul`
 
 const SubMenu = styled.ul`
   list-style: none;
-  padding: 0;
+  padding: 0.5rem 0;
   margin: 0;
   background: rgba(0, 0, 0, 0.3);
-  
+  display: none;
+  width: 100%;
+
   @media (min-width: 992px) {
     position: absolute;
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(10px);
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    min-width: 240px;
-    display: none;
-    padding: 0.25rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 0.2rem;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(8px);
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+    min-width: 170px;
+    padding: 0.1rem;
+    width: auto;
   }
   
   li {
     margin: 0;
-
-    a {
+    a, Link {
       padding: 0.75rem 1.5rem !important;
       font-size: 1rem !important;
       font-weight: 400 !important;
       color: rgba(255, 255, 255, 0.9) !important;
       display: block;
       text-align: left;
+      text-decoration: none;
 
       @media (min-width: 992px) {
-        padding: 0.25rem 0.5rem !important;
+        padding: 0.3rem 0.7rem !important;
         text-align: center;
-        font-size: 0.75rem !important;
-        font-weight: 300 !important;
-        letter-spacing: 0;
-        white-space: nowrap;
-        border-radius: 3px;
+        font-size: 0.6rem !important;
+        font-weight: 100 !important;
+        font-family: 'Pretendard', sans-serif;
+        letter-spacing: 0.01em;
+        color: rgba(255, 255, 255, 0.75) !important;
+        transition: all 0.15s ease;
+      }
+
+      @media (max-width: 991px) {
+        padding: 0.75rem 2rem !important;
+        background-color: rgba(255,255,255,0.05);
+      }
         
-        &:hover {
-          background: rgba(255, 255, 255, 0.1);
-          color: white !important;
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white !important;
+
+        @media (min-width: 992px) {
+          background: rgba(255, 255, 255, 0.05);
+          transform: translateY(-1px);
+          color: rgba(255, 255, 255, 0.95) !important;
         }
       }
     }
@@ -285,17 +295,78 @@ const SubMenu = styled.ul`
 `;
 
 const NavItem = styled.li`
-  @media (min-width: 992px) {
-    position: relative;
+  position: relative;
 
-    &.policy-menu-open {
-      ${SubMenu} {
-        display: flex;
+  .nav-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+    border-radius: 4px;
+    gap: 0.35rem;
+    cursor: pointer;
+
+    @media (min-width: 992px) {
+      padding: 0.5rem;
+      font-size: 1.3rem !important;
+      font-weight: 600 !important;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: white !important;
       }
-      .policy-arrow {
-        transform: rotate(180deg);
-        opacity: 1;
+    }
+
+    @media (max-width: 991px) {
+      &:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: white !important;
       }
+    }
+  }
+
+  &.policy-menu-open > ${SubMenu},
+  &.profile-menu-open > ${SubMenu},
+  &:hover > ${SubMenu} {
+    @media (min-width: 992px) {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 0.2rem;
+    }
+  }
+  
+  &.policy-menu-open > ${SubMenu},
+  &.profile-menu-open > ${SubMenu} {
+    @media (max-width: 991px) {
+      display: block;
+    }
+  }
+
+  &.policy-menu-open .policy-arrow,
+  &.profile-menu-open .policy-arrow {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+  
+  @media (min-width: 992px) {
+    &:hover .policy-arrow {
+      transform: rotate(180deg);
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 991px) {
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    &:last-child {
+      border-bottom: none;
     }
   }
 `;
@@ -324,36 +395,46 @@ export default function ClientLayout({
   const pathname = usePathname();
   const isStudioRoute = pathname?.startsWith('/studio');
   const [isPolicyExpanded, setIsPolicyExpanded] = useState(false);
+  const [isProfileExpanded, setIsProfileExpanded] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(false);
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
 
   useEffect(() => {
     const checkDesktop = () => {
-      setIsDesktop(window.innerWidth >= 992);
+      const desktop = window.innerWidth >= 992;
+      setIsDesktop(desktop);
+      if (desktop) {
+        setIsPolicyExpanded(false);
+        setIsProfileExpanded(false);
+      }
     };
-    
     checkDesktop();
     window.addEventListener('resize', checkDesktop);
     return () => window.removeEventListener('resize', checkDesktop);
   }, []);
 
-  // 페이지 변경 시 메뉴 닫기
   useEffect(() => {
+    console.log(`[Page Change Effect] Path: ${pathname}, IsDesktop: ${isDesktop}`);
     setIsMenuOpen(false);
-    setIsPolicyExpanded(false);
     
-    const navbar = document.getElementById('navbarNav');
-    if (navbar?.classList.contains('show')) {
-      if (typeof window !== 'undefined' && (window as any).bootstrap?.Collapse) {
+    if (typeof window !== 'undefined' && (window as any).bootstrap?.Collapse) {
+      const navbar = document.getElementById('navbarNav');
+      if (navbar && navbar.classList.contains('show')) {
         const bsCollapse = new (window as any).bootstrap.Collapse(navbar);
         bsCollapse.hide();
-      } else {
-        navbar.classList.remove('show');
       }
     }
-  }, [pathname]);
+    
+    if (isDesktop === false) {
+      if (!pathname.startsWith('/policies')) {
+        setIsPolicyExpanded(false);
+      }
+      if (!pathname.startsWith('/profile')) {
+        setIsProfileExpanded(false);
+      }
+    }
+  }, [pathname, isDesktop]);
 
-  // 메뉴 외부 클릭 시 닫기 처리
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       const navbar = document.getElementById('navbarNav');
@@ -361,9 +442,13 @@ export default function ClientLayout({
       const policyMenu = document.querySelector('.policy-menu');
       const target = event.target as Node;
       
-      // 정책 메뉴 외부 클릭 시 닫기
       if (policyMenu && !policyMenu.contains(target)) {
         setIsPolicyExpanded(false);
+      }
+
+      const profileMenu = document.querySelector('.profile-menu');
+      if (profileMenu && !profileMenu.contains(target)) {
+        setIsProfileExpanded(false);
       }
 
       if (navbar?.classList.contains('show') && 
@@ -403,33 +488,74 @@ export default function ClientLayout({
     };
   }, []);
 
-  // 정책 메뉴 토글 함수
-  const togglePolicyMenu = (e: React.MouseEvent) => {
+  const handleProfileToggle = (e: React.MouseEvent) => {
     e.preventDefault();
-    setIsPolicyExpanded(!isPolicyExpanded);
+    e.stopPropagation(); 
+    console.log('[Profile Toggle Clicked]');
+    setIsProfileExpanded(prev => !prev);
+    if (isDesktop === false) setIsPolicyExpanded(false); 
   };
 
-  // 메뉴 닫기 함수
-  const closeMenu = () => {
-    const navbar = document.getElementById('navbarNav');
-    if (navbar) {
-      if (typeof window !== 'undefined' && (window as any).bootstrap?.Collapse) {
+  const handlePolicyToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation(); 
+    console.log('[Policy Toggle Clicked]');
+    setIsPolicyExpanded(prev => !prev);
+    if (isDesktop === false) setIsProfileExpanded(false); 
+  };
+
+  const handleSubMenuItemClick = (targetPath: string) => {
+    console.log(`[SubMenu Click] Target Path: ${targetPath}`);
+    setIsMenuOpen(false);
+    setIsPolicyExpanded(false);
+    setIsProfileExpanded(false);
+    
+    if (typeof window !== 'undefined' && (window as any).bootstrap?.Collapse) {
+      const navbar = document.getElementById('navbarNav');
+      if (navbar && navbar.classList.contains('show')) {
         const bsCollapse = new (window as any).bootstrap.Collapse(navbar);
         bsCollapse.hide();
-      } else {
-        navbar.classList.remove('show');
       }
-      setIsPolicyExpanded(false);
     }
   };
 
-  // 스튜디오 경로인 경우 헤더와 푸터 없이 그대로 렌더링
+  const handleDirectLinkClick = () => {
+    console.log('[DirectLink Click]');
+    setIsMenuOpen(false);
+    setIsPolicyExpanded(false);
+    setIsProfileExpanded(false);
+    
+    if (typeof window !== 'undefined') {
+      const navbar = document.getElementById('navbarNav');
+      if (navbar && navbar.classList.contains('show')) {
+        navbar.classList.remove('show');
+        navbar.classList.add('collapse');
+        
+        const toggler = document.querySelector('.navbar-toggler');
+        if (toggler) {
+          toggler.classList.add('collapsed');
+          (toggler as HTMLElement).setAttribute('aria-expanded', 'false');
+        }
+      }
+    }
+  };
+
   if (isStudioRoute) {
     return (
       <>
         {children}
         <Analytics />
       </>
+    );
+  }
+
+  if (isDesktop === null) {
+    return (
+      <header className="sticky-header shadow-sm" style={{
+        height: '70px',
+        background: 'linear-gradient(90deg, #FF0000 0%, #FFed00 50%, #00a366 100%)'
+      }}>
+      </header>
     );
   }
 
@@ -444,7 +570,7 @@ export default function ClientLayout({
       >
         <nav className="navbar navbar-expand-lg py-1">
           <NavbarContainer className="container-fluid p-0">
-            <Link href="/" className="navbar-brand text-white pe-0">
+            <Link href="/" className="navbar-brand text-white pe-0" onClick={handleDirectLinkClick}>
               <LogoContainer>
                 <div className="subtitle-container">
                   <BrandText className="subtitle d-block brand-text">사회대전환 연대회의 대통령 후보</BrandText>
@@ -470,8 +596,13 @@ export default function ClientLayout({
               type="button" 
               data-bs-toggle="collapse" 
               data-bs-target="#navbarNav"
-              style={{
-                borderColor: 'rgba(255,255,255,0.5)'
+              aria-controls="navbarNav" 
+              aria-expanded={isMenuOpen} 
+              aria-label="Toggle navigation"
+              style={{ borderColor: 'rgba(255,255,255,0.5)' }}
+              onClick={() => {
+                console.log('[NavbarToggler Clicked]');
+                setIsMenuOpen(!isMenuOpen);
               }}
             >
               <MenuIcon className={isMenuOpen ? 'open' : ''}>
@@ -483,105 +614,37 @@ export default function ClientLayout({
             <NavbarCollapse className="collapse navbar-collapse" id="navbarNav">
               <NavMenu className="navbar-nav">
                 <li className="nav-item d-lg-none">
-                  <Link 
-                    href="/" 
-                    className="nav-link nav-button text-white fw-normal fs-5 site-title"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    처음으로
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link 
-                    href="/profile" 
-                    className="nav-link nav-button text-white fw-normal fs-5 site-title"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    소개
-                  </Link>
+                  <Link href="/" className="nav-link nav-button text-white fw-normal fs-5 site-title" onClick={handleDirectLinkClick}>처음으로</Link>
                 </li>
                 <NavItem 
-                  className={`nav-item policy-menu ${isPolicyExpanded ? 'policy-menu-open' : ''}`}
+                  className={`nav-item profile-menu ${isProfileExpanded && isDesktop !== null ? 'profile-menu-open' : ''}`}
                 >
-                  <a 
-                    href="#"
-                    className="nav-link nav-button text-white fw-normal fs-5 site-title"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setIsPolicyExpanded(prev => !prev);
-                    }}
-                  >
-                    정책
-                    <i className="bi bi-chevron-down policy-arrow"></i>
+                  <a href="#" className="nav-link nav-button text-white fw-normal fs-5 site-title" onClick={handleProfileToggle}>
+                    소개
+                    <i className={`bi bi-chevron-down policy-arrow ${isProfileExpanded && isDesktop !== null ? 'open' : ''}`}></i>
                   </a>
-                  {isPolicyExpanded && (
-                    <SubMenu>
-                      <li>
-                        <Link 
-                          href="/policies/carousel" 
-                          className="nav-link nav-button text-white fw-normal site-title"
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setIsPolicyExpanded(false);
-                          }}
-                        >
-                          10대 공약
-                        </Link>
-                      </li>
-                      <li>
-                        <Link 
-                          href="/policies/scti" 
-                          className="nav-link nav-button text-white fw-normal site-title"
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setIsPolicyExpanded(false);
-                          }}
-                        >
-                          SCTI 테스트
-                        </Link>
-                      </li>
-                      <li>
-                        <Link 
-                          href="/policies/gallery" 
-                          className="nav-link nav-button text-white fw-normal site-title"
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setIsPolicyExpanded(false);
-                          }}
-                        >
-                          정책 갤러리
-                        </Link>
-                      </li>
-                    </SubMenu>
-                  )}
+                  <SubMenu>
+                    <li><Link href="/profile" className="nav-link nav-button text-white fw-normal site-title" onClick={handleDirectLinkClick}>권영국 이야기</Link></li>
+                    <li><Link href="/profile/history" className="nav-link nav-button text-white fw-normal site-title" onClick={handleDirectLinkClick}>살아온 길</Link></li>
+                    <li><Link href="/profile/people" className="nav-link nav-button text-white fw-normal site-title" onClick={handleDirectLinkClick}>함께하는 사람들</Link></li>
+                  </SubMenu>
                 </NavItem>
-                <li className="nav-item">
-                  <Link 
-                    href="/posts" 
-                    className="nav-link nav-button text-white fw-normal fs-5 site-title"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    뉴스
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link 
-                    href="/events" 
-                    className="nav-link nav-button text-white fw-normal fs-5 site-title"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    일정
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link 
-                    href="/join" 
-                    className="nav-link nav-button text-white fw-normal fs-5 site-title"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    함께하기
-                  </Link>
-                </li>
+                <NavItem 
+                  className={`nav-item policy-menu ${isPolicyExpanded && isDesktop !== null ? 'policy-menu-open' : ''}`}
+                >
+                  <a href="#" className="nav-link nav-button text-white fw-normal fs-5 site-title" onClick={handlePolicyToggle}>
+                    정책
+                    <i className={`bi bi-chevron-down policy-arrow ${isPolicyExpanded && isDesktop !== null ? 'open' : ''}`}></i>
+                  </a>
+                  <SubMenu>
+                    <li><Link href="/policies/carousel" className="nav-link nav-button text-white fw-normal site-title" onClick={handleDirectLinkClick}>10대 공약</Link></li>
+                    <li><Link href="/policies/scti" className="nav-link nav-button text-white fw-normal site-title" onClick={handleDirectLinkClick}>SCTI 테스트</Link></li>
+                    <li><Link href="/policies/gallery" className="nav-link nav-button text-white fw-normal site-title" onClick={handleDirectLinkClick}>정책 갤러리</Link></li>
+                  </SubMenu>
+                </NavItem>
+                <li className="nav-item"><Link href="/posts" className="nav-link nav-button text-white fw-normal fs-5 px-2 py-1 site-title" onClick={handleDirectLinkClick}>뉴스</Link></li>
+                <li className="nav-item"><Link href="/events" className="nav-link nav-button text-white fw-normal fs-5 px-2 py-1 site-title" onClick={handleDirectLinkClick}>일정</Link></li>
+                <li className="nav-item"><Link href="/join" className="nav-link nav-button text-white fw-normal fs-5 px-2 py-1 site-title" onClick={handleDirectLinkClick}>함께하기</Link></li>
               </NavMenu>
             </NavbarCollapse>
           </NavbarContainer>

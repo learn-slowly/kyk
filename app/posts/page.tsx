@@ -1,5 +1,5 @@
 // 서버 컴포넌트 (기본값)
-import { client, urlFor } from '../lib/sanity';
+import { client, previewClient, urlFor } from '../lib/sanity';
 import PostsClient from './PostsClient';
 
 // 메타데이터 추가
@@ -46,8 +46,8 @@ export type ClientPost = {
 };
 
 export default async function PostsPage() {
-  // 서버에서 데이터 가져오기
-  const posts = await client.fetch<SanityPost[]>(
+  // 서버에서 데이터 가져오기 - previewClient를 사용해 항상 최신 데이터 가져오기
+  const posts = await previewClient.fetch<SanityPost[]>(
     `*[_type == "post" || _type == "statement"] | order(publishedAt desc) {
       _id,
       title,
@@ -59,9 +59,7 @@ export default async function PostsPage() {
       source,
       thumbnail,
       author
-    }`,
-    {}, // params (현재는 빈 객체)
-    { cache: 'no-store' } // next: { revalidate: 10 } 에서 변경
+    }`
   );
 
   console.log('Fetched posts:', posts.length, 'items');
