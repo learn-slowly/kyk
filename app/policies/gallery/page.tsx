@@ -1,12 +1,6 @@
 'use client';// 빌드 오류 수정 - ref 콜백이 올바른 타입을 반환하도록 수정
 
-import { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { client, previewClient } from '@/sanity/lib/client';
-import { urlForImage } from '@/sanity/lib/image';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { useState, useEffect, useRef } from 'react';import styled from 'styled-components';import { motion } from 'framer-motion';import { client, previewClient } from '@/sanity/lib/client';import { urlForImage } from '@/sanity/lib/image';import { useRouter } from 'next/navigation';import Image from 'next/image';import { PageTitle } from '@/app/components/CommonStyles';
 
 const Container = styled.div`
   width: 100%;
@@ -48,43 +42,10 @@ const Container = styled.div`
   }
 `;
 
-const Title = styled.h1`
+// PageTitle에서 상속받아 색상만 변경
+const Title = styled(PageTitle)`
   color: white;
-  font-size: 2rem;
-  padding: 0.5rem;
-  margin: 0 0 1.5rem 0;
-  font-weight: 400;
-  text-align: center;
   opacity: 0.9;
-  letter-spacing: -0.03em;
-  font-family: 'GamtanRoad Gamtan', sans-serif;
-  position: relative;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90px;
-    height: 3px;
-    background: #FF4B4B;
-    border-radius: 2px;
-    box-shadow: 30px 0 0 #FFD700, 60px 0 0 #4CAF50;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-    height: 40px;
-    padding: 0 1rem;
-    word-break: keep-all;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-  }
 `;
 
 const Grid = styled.div`

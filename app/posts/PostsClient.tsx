@@ -3,6 +3,13 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ClientPost } from './page';
+import { PageTitle } from '@/app/components/CommonStyles';
+import styled from 'styled-components';
+
+// PageTitle에서 상속받아 스타일 유지
+const PostTitle = styled(PageTitle)`
+  margin-bottom: 1rem;
+`;
 
 // 카테고리 표시명 매핑
 const CATEGORY_LABELS = {
@@ -76,7 +83,7 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
     <div className="container py-5">
       <div className="row mb-5">
         <div className="col-12">
-          <h2 className="fw-bold mb-4">뉴스</h2>
+          <PostTitle>뉴스</PostTitle>
           <p className="text-secondary mb-4">권영국 후보의 최신 소식과 언론 보도를 확인하세요.</p>
           
           {/* 카테고리 필터 - 미니멀 디자인 */}
