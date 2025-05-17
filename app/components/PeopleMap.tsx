@@ -233,7 +233,7 @@ const PersonNode = ({ data }: { data: any }) => {
       <Content>
         <Name>{data.name}</Name>
         <Role $isCandidate={data.isCandidate}>{data.role}</Role>
-        <Description>{data.description}</Description>
+        <Description>{data.quote || '한마디가 없습니다.'}</Description>
       </Content>
     </NodeCard>
   );
@@ -616,7 +616,10 @@ const PeopleMap = () => {
           <DetailRole $isCandidate={selectedPerson.isCandidate}>
             {selectedPerson.role}
           </DetailRole>
-          <DetailDescription>{selectedPerson.description}</DetailDescription>
+          <DetailDescription>"{selectedPerson.quote || '한마디가 없습니다.'}"</DetailDescription>
+          <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#777' }}>
+            {selectedPerson.description || ''}
+          </div>
         </DetailPanel>
       )}
       
