@@ -195,8 +195,10 @@ const MapPositionInput: React.FC<MapPositionInputProps> = (props) => {
     if (positionChanges.length > 0) {
       const { position } = positionChanges[0]
       
-      // Sanity 필드 값 업데이트
-      onChange(PatchEvent.from(set({ x: position.x, y: position.y })))
+      // position이 정의되어 있는지 확인 후 Sanity 필드 값 업데이트
+      if (position) {
+        onChange(PatchEvent.from(set({ x: position.x, y: position.y })))
+      }
     }
   }, [documentId, onChange, onNodesChange])
   
