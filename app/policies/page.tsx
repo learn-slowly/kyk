@@ -13,9 +13,15 @@ async function getPolicies(): Promise<Policy[]> {
       _id,
       title,
       description[] {
-        ...,
+        _type,
+        style,
+        _key,
+        markDefs,
         children[] {
-          ...,
+          _type,
+          _key,
+          text,
+          marks
         }
       },
       color,
@@ -24,14 +30,22 @@ async function getPolicies(): Promise<Policy[]> {
         _key,
         title,
         description[] {
-          ...,
+          _type,
+          style,
+          _key,
+          markDefs,
           children[] {
-            ...,
+            _type,
+            _key,
+            text,
+            marks
           }
         }
       }
     }
   `);
+  
+  console.log('Fetched policies:', JSON.stringify(policies, null, 2));
   return policies;
 }
 

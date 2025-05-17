@@ -19,17 +19,27 @@ interface CardProps {
 
 // blockContent를 문자열로 변환하는 함수
 const blockContentToString = (content: any): string => {
+  if (!content) return '';
   if (typeof content === 'string') return content;
   if (Array.isArray(content)) {
     return content
       .map(block => {
+        if (!block) return '';
+        if (typeof block === 'string') return block;
         if (block._type === 'block') {
+          if (!block.children) return '';
           return block.children
-            .map((child: any) => child.text)
+            .map((child: any) => {
+              if (!child) return '';
+              if (typeof child === 'string') return child;
+              return child.text || '';
+            })
+            .filter(Boolean)
             .join('');
         }
         return '';
       })
+      .filter(Boolean)
       .join('\n\n');
   }
   return '';

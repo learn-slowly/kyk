@@ -10,6 +10,17 @@ export const metadata: Metadata = {
     default: '권영국 후보 | 사회대전환 연대회의 대통령 후보',
   },
   description: '권영국 후보의 공식 홈페이지입니다.',
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png' },
+    ],
+  },
+  manifest: '/site.webmanifest',
   openGraph: {
     title: '권영국 후보 | 사회대전환 연대회의 대통령 후보',
     description: '권영국 후보의 공식 홈페이지입니다.',
