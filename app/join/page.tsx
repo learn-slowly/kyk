@@ -69,6 +69,10 @@ const Title = styled(PageTitle)`
   align-items: center;
   justify-content: center;
   
+  &::after {
+    bottom: -10px;
+  }
+  
   @media (max-width: 768px) {
     font-size: 1.5rem;
     height: 40px;
