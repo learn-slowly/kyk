@@ -440,7 +440,7 @@ const Card = styled(motion.div)<CardProps>`
   width: 300px;
   height: ${(props: CardProps) => props.$isExpanded ? 'auto' : '400px'};
   min-height: 400px;
-  transform-origin: center top;
+  transform-origin: ${props => props.$isExpanded ? 'center top' : 'center center'};
   will-change: transform;
   z-index: ${(props: CardProps) => props.$isExpanded ? 10 : 'auto'};
   overflow: visible;
@@ -468,11 +468,11 @@ const Card = styled(motion.div)<CardProps>`
 
   ${props => props.$isExpanded && `
     position: fixed;
-    top: 50%;
+    transform: translate(-50%, -20%) !important; /* 상단 20%에 위치하도록 조정 */
+    top: 20%;
     left: 50%;
-    transform: translate(-50%, -50%) !important;
     height: auto;
-    max-height: 80vh;
+    max-height: 75vh;
     overflow-y: auto;
     box-shadow: 
       0 20px 60px rgba(0, 0, 0, 0.5),
@@ -485,6 +485,8 @@ const Card = styled(motion.div)<CardProps>`
     @media (max-width: 768px) {
       width: 90%;
       max-width: 320px;
+      transform: translate(-50%, -15%) !important; /* 모바일에서 더 위쪽에 위치 */
+      top: 15%;
     }
 
     /* 스크롤바 스타일링 */
