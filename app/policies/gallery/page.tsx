@@ -759,7 +759,10 @@ export default function GalleryPage() {
             >
               <ImageContainer>
                 <ImageSlider
-                  ref={el => slidersRef.current[post._id] = el}
+                  ref={(el) => {
+                    slidersRef.current[post._id] = el;
+                    return undefined;
+                  }}
                   style={{
                     transform: `translateX(-${currentIndex * 100}%)`
                   }}

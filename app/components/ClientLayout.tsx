@@ -237,6 +237,7 @@ const SubMenu = styled.ul`
   background: rgba(0, 0, 0, 0.3);
   display: none;
   width: 100%;
+  z-index: 1000;
 
   @media (min-width: 992px) {
     position: absolute;
@@ -267,12 +268,13 @@ const SubMenu = styled.ul`
       @media (min-width: 992px) {
         padding: 0.3rem 0.7rem !important;
         text-align: center;
-        font-size: 0.6rem !important;
+        font-size: 0.5rem !important;
         font-weight: 100 !important;
         font-family: 'Pretendard', sans-serif;
         letter-spacing: 0.01em;
-        color: rgba(255, 255, 255, 0.75) !important;
+        color: rgba(255, 255, 255, 0.6) !important;
         transition: all 0.15s ease;
+        opacity: 0.9;
       }
 
       @media (max-width: 991px) {
@@ -335,7 +337,7 @@ const NavItem = styled.li`
   &.profile-menu-open > ${SubMenu},
   &:hover > ${SubMenu} {
     @media (min-width: 992px) {
-      display: flex;
+      display: flex !important;
       flex-direction: row;
       justify-content: center;
       gap: 0.2rem;
