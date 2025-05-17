@@ -165,6 +165,54 @@ const LoadingContainer = styled.div`
   color: #666;
 `;
 
+// ReactFlow 기본 스타일
+const FlowContainer = styled.div`
+  width: 100%;
+  height: 80vh;
+  position: relative;
+
+  .react-flow {
+    background-color: #f8f9fa;
+  }
+
+  .react-flow__node {
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    width: auto;
+  }
+
+  .react-flow__edge path {
+    stroke-width: 2px;
+  }
+
+  .react-flow__controls {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
+  }
+
+  .react-flow__controls-button {
+    background: white;
+    border: none;
+    border-bottom: 1px solid #eee;
+    box-sizing: content-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    user-select: none;
+    padding: 5px;
+  }
+
+  .react-flow__minimap {
+    border-radius: 6px;
+    background-color: #fff;
+    border: 1px solid #f0f0f0;
+  }
+`;
+
 // 커스텀 노드 컴포넌트
 const PersonNode = ({ data }: { data: any }) => {
   return (
@@ -273,7 +321,7 @@ const createNodesAndEdges = (people: any[]) => {
 
 // 메인 관계도 컴포넌트
 const PeopleMap = () => {
-  const [cssLoaded, setCssLoaded] = useState(false);
+  const [cssLoaded, setCssLoaded] = useState(true);
   const [peopleData, setPeopleData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -282,25 +330,6 @@ const PeopleMap = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedPerson, setSelectedPerson] = useState<any | null>(null);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
-
-  // CSS를 동적으로 가져오기
-  useEffect(() => {
-    try {
-      import('reactflow/dist/base.css')
-        .then(() => {
-          setCssLoaded(true);
-        })
-        .catch((error) => {
-          console.warn('ReactFlow CSS를 로드하지 못했습니다:', error);
-          // CSS가 로드되지 않아도 계속 진행
-          setCssLoaded(true);
-        });
-    } catch (error) {
-      console.warn('ReactFlow CSS 임포트 중 오류 발생:', error);
-      // 오류가 발생해도 계속 진행
-      setCssLoaded(true);
-    }
-  }, []);
 
   // 초기 데이터 가져오기
   useEffect(() => {
@@ -408,7 +437,7 @@ const PeopleMap = () => {
   }
 
   return (
-    <div style={{ width: '100%', height: '80vh', position: 'relative' }}>
+    <FlowContainer>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -475,7 +504,7 @@ const PeopleMap = () => {
           <DetailDescription>{selectedPerson.description}</DetailDescription>
         </DetailPanel>
       )}
-    </div>
+    </FlowContainer>
   );
 };
 
