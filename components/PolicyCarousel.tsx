@@ -18,19 +18,14 @@ interface CardProps {
 }
 
 // blockContent를 문자열로 변환하는 함수
-const blockContentToString = (content: string | {
-  _type: string;
-  children: {
-    text: string;
-  }[];
-}[]): string => {
+const blockContentToString = (content: any): string => {
   if (typeof content === 'string') return content;
   if (Array.isArray(content)) {
     return content
       .map(block => {
         if (block._type === 'block') {
           return block.children
-            .map((child: { text: string }) => child.text)
+            .map((child: any) => child.text)
             .join('');
         }
         return '';
