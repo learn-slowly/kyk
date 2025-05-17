@@ -255,7 +255,7 @@ const MapPositionInput: React.FC<MapPositionInputProps> = (props) => {
       <Card padding={0} radius={2} shadow={1} overflow="hidden">
         <Box style={{height: '500px'}}>
           {loading ? (
-            <Flex align="center" justify="center" height="100%">
+            <Flex align="center" justify="center" style={{height: '100%'}}>
               <Text>관계도를 불러오는 중입니다...</Text>
             </Flex>
           ) : (
