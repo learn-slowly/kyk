@@ -1,7 +1,5 @@
 'use client';
 
-import PolicyFooter from '@/app/components/PolicyFooter';
-
 export default function PolicyLayout({
   children,
 }: {
@@ -10,7 +8,6 @@ export default function PolicyLayout({
   return (
     <>
       {children}
-      <PolicyFooter />
     </>
   );
 } 
