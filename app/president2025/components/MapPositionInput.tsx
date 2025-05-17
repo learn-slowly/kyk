@@ -23,6 +23,7 @@ interface PersonNodeData {
   photo?: string;
   isSelected?: boolean;
   relations?: string[];
+  mapPosition?: { x: number; y: number };
 }
 
 // 커스텀 노드 컴포넌트
