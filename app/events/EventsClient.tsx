@@ -5,6 +5,14 @@ import Calendar from 'react-calendar';
 import { format } from 'date-fns';
 import ko from 'date-fns/locale/ko';
 import 'react-calendar/dist/Calendar.css';
+import { PageTitle } from '@/app/components/CommonStyles';
+import styled from 'styled-components';
+
+// PageTitle에서 상속받아 색상과 스타일 조정
+const Title = styled(PageTitle)`
+  color: #333;
+  margin-bottom: 1rem;
+`;
 
 // 타입 정의
 type Event = {
@@ -286,6 +294,7 @@ export default function EventsClient({ events }: { events: Event[] }) {
     <div className="container py-5">
       <div className="row mb-4">
         <div className="col-12">
+          <Title>일정</Title>
           <p className="lead mb-4 text-secondary">대선 캠페인 공식 일정과 주요 행사를 확인하세요.</p>
           
           {/* 뷰 모드 선택 및 필터 버튼 */}

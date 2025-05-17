@@ -92,6 +92,10 @@ const Title = styled(PageTitle)`
   align-items: center;
   justify-content: center;
   
+  &::after {
+    bottom: -10px; /* 밑줄과 글씨 사이 간격 늘림 */
+  }
+
   @media (max-width: 768px) {
     font-size: 1.5rem;
     height: 40px;
