@@ -285,9 +285,21 @@ const PeopleMap = () => {
 
   // CSS를 동적으로 가져오기
   useEffect(() => {
-    import('reactflow/dist/style.css').then(() => {
+    try {
+      import('reactflow/dist/base.css')
+        .then(() => {
+          setCssLoaded(true);
+        })
+        .catch((error) => {
+          console.warn('ReactFlow CSS를 로드하지 못했습니다:', error);
+          // CSS가 로드되지 않아도 계속 진행
+          setCssLoaded(true);
+        });
+    } catch (error) {
+      console.warn('ReactFlow CSS 임포트 중 오류 발생:', error);
+      // 오류가 발생해도 계속 진행
       setCssLoaded(true);
-    });
+    }
   }, []);
 
   // 초기 데이터 가져오기
