@@ -24,6 +24,16 @@ const FooterWrapper = styled.footer`
     background-color: #0b365f !important;
     z-index: -1;
   }
+
+  .container-fluid {
+    padding-left: 3rem;
+    padding-right: 3rem;
+    
+    @media (min-width: 992px) {
+      padding-left: 5rem;
+      padding-right: 5rem;
+    }
+  }
 `;
 
 const BackgroundImage = styled.div`
@@ -87,4 +97,4 @@ export default function PolicyFooter() {
       </div>
     </FooterWrapper>
   );
-} 
+}
