@@ -9,7 +9,8 @@ import { PageTitle } from '@/app/components/CommonStyles';
 // 배너 이미지 URL
 const BANNER_IMAGE_1 = '/images/mbanner_3_4_20250515094509.jpg';
 const BANNER_IMAGE_2 = '/images/mbanner_3_5_20250515212954.png';
-const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfvzIqhazhg6NTzG3ptwAIkH-8osXiybjAZn1rNBoe2aZ_kxw/viewform';
+const FORM_URL_1 = 'https://docs.google.com/forms/d/e/1FAIpQLSdw4Fw-I2axyrF4bX6iFIDB7h4GvoXyTbT69y6hoUIDUmnNZA/viewform';
+const FORM_URL_2 = 'https://docs.google.com/forms/d/e/1FAIpQLSfvzIqhazhg6NTzG3ptwAIkH-8osXiybjAZn1rNBoe2aZ_kxw/viewform';
 
 // 이미지 ID 타입 정의
 type ImageId = 'image1' | 'image2';
@@ -148,27 +149,35 @@ export default function JoinPage() {
         <Title>함께하기</Title>
         <ImagesContainer>
           <ImageContainer>
-            {imageErrors.image1 ? (
-              <ImageFallback>
-                권영국 후보 이미지를 불러올 수 없습니다.
-              </ImageFallback>
-            ) : (
-              <Image
-                src={BANNER_IMAGE_1}
-                alt="권영국 후보 이미지"
-                fill
-                priority
-                quality={70}
-                style={{ objectFit: 'contain' }}
-                sizes="(max-width: 768px) 100vw, 500px"
-                onError={() => handleImageError('image1')}
-              />
-            )}
+            <Link 
+              href={FORM_URL_1}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: 'block', width: '100%', height: '100%' }}
+            >
+              {imageErrors.image1 ? (
+                <ImageFallback>
+                  권영국 후보 이미지를 불러올 수 없습니다.<br />
+                  클릭하시면 신청 페이지로 이동합니다.
+                </ImageFallback>
+              ) : (
+                <Image
+                  src={BANNER_IMAGE_1}
+                  alt="권영국 후보 후원하기"
+                  fill
+                  priority
+                  quality={70}
+                  style={{ objectFit: 'contain' }}
+                  sizes="(max-width: 768px) 100vw, 500px"
+                  onError={() => handleImageError('image1')}
+                />
+              )}
+            </Link>
           </ImageContainer>
           
           <ImageContainer>
             <Link 
-              href={FORM_URL}
+              href={FORM_URL_2}
               target="_blank"
               rel="noopener noreferrer"
               style={{ display: 'block', width: '100%', height: '100%' }}
