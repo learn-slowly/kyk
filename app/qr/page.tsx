@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import QRCodeGenerator, { QRCodeGeneratorRef } from "@/app/components/QRCodeGenerator";
 
 export default function QRPage() {
-  const qrValue = "https://www.xn--3e0b8b410h.com/"; // Punycode URL (실제 연결)
-  const displayUrl = "권영국.com"; // 화면에 표시될 URL
+  const [url, setUrl] = useState("https://www.xn--3e0b8b410h.com/");
+  const [displayUrl, setDisplayUrl] = useState("권영국.com");
   const qrSize = 300;
 
   const qrCodeRef = useRef<QRCodeGeneratorRef>(null);
@@ -16,12 +16,59 @@ export default function QRPage() {
     }
   };
 
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUrl(e.target.value);
+  };
+
+  const handleDisplayUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDisplayUrl(e.target.value);
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '20px', boxSizing: 'border-box', gap: '20px' }}>
-      <h1 style={{ marginBottom: '10px', textAlign: 'center' }}>권영국.com QR 코드</h1>
+      <h1 style={{ marginBottom: '10px', textAlign: 'center' }}>커스텀 QR 코드 생성기</h1>
+      
+      <div style={{ width: '100%', maxWidth: '500px', marginBottom: '20px' }}>
+        <div style={{ marginBottom: '10px' }}>
+          <label htmlFor="url" style={{ display: 'block', marginBottom: '5px' }}>QR 코드에 담을 URL:</label>
+          <input
+            id="url"
+            type="url"
+            value={url}
+            onChange={handleUrlChange}
+            style={{
+              width: '100%',
+              padding: '8px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              fontSize: '16px'
+            }}
+            placeholder="https://example.com"
+          />
+        </div>
+        
+        <div style={{ marginBottom: '10px' }}>
+          <label htmlFor="displayUrl" style={{ display: 'block', marginBottom: '5px' }}>화면에 표시될 텍스트:</label>
+          <input
+            id="displayUrl"
+            type="text"
+            value={displayUrl}
+            onChange={handleDisplayUrlChange}
+            style={{
+              width: '100%',
+              padding: '8px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              fontSize: '16px'
+            }}
+            placeholder="보여질 텍스트"
+          />
+        </div>
+      </div>
+      
       <QRCodeGenerator
         ref={qrCodeRef}
-        value={qrValue}
+        value={url}
         size={qrSize}
         level="M"
         bgColor="#FFFFFF"
@@ -43,7 +90,7 @@ export default function QRPage() {
         SVG로 다운로드
       </button>
       <p style={{ marginTop: '10px', textAlign: 'center', color: '#555' }}>
-        이 QR 코드를 스캔하여 <a href={qrValue} target="_blank" rel="noopener noreferrer" style={{ color: '#0070f3' }}>{displayUrl}</a>으로 이동하세요.
+        이 QR 코드를 스캔하여 <a href={url} target="_blank" rel="noopener noreferrer" style={{ color: '#0070f3' }}>{displayUrl}</a>으로 이동하세요.
       </p>
     </div>
   );
