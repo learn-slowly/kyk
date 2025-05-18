@@ -545,7 +545,8 @@ export default function HomeClient() {
               fontSize: '1.5rem', 
               marginBottom: '0.5rem',
               fontWeight: '600',
-              color: '#0b365f'
+              color: '#0b365f',
+              fontFamily: "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif"
             }}>KBS 추적60분 [1409회] 경선 밀착 취재, 대선 주자들을 만나다</h3>
             
             <div style={{
@@ -754,7 +755,7 @@ export default function HomeClient() {
         
         .interactive-text {
           font-size: 7rem;
-          font-weight: 700;
+          font-weight: 500;
           margin-bottom: 15px;
           letter-spacing: -0.02em;
           color: #0b365f;
@@ -950,12 +951,13 @@ export default function HomeClient() {
         
         .cta-section h2 {
           font-size: 3.5rem;
-          font-weight: 700;
+          font-weight: 400;
           color: white;
           margin-bottom: 3rem;
           line-height: 1.2;
           position: relative;
           z-index: 1;
+          font-family: "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif";
         }
         
         /* 애니메이션 원 */
@@ -1038,7 +1040,7 @@ export default function HomeClient() {
         
         .overlay-title {
           font-size: 3.5rem;
-          font-weight: 700;
+          font-weight: 500;
           margin-bottom: 1rem;
           text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
@@ -1165,6 +1167,7 @@ export default function HomeClient() {
           line-height: 1.6;
           margin-bottom: 5vh;
           text-align: justify;
+          font-family: "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif";
         }
         
         .cta-highlight-container {
@@ -1183,6 +1186,7 @@ export default function HomeClient() {
           line-height: 1.2;
           text-align: left;
           max-width: 100%;
+          font-family: "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif";
         }
         
         .red-alert-text {
@@ -1213,7 +1217,7 @@ export default function HomeClient() {
           display: block;
           width: 100%;
           font-size: 3.2rem;
-          font-weight: 800;
+          font-weight: 900;
           color: transparent;
           -webkit-text-stroke: 1px #555;
           text-stroke: 1px #555;
@@ -1224,6 +1228,7 @@ export default function HomeClient() {
           /* animation: shake 3s cubic-bezier(.36,.07,.19,.97) infinite; */
           transform-origin: center;
           letter-spacing: -0.03em;
+          font-family: "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif";
         }
 
         /* 텍스트와 이미지 배치 스타일 */
@@ -1254,6 +1259,7 @@ export default function HomeClient() {
           font-style: italic;
           color: #444;
           text-align: center;
+          font-family: "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif";
         }
         
         .dream-text p {
@@ -1457,6 +1463,7 @@ export default function HomeClient() {
         .thin-text {
           font-weight: 300 !important;
           letter-spacing: 0.02em;
+          font-family: "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif";
         }
       `}</style>
     </div>
