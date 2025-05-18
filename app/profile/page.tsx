@@ -103,11 +103,13 @@ export default function ProfilePage() {
   // 다음 이미지로 이동
   const nextSlide = useCallback(() => {
     if (currentIndex === slides.length - 1) {
-      // 마지막 슬라이드에서 빈 슬라이드로 그대로 이동 (스크롤 제한 없음)
+      // 마지막 슬라이드에서 빈 슬라이드로 이동
       setShowEmptySlide(true);
     } else {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
     }
+    // 애니메이션 키 업데이트하여 애니메이션 재시작
+    setAnimationKey(prev => prev + 1);
   }, [currentIndex, slides.length]);
 
   // 이전 이미지로 이동
@@ -118,7 +120,36 @@ export default function ProfilePage() {
     } else {
       setCurrentIndex((prevIndex) => (prevIndex - 1 + slides.length) % slides.length);
     }
+    // 애니메이션 키 업데이트하여 애니메이션 재시작
+    setAnimationKey(prev => prev + 1);
   }, [showEmptySlide, slides.length]);
+
+  // 스크롤 이벤트 처리 - useCallback으로 감싸기
+  const handleWheel = useCallback((e: WheelEvent) => {
+    e.preventDefault(); // 기본 스크롤 동작 방지
+    
+    // 이미 스크롤 중이면 무시
+    if (scrolling.current) return;
+    
+    scrolling.current = true;
+    
+    if (e.deltaY > 0) {
+      // 아래로 스크롤 (다음 슬라이드)
+      nextSlide();
+    } else {
+      // 위로 스크롤 (이전 슬라이드)
+      prevSlide();
+    }
+    
+    // 스크롤 디바운싱 (연속 스크롤 방지)
+    if (scrollTimeout.current) {
+      clearTimeout(scrollTimeout.current);
+    }
+    
+    scrollTimeout.current = setTimeout(() => {
+      scrolling.current = false;
+    }, 800); // 0.8초 동안 추가 스크롤 무시
+  }, [nextSlide, prevSlide]);
 
   // 특정 이미지로 이동
   const goToSlide = useCallback((index: number) => {
@@ -142,30 +173,6 @@ export default function ProfilePage() {
     touchEndY.current = e.touches[0].clientY;
     touchEndX.current = e.touches[0].clientX;
   };
-  
-  // 스크롤 이벤트 처리 - useCallback으로 감싸기
-  const handleWheel = useCallback((e: WheelEvent) => {
-    e.preventDefault(); // 기본 스크롤 동작 방지
-    
-    if (scrolling.current) return; // 이미 스크롤 중이면 무시
-    
-    scrolling.current = true;
-    
-    if (e.deltaY > 0) {
-      nextSlide();
-    } else {
-      prevSlide();
-    }
-    
-    // 스크롤 디바운싱 (연속 스크롤 방지)
-    if (scrollTimeout.current) {
-      clearTimeout(scrollTimeout.current);
-    }
-    
-    scrollTimeout.current = setTimeout(() => {
-      scrolling.current = false;
-    }, 800); // 0.8초 동안 추가 스크롤 무시
-  }, [nextSlide, prevSlide]);
   
   // 터치 종료 시 방향 판단 및 슬라이드 전환 - useCallback으로 감싸기
   const handleTouchEnd = useCallback(() => {
@@ -217,6 +224,16 @@ export default function ProfilePage() {
     }
   }, [nextSlide, prevSlide]);
 
+  // 클린업 함수 개선 - 모든 타임아웃 및 이벤트 핸들러 제거
+  useEffect(() => {
+    return () => {
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+        scrollTimeout.current = null;
+      }
+    };
+  }, []);
+
   // 키보드 이벤트 처리
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -236,31 +253,35 @@ export default function ProfilePage() {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [nextSlide, prevSlide]);
-  
+
   // 스크롤 이벤트 리스너 등록
   useEffect(() => {
     const slider = sliderRef.current;
     const body = document.body;
     
+    // 스크롤 이벤트 핸들러
     const wheelHandler = (e: WheelEvent) => {
+      e.preventDefault();
       handleWheel(e);
     };
     
-    // body에 이벤트 등록 (모든 페이지에서 스크롤 동작하도록)
-    body.addEventListener('wheel', wheelHandler, { passive: false });
-    body.addEventListener('touchstart', handleTouchStart as EventListener);
-    body.addEventListener('touchmove', handleTouchMove as EventListener);
-    body.addEventListener('touchend', handleTouchEnd as EventListener);
+    // body와 슬라이더에 이벤트 리스너 추가
+    const addEventListeners = () => {
+      body.addEventListener('wheel', wheelHandler, { passive: false });
+      body.addEventListener('touchstart', handleTouchStart as EventListener);
+      body.addEventListener('touchmove', handleTouchMove as EventListener);
+      body.addEventListener('touchend', handleTouchEnd as EventListener);
+      
+      if (slider) {
+        slider.addEventListener('wheel', wheelHandler, { passive: false });
+        slider.addEventListener('touchstart', handleTouchStart as EventListener);
+        slider.addEventListener('touchmove', handleTouchMove as EventListener);
+        slider.addEventListener('touchend', handleTouchEnd as EventListener);
+      }
+    };
     
-    if (slider) {
-      slider.addEventListener('wheel', wheelHandler, { passive: false });
-      slider.addEventListener('touchstart', handleTouchStart as EventListener);
-      slider.addEventListener('touchmove', handleTouchMove as EventListener);
-      slider.addEventListener('touchend', handleTouchEnd as EventListener);
-    }
-    
-    return () => {
-      // body의 이벤트 리스너 제거
+    // 모든 이벤트 리스너 제거
+    const removeEventListeners = () => {
       body.removeEventListener('wheel', wheelHandler);
       body.removeEventListener('touchstart', handleTouchStart as EventListener);
       body.removeEventListener('touchmove', handleTouchMove as EventListener);
@@ -275,8 +296,15 @@ export default function ProfilePage() {
       
       if (scrollTimeout.current) {
         clearTimeout(scrollTimeout.current);
+        scrollTimeout.current = null;
       }
     };
+    
+    // 이벤트 리스너 등록
+    addEventListeners();
+    
+    // 컴포넌트 언마운트 시 정리
+    return removeEventListeners;
   }, [handleWheel, handleTouchEnd, handleTouchStart, handleTouchMove]);
 
   if (showEmptySlide) {
@@ -1074,16 +1102,6 @@ export default function ProfilePage() {
           }
         }
         
-        @keyframes fadeIn {
-          0% {
-            opacity: 0;
-          }
-          100% {
-            opacity: 1;
-          }
-        }
-
-        /* 모바일에서 글자 크기 키우기 - 통합 및 중앙 정렬 시도 */
         .uniform-giant-text { /* 새로운 공통 클래스 또는 기존 .giant-text에 직접 적용 */
           position: absolute !important;
           top: 50% !important;
@@ -1098,40 +1116,13 @@ export default function ProfilePage() {
           -webkit-text-fill-color: rgba(0, 0, 0, 0.7);
           -webkit-text-stroke: none;
           text-shadow: none;
-            white-space: nowrap;
-            overflow: visible;
+          white-space: nowrap;
+          overflow: visible;
           z-index: 3;
           opacity: 0.7;
           clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%); /* 애니메이션용 */
           animation: revealChar 0.8s ease forwards 0.3s; /* 애니메이션용 */
         }
-
-        /* 기존 .giant-text-container에서 위치/정렬 관련 스타일 제거 또는 수정 */
-          .giant-text-container {
-          width: 100%; /* 너비는 유지하거나, auto로 변경하여 .uniform-giant-text에 위임 */
-          height: 100%; /* 높이는 유지하거나, auto로 변경 */
-          /* display, justify-content, align-items 등은 .uniform-giant-text가 처리하므로 제거 고려 */
-          position: relative; /* 필요에 따라 유지 또는 static으로 */
-          /* margin, padding 기존 값 유지 또는 제거 */
-        }
-        
-        /* 기존 .giant-text-stroke도 필요시 정렬 관련 스타일 확인 */
-          .giant-text-stroke {
-          /* 기존 스타일 유지하되, .uniform-giant-text와 충돌 없도록 */
-          position: relative; /* 유지 */
-          opacity: 0; /* 애니메이션용 */
-          animation: fadeIn 0.5s ease forwards 0.5s; /* 애니메이션용 */
-          display: flex; /* 이 부분은 .uniform-giant-text가 중앙 정렬을 하므로 불필요하거나, 내부 span 정렬용이라면 유지 */
-            justify-content: center;
-            align-items: center;
-          width: 100%; /* 내부 요소 크기에 맞추도록 auto 또는 100% */
-              height: 100%;
-              overflow: visible;
-        }
-
-        /* 기존 .giant-text, .first-char 등은 .uniform-giant-text 스타일을 상속받거나, 개별 폰트 크기만 미디어쿼리에서 조정 */
-        /* .giant-text의 기존 position, width, text-align 등은 .uniform-giant-text로 이전 */
-
 
         @media (max-width: 768px) {
           .giant-text, .first-char, .second-char, .third-char, .fourth-char,
