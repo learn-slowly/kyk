@@ -132,6 +132,10 @@ const ScoreVisualization: React.FC<ScoreVisualizationProps> = ({ characterScores
 const SharingOptions: React.FC = () => {
   const { testResult, getCharacterById } = useSctiTest();
 
+  const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const primaryChar = testResult ? getCharacterById(testResult.primaryCharacterId) : undefined;
+  const shareText = `나의 SCTI 결과: ${primaryChar?.name || '멋진 사회변화가'} 유형! ${primaryChar?.slogan || '당신의 유형도 알아보세요!'}`;
+
   const handleKakaoShare = () => {
     const Kakao = (window as any).Kakao;
     if (!Kakao || !Kakao.isInitialized || !Kakao.Share || !Kakao.Share.sendDefault) {
@@ -142,8 +146,6 @@ const SharingOptions: React.FC = () => {
       alert('공유할 테스트 결과가 없습니다.');
       return;
     }
-    const primaryChar = getCharacterById(testResult.primaryCharacterId);
-    const pageUrl = window.location.href;
     const imageUrl = primaryChar?.imageUrl ? `${window.location.origin}${primaryChar.imageUrl}` : `${window.location.origin}/images/scti/char01.png`;
     Kakao.Share.sendDefault({
       objectType: 'feed',
@@ -160,13 +162,53 @@ const SharingOptions: React.FC = () => {
     });
   };
 
+  const handleTwitterShare = () => {
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(pageUrl)}`;
+    window.open(twitterUrl, '_blank');
+  };
+
+  const handleFacebookShare = () => {
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+    window.open(facebookUrl, '_blank');
+  };
+
+  const handleCopyUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(pageUrl);
+      alert('결과 페이지 URL이 클립보드에 복사되었습니다!');
+    } catch (err) {
+      console.error('URL 복사 실패:', err);
+      alert('URL 복사에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
+
   return (
     <div style={{ marginTop: '30px', textAlign: 'center' }}>
       <h4 style={{ fontSize: '1.2rem', color: '#333', marginBottom: '15px' }}>결과 공유하기</h4>
-      <button onClick={handleKakaoShare} style={{ padding: '10px 20px', margin: '5px', backgroundColor: '#FEE500', color: '#191919', border: 'none', borderRadius: '5px', fontWeight: 'bold', cursor: 'pointer' }}>카카오톡 공유</button>
-      <button style={{ padding: '10px 20px', margin: '5px', backgroundColor: '#1DA1F2', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>X (Twitter)</button>
-      <button style={{ padding: '10px 20px', margin: '5px', backgroundColor: '#4267B2', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>Facebook</button>
-      <button style={{ padding: '10px 20px', margin: '5px', backgroundColor: '#ffc107', color: '#333', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>URL 복사</button>
+      <button 
+        onClick={handleKakaoShare}
+        style={{ padding: '10px 20px', margin: '5px', backgroundColor: '#FEE500', color: '#191919', border: 'none', borderRadius: '5px', fontWeight: 'bold', cursor: 'pointer' }}
+      >
+        카카오톡
+      </button>
+      <button 
+        onClick={handleTwitterShare}
+        style={{ padding: '10px 20px', margin: '5px', backgroundColor: '#1DA1F2', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}
+      >
+        Twitter
+      </button>
+      <button 
+        onClick={handleFacebookShare}
+        style={{ padding: '10px 20px', margin: '5px', backgroundColor: '#4267B2', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}
+      >
+        Facebook
+      </button>
+      <button 
+        onClick={handleCopyUrl}
+        style={{ padding: '10px 20px', margin: '5px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}
+      >
+        URL 복사
+      </button>
     </div>
   );
 };
