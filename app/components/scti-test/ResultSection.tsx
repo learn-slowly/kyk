@@ -6,12 +6,16 @@ import { PolicyCharacter } from './types';
 import { characters as charactersData } from '@/app/data/scti/characters'; // 전체 캐릭터 데이터 import
 import Script from 'next/script'; // next/script import
 
-// 임시 CharacterProfile, ScoreVisualization, SharingOptions
-const CharacterProfile: React.FC<{ character: PolicyCharacter | undefined }> = ({ character }) => {
+// CharacterProfile 수정: useSctiTest 호출 제거, 필요한 값 props로 받기
+interface CharacterProfileProps {
+  character: PolicyCharacter | undefined;
+  isPrimaryResult: boolean; // 현재 캐릭터가 주 결과인지 여부
+}
+const CharacterProfile: React.FC<CharacterProfileProps> = ({ character, isPrimaryResult }) => {
   if (!character) return <p>캐릭터 정보를 불러올 수 없습니다.</p>;
   return (
     <div style={{ marginBottom: '30px', padding: '20px', backgroundColor: '#f0f8ff', borderRadius: '10px', textAlign: 'center' }}>
-      <h3 style={{ fontSize: '2rem', color: '#005a9c', marginBottom: '15px' }}>{character.id === useSctiTest().testResult?.primaryCharacterId ? '당신의 사회변화 캐릭터는...' : '선택한 캐릭터 정보'}</h3>
+      <h3 style={{ fontSize: '2rem', color: '#005a9c', marginBottom: '15px' }}>{isPrimaryResult ? '당신의 사회변화 캐릭터는...' : '선택한 캐릭터 정보'}</h3>
       {character.imageUrl && 
         <Image 
           src={character.imageUrl} 
@@ -23,7 +27,7 @@ const CharacterProfile: React.FC<{ character: PolicyCharacter | undefined }> = (
       }
       <h4 style={{ fontSize: '1.8rem', color: '#0070f3', marginBottom: '10px' }}>{character.name}</h4>
       <p style={{ fontSize: '1.1rem', fontStyle: 'italic', color: '#333', marginBottom: '15px' }}>
-        \"{character.slogan}\"
+        {`"${character.slogan}"`}
       </p>
       <p style={{ fontSize: '1rem', color: '#555', lineHeight: '1.6', marginBottom: '25px' }}>{character.description}</p>
 
@@ -129,62 +133,29 @@ const SharingOptions: React.FC = () => {
   const { testResult, getCharacterById } = useSctiTest();
 
   const handleKakaoShare = () => {
-    console.log('handleKakaoShare called');
-    console.log('window.Kakao status:', (window as any).Kakao);
-    
     const Kakao = (window as any).Kakao;
-    if (!Kakao) {
-      alert('카카오 SDK를 찾을 수 없습니다. window.Kakao가 undefined입니다.');
+    if (!Kakao || !Kakao.isInitialized || !Kakao.Share || !Kakao.Share.sendDefault) {
+      alert('카카오 SDK가 올바르게 로드되지 않았거나 기능이 없습니다. 잠시 후 다시 시도해주세요.');
       return;
     }
-    if (typeof Kakao.isInitialized !== 'function'){
-      alert('Kakao.isInitialized 함수를 찾을 수 없습니다.');
-      return;
-    }
-    if (!Kakao.isInitialized()) {
-      alert('카카오 SDK가 초기화되지 않았습니다. Kakao.isInitialized()가 false를 반환했습니다.');
-      return;
-    }
-    if (!Kakao.Share || typeof Kakao.Share.sendDefault !== 'function') {
-      alert('Kakao.Share.sendDefault 함수를 찾을 수 없습니다.');
-      return;
-    }
-
     if (!testResult) {
       alert('공유할 테스트 결과가 없습니다.');
       return;
     }
-
     const primaryChar = getCharacterById(testResult.primaryCharacterId);
     const pageUrl = window.location.href;
     const imageUrl = primaryChar?.imageUrl ? `${window.location.origin}${primaryChar.imageUrl}` : `${window.location.origin}/images/scti/char01.png`;
-
     Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
         title: `나의 SCTI 결과: ${primaryChar?.name || '멋진 사회변화가'} 유형!`,
         description: primaryChar?.slogan || '당신의 사회변화 유형을 확인하고 함께 세상을 바꿔봐요!',
         imageUrl: imageUrl,
-        link: {
-          mobileWebUrl: pageUrl,
-          webUrl: pageUrl,
-        },
+        link: { mobileWebUrl: pageUrl, webUrl: pageUrl },
       },
       buttons: [
-        {
-          title: '결과 자세히 보기',
-          link: {
-            mobileWebUrl: pageUrl,
-            webUrl: pageUrl,
-          },
-        },
-        {
-          title: '나도 테스트 해보기',
-          link: {
-            mobileWebUrl: `${window.location.origin}/policies/scti`,
-            webUrl: `${window.location.origin}/policies/scti`,
-          },
-        },
+        { title: '결과 자세히 보기', link: { mobileWebUrl: pageUrl, webUrl: pageUrl } },
+        { title: '나도 테스트 해보기', link: { mobileWebUrl: `${window.location.origin}/policies/scti`, webUrl: `${window.location.origin}/policies/scti` } },
       ],
     });
   };
@@ -192,12 +163,7 @@ const SharingOptions: React.FC = () => {
   return (
     <div style={{ marginTop: '30px', textAlign: 'center' }}>
       <h4 style={{ fontSize: '1.2rem', color: '#333', marginBottom: '15px' }}>결과 공유하기</h4>
-      <button 
-        onClick={handleKakaoShare}
-        style={{ padding: '10px 20px', margin: '5px', backgroundColor: '#FEE500', color: '#191919', border: 'none', borderRadius: '5px', fontWeight: 'bold', cursor: 'pointer' }}
-      >
-        카카오톡 공유
-      </button>
+      <button onClick={handleKakaoShare} style={{ padding: '10px 20px', margin: '5px', backgroundColor: '#FEE500', color: '#191919', border: 'none', borderRadius: '5px', fontWeight: 'bold', cursor: 'pointer' }}>카카오톡 공유</button>
       <button style={{ padding: '10px 20px', margin: '5px', backgroundColor: '#1DA1F2', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>X (Twitter)</button>
       <button style={{ padding: '10px 20px', margin: '5px', backgroundColor: '#4267B2', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>Facebook</button>
       <button style={{ padding: '10px 20px', margin: '5px', backgroundColor: '#ffc107', color: '#333', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>URL 복사</button>
@@ -210,27 +176,25 @@ export default function ResultSection() {
     testResult,
     resetTest,
     getCharacterById,
-    detailedCharacterId, // 컨텍스트에서 가져옴
-    setDetailedCharacterId // 컨텍스트에서 가져옴
+    detailedCharacterId,
+    setDetailedCharacterId
   } = useSctiTest();
 
-  // testResult가 변경될 때 (결과가 처음 로드될 때) detailedCharacterId를 주 결과 캐릭터로 설정
   React.useEffect(() => {
     if (testResult && !detailedCharacterId) {
       setDetailedCharacterId(testResult.primaryCharacterId);
     }
   }, [testResult, detailedCharacterId, setDetailedCharacterId]);
 
-  // 카카오 SDK 초기화는 Script 태그의 onLoad에서 처리
   const KAKAO_JAVASCRIPT_KEY = '500b7e0fd81c5e8cc14f4b5e6165058e';
 
   if (!testResult) {
     return <p>결과를 계산 중이거나, 아직 테스트를 완료하지 않았습니다.</p>;
   }
 
-  // CharacterProfile에 표시할 캐릭터는 detailedCharacterId를 기준으로 함
   const characterToDisplay = detailedCharacterId ? getCharacterById(detailedCharacterId) : getCharacterById(testResult.primaryCharacterId);
-  const primaryCharacterForMatches = getCharacterById(testResult.primaryCharacterId); // MatchingCharacters는 항상 주결과 기준으로
+  const primaryCharacterForMatches = getCharacterById(testResult.primaryCharacterId);
+  const isPrimaryResultForProfile = detailedCharacterId === testResult.primaryCharacterId || !detailedCharacterId;
 
   return (
     <>
@@ -262,7 +226,7 @@ export default function ResultSection() {
         strategy="afterInteractive"
       />
       <div style={{ padding: '30px 20px', maxWidth: '800px', margin: 'auto' }}>
-        <CharacterProfile character={characterToDisplay} />
+        <CharacterProfile character={characterToDisplay} isPrimaryResult={isPrimaryResultForProfile} />
         
         {primaryCharacterForMatches && 
           <MatchingCharacters 

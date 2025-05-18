@@ -31,13 +31,13 @@ function testReducer(state: SctiTestState, action: SctiTestAction): SctiTestStat
       const existingResponseIndex = state.responses.findIndex(
         (r) => r.questionId === action.payload.questionId
       );
-      let newResponses = [...state.responses];
+      const updatedResponses = [...state.responses];
       if (existingResponseIndex > -1) {
-        newResponses[existingResponseIndex] = action.payload;
+        updatedResponses[existingResponseIndex] = action.payload;
       } else {
-        newResponses.push(action.payload);
+        updatedResponses.push(action.payload);
       }
-      return { ...state, responses: newResponses };
+      return { ...state, responses: updatedResponses };
     case 'NAVIGATE_QUESTION':
       const nextIndex = state.currentQuestionIndex + (action.payload.direction === 'next' ? 1 : -1);
       if (nextIndex >= 0 && nextIndex < questionsData.length) {
