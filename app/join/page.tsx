@@ -11,6 +11,9 @@ const BANNER_IMAGE_1 = '/images/mbanner_3_4_20250515094509.jpg';
 const BANNER_IMAGE_2 = '/images/mbanner_3_5_20250515212954.png';
 const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfvzIqhazhg6NTzG3ptwAIkH-8osXiybjAZn1rNBoe2aZ_kxw/viewform';
 
+// 이미지 ID 타입 정의
+type ImageId = 'image1' | 'image2';
+
 const Container = styled.div`
   min-height: 100vh;
   width: 100%;
@@ -131,7 +134,7 @@ export default function JoinPage() {
     image2: false
   });
 
-  const handleImageError = (imageId) => {
+  const handleImageError = (imageId: ImageId) => {
     setImageErrors(prev => ({
       ...prev,
       [imageId]: true
