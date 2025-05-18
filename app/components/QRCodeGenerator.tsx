@@ -36,6 +36,11 @@ const QRCodeGenerator = forwardRef<QRCodeGeneratorRef, QRCodeGeneratorProps>(
 
     useImperativeHandle(ref, () => ({
       triggerDownload: async () => {
+        if (typeof window === 'undefined') {
+          console.error("Download can only be triggered in browser environment.");
+          return;
+        }
+
         if (!svgContainerRef.current) {
           console.error("SVG container ref not found.");
           return;
@@ -63,7 +68,7 @@ const QRCodeGenerator = forwardRef<QRCodeGeneratorRef, QRCodeGeneratorProps>(
           const url = URL.createObjectURL(blob);
           
           // QR 코드 이미지 그리기
-          const img = new Image();
+          const img = new window.Image();
           img.src = url;
           
           await new Promise<void>((resolve, reject) => {
@@ -76,7 +81,7 @@ const QRCodeGenerator = forwardRef<QRCodeGeneratorRef, QRCodeGeneratorProps>(
           
           // 로고가 있다면 로고도 그리기
           if (logoUrl && !logoError) {
-            const logoImg = new Image();
+            const logoImg = new window.Image();
             logoImg.src = logoUrl;
             
             await new Promise<void>((resolve) => {
