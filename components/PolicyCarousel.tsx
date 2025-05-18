@@ -143,14 +143,14 @@ const CarouselContainer = styled.div<{ $isExpanded: boolean }>`
 const CardsContainer = styled(motion.div)`
   position: relative;
   width: 300px;
-  height: 400px;
+  height: 450px;
   transform-style: preserve-3d;
   margin: 0 auto;
   perspective: 2000px;
 
   @media (max-width: 768px) {
     width: 260px;
-    height: 360px;
+    height: 410px;
   }
 `;
 
@@ -191,7 +191,7 @@ const DetailPolicyHeader = styled.button`
 
   h3 {
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 400;
     color: rgba(255, 255, 255, 0.95);
     margin: 0;
     text-align: left;
@@ -375,7 +375,7 @@ const CardContent = styled.div`
   h2 {
     font-size: 24px;
     margin-bottom: 15px;
-    font-weight: 600;
+    font-weight: 400;
     position: relative;
     display: inline-block;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -438,8 +438,8 @@ const ViewMoreButton = styled.div`
 const Card = styled(motion.div)<CardProps>`
   position: absolute;
   width: 300px;
-  height: ${(props: CardProps) => props.$isExpanded ? 'auto' : '400px'};
-  min-height: 400px;
+  height: ${(props: CardProps) => props.$isExpanded ? 'auto' : '450px'};
+  min-height: 450px;
   transform-origin: ${props => props.$isExpanded ? 'center top' : 'center center'};
   will-change: transform;
   z-index: ${(props: CardProps) => props.$isExpanded ? 10 : 'auto'};
@@ -462,8 +462,8 @@ const Card = styled(motion.div)<CardProps>`
 
   @media (max-width: 768px) {
     width: 260px;
-    height: ${(props: CardProps) => props.$isExpanded ? 'auto' : '360px'};
-    min-height: 360px;
+    height: ${(props: CardProps) => props.$isExpanded ? 'auto' : '410px'};
+    min-height: 410px;
   }
 
   ${props => props.$isExpanded && `
