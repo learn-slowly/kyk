@@ -74,6 +74,21 @@ const GlobalStyles = createGlobalStyle`
     font-family: ${theme.fonts.primary};
     letter-spacing: -0.03em;
   }
+  
+  /* 헤더 서브타이틀 */
+  .site-subtitle {
+    font-size: 0.85rem !important;
+    opacity: 0.9;
+    
+    @media (max-width: ${theme.breakpoints.md}) {
+      font-size: 0.8rem !important;
+    }
+    
+    @media (max-width: ${theme.breakpoints.sm}) {
+      font-size: 0.75rem !important;
+      letter-spacing: -0.01em;
+    }
+  }
 
   .navbar-nav .nav-item {
     position: relative;

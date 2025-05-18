@@ -317,6 +317,49 @@ const SubMenuLink = styled.a`
   }
 `;
 
+// 서브타이틀
+const SubTitle = styled.span`
+  display: block;
+  font-family: ${props => props.theme.fonts.primary};
+  color: white;
+  margin-bottom: 2px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+`;
+
+// 브랜드 로고 컨테이너
+const BrandContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  
+  @media (max-width: ${props => props.theme.breakpoints.md}) {
+    padding: 0.1rem 0;
+  }
+`;
+
+// 로고 컨테이너
+const LogoImageContainer = styled.div`
+  margin-right: 0.5rem;
+  
+  @media (max-width: ${props => props.theme.breakpoints.md}) {
+    margin-right: 0.3rem;
+  }
+`;
+
+// 메인 타이틀
+const MainTitle = styled.span`
+  font-size: 2.2rem;
+  font-family: ${props => props.theme.fonts.primary};
+  color: white;
+  
+  @media (max-width: ${props => props.theme.breakpoints.md}) {
+    font-size: 1.8rem;
+  }
+  
+  @media (max-width: ${props => props.theme.breakpoints.sm}) {
+    font-size: 1.6rem;
+  }
+`;
+
 export default function ClientLayout({
   children,
 }: {
@@ -471,22 +514,22 @@ export default function ClientLayout({
           <nav className="navbar navbar-expand-lg py-2">
             <NavbarContainer className="container-fluid">
               <Link href="/" className="navbar-brand">
-                <div className="d-block">
-                  <span className="d-block text-white site-title small">사회대전환 연대회의 대통령 후보</span>
-                </div>
-                <div className="d-flex align-items-center">
-                  <div className="me-2">
-                    <Image 
-                      src="/images/header.png"
-                      alt="권영국 후보 로고" 
-                      width={240} 
-                      height={35}
-                      style={{ objectFit: 'contain' }}
-                      priority
-                    />
+                <BrandContainer>
+                  <SubTitle className="site-subtitle">사회대전환 연대회의 대통령 후보</SubTitle>
+                  <div className="d-flex align-items-center">
+                    <LogoImageContainer>
+                      <Image 
+                        src="/images/header.png"
+                        alt="권영국 후보 로고" 
+                        width={220} 
+                        height={32}
+                        style={{ objectFit: 'contain' }}
+                        priority
+                      />
+                    </LogoImageContainer>
+                    <MainTitle>권영국</MainTitle>
                   </div>
-                  <span className="fs-1 text-white site-title">권영국</span>
-                </div>
+                </BrandContainer>
               </Link>
               
               <MenuToggler 
