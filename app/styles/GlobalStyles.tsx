@@ -339,23 +339,6 @@ const GlobalStyles = createGlobalStyle`
     margin: 0 auto;
     padding-top: 2rem;
   }
-  
-  .timeline-container::after {
-    content: '';
-    position: absolute;
-    width: 2px;
-    background: ${theme.colors.gradient};
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  
-  @media (max-width: ${theme.breakpoints.md}) {
-    .timeline-container::after {
-      left: 30px;
-    }
-  }
 `;
 
 export default GlobalStyles; 
