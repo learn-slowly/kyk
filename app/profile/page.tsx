@@ -102,57 +102,34 @@ export default function ProfilePage() {
 
   // 다음 이미지로 이동
   const nextSlide = useCallback(() => {
+    console.log("Next slide called, current index:", currentIndex);
     if (currentIndex === slides.length - 1) {
-      // 마지막 슬라이드에서 빈 슬라이드로 이동
+      console.log("Setting showEmptySlide to true");
       setShowEmptySlide(true);
     } else {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
+      console.log("Incrementing current index");
+      setCurrentIndex(prevIndex => (prevIndex + 1) % slides.length);
     }
-    // 애니메이션 키 업데이트하여 애니메이션 재시작
     setAnimationKey(prev => prev + 1);
   }, [currentIndex, slides.length]);
 
   // 이전 이미지로 이동
   const prevSlide = useCallback(() => {
+    console.log("Prev slide called");
     if (showEmptySlide) {
+      console.log("Setting showEmptySlide to false");
       setShowEmptySlide(false);
       setCurrentIndex(slides.length - 1);
     } else {
-      setCurrentIndex((prevIndex) => (prevIndex - 1 + slides.length) % slides.length);
+      console.log("Decrementing current index");
+      setCurrentIndex(prevIndex => (prevIndex - 1 + slides.length) % slides.length);
     }
-    // 애니메이션 키 업데이트하여 애니메이션 재시작
     setAnimationKey(prev => prev + 1);
   }, [showEmptySlide, slides.length]);
 
-  // 스크롤 이벤트 처리 - useCallback으로 감싸기
-  const handleWheel = useCallback((e: WheelEvent) => {
-    e.preventDefault(); // 기본 스크롤 동작 방지
-    
-    // 이미 스크롤 중이면 무시
-    if (scrolling.current) return;
-    
-    scrolling.current = true;
-    
-    if (e.deltaY > 0) {
-      // 아래로 스크롤 (다음 슬라이드)
-      nextSlide();
-    } else {
-      // 위로 스크롤 (이전 슬라이드)
-      prevSlide();
-    }
-    
-    // 스크롤 디바운싱 (연속 스크롤 방지)
-    if (scrollTimeout.current) {
-      clearTimeout(scrollTimeout.current);
-    }
-    
-    scrollTimeout.current = setTimeout(() => {
-      scrolling.current = false;
-    }, 800); // 0.8초 동안 추가 스크롤 무시
-  }, [nextSlide, prevSlide]);
-
   // 특정 이미지로 이동
   const goToSlide = useCallback((index: number) => {
+    console.log("Go to slide:", index);
     setCurrentIndex(index);
     setShowEmptySlide(false);
   }, []);
@@ -163,18 +140,39 @@ export default function ProfilePage() {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   
-  const handleTouchStart = (e: TouchEvent) => {
+  const handleTouchStart = useCallback((e: TouchEvent) => {
     touchStartY.current = e.touches[0].clientY;
     touchStartX.current = e.touches[0].clientX;
-  };
+  }, []);
   
   // 터치 이동 감지
-  const handleTouchMove = (e: TouchEvent) => {
+  const handleTouchMove = useCallback((e: TouchEvent) => {
     touchEndY.current = e.touches[0].clientY;
     touchEndX.current = e.touches[0].clientX;
-  };
+  }, []);
   
-  // 터치 종료 시 방향 판단 및 슬라이드 전환 - useCallback으로 감싸기
+  // 스크롤 이벤트 처리 - 간소화된 버전
+  const handleScroll = useCallback((e: WheelEvent) => {
+    e.preventDefault();
+    
+    if (scrolling.current) return;
+    scrolling.current = true;
+    
+    // 스크롤 방향 판단 및 슬라이드 전환
+    if (e.deltaY > 0) {
+      nextSlide(); // 아래로 스크롤
+    } else {
+      prevSlide(); // 위로 스크롤
+    }
+    
+    // 짧은 지연 후 다시 스크롤 허용
+    setTimeout(() => {
+      scrolling.current = false;
+      console.log("Scroll lock released");
+    }, 700);
+  }, [nextSlide, prevSlide]);
+  
+  // 터치 종료 시 방향 판단 및 슬라이드 전환
   const handleTouchEnd = useCallback(() => {
     if (scrolling.current) return;
     
@@ -184,128 +182,94 @@ export default function ProfilePage() {
     // 충분한 스와이프 거리가 있을 때만 슬라이드 전환
     const minSwipeDistance = 50;
     
-    // 수직 스와이프가 수평 스와이프보다 크면 위/아래 이동
-    if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > minSwipeDistance) {
+    if (Math.abs(diffY) > minSwipeDistance || Math.abs(diffX) > minSwipeDistance) {
       scrolling.current = true;
       
-      if (diffY > 0) {
-        nextSlide(); // 위로 스와이프
+      // 방향 판단 후 슬라이드 전환
+      if (Math.abs(diffY) > Math.abs(diffX)) {
+        // 세로 스와이프
+        if (diffY > 0) {
+          nextSlide(); // 위로 스와이프
+        } else {
+          prevSlide(); // 아래로 스와이프
+        }
       } else {
-        prevSlide(); // 아래로 스와이프
+        // 가로 스와이프
+        if (diffX > 0) {
+          nextSlide(); // 왼쪽으로 스와이프
+        } else {
+          prevSlide(); // 오른쪽으로 스와이프
+        }
       }
       
-      // 스크롤 디바운싱
-      if (scrollTimeout.current) {
-        clearTimeout(scrollTimeout.current);
-      }
-      
-      scrollTimeout.current = setTimeout(() => {
+      // 짧은 지연 후 다시 스크롤 허용
+      setTimeout(() => {
         scrolling.current = false;
-      }, 800);
-    } 
-    // 수평 스와이프가 수직 스와이프보다 크면 좌/우 이동
-    else if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > minSwipeDistance) {
-      scrolling.current = true;
-      
-      if (diffX > 0) {
-        nextSlide(); // 오른쪽에서 왼쪽으로 스와이프
-      } else {
-        prevSlide(); // 왼쪽에서 오른쪽으로 스와이프
-      }
-      
-      // 스크롤 디바운싱
-      if (scrollTimeout.current) {
-        clearTimeout(scrollTimeout.current);
-      }
-      
-      scrollTimeout.current = setTimeout(() => {
-        scrolling.current = false;
-      }, 800);
+      }, 700);
     }
   }, [nextSlide, prevSlide]);
-
-  // 클린업 함수 개선 - 모든 타임아웃 및 이벤트 핸들러 제거
-  useEffect(() => {
-    return () => {
-      if (scrollTimeout.current) {
-        clearTimeout(scrollTimeout.current);
-        scrollTimeout.current = null;
-      }
-    };
-  }, []);
 
   // 키보드 이벤트 처리
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') {
+      if (scrolling.current) return;
+      
+      scrolling.current = true;
+      
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         prevSlide();
-      } else if (e.key === 'ArrowRight') {
-        nextSlide();
-      } else if (e.key === 'ArrowUp') {
-        prevSlide();
-      } else if (e.key === 'ArrowDown') {
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         nextSlide();
       }
+      
+      setTimeout(() => {
+        scrolling.current = false;
+      }, 700);
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [nextSlide, prevSlide]);
 
-  // 스크롤 이벤트 리스너 등록
+  // 스크롤 및 터치 이벤트 등록
   useEffect(() => {
-    const slider = sliderRef.current;
-    const body = document.body;
+    const currentSlider = sliderRef.current;
     
-    // 스크롤 이벤트 핸들러
-    const wheelHandler = (e: WheelEvent) => {
-      e.preventDefault();
-      handleWheel(e);
-    };
+    // 문서에 스크롤 및 터치 이벤트 등록
+    document.addEventListener('wheel', handleScroll, { passive: false });
+    document.addEventListener('touchstart', handleTouchStart as EventListener);
+    document.addEventListener('touchmove', handleTouchMove as EventListener);
+    document.addEventListener('touchend', handleTouchEnd as EventListener);
     
-    // body와 슬라이더에 이벤트 리스너 추가
-    const addEventListeners = () => {
-      body.addEventListener('wheel', wheelHandler, { passive: false });
-      body.addEventListener('touchstart', handleTouchStart as EventListener);
-      body.addEventListener('touchmove', handleTouchMove as EventListener);
-      body.addEventListener('touchend', handleTouchEnd as EventListener);
+    // 슬라이더에 스크롤 및 터치 이벤트 등록
+    if (currentSlider) {
+      currentSlider.addEventListener('wheel', handleScroll, { passive: false });
+      currentSlider.addEventListener('touchstart', handleTouchStart as EventListener);
+      currentSlider.addEventListener('touchmove', handleTouchMove as EventListener);
+      currentSlider.addEventListener('touchend', handleTouchEnd as EventListener);
+    }
+    
+    return () => {
+      // 문서에서 이벤트 제거
+      document.removeEventListener('wheel', handleScroll);
+      document.removeEventListener('touchstart', handleTouchStart as EventListener);
+      document.removeEventListener('touchmove', handleTouchMove as EventListener);
+      document.removeEventListener('touchend', handleTouchEnd as EventListener);
       
-      if (slider) {
-        slider.addEventListener('wheel', wheelHandler, { passive: false });
-        slider.addEventListener('touchstart', handleTouchStart as EventListener);
-        slider.addEventListener('touchmove', handleTouchMove as EventListener);
-        slider.addEventListener('touchend', handleTouchEnd as EventListener);
-      }
-    };
-    
-    // 모든 이벤트 리스너 제거
-    const removeEventListeners = () => {
-      body.removeEventListener('wheel', wheelHandler);
-      body.removeEventListener('touchstart', handleTouchStart as EventListener);
-      body.removeEventListener('touchmove', handleTouchMove as EventListener);
-      body.removeEventListener('touchend', handleTouchEnd as EventListener);
-      
-      if (slider) {
-        slider.removeEventListener('wheel', wheelHandler);
-        slider.removeEventListener('touchstart', handleTouchStart as EventListener);
-        slider.removeEventListener('touchmove', handleTouchMove as EventListener);
-        slider.removeEventListener('touchend', handleTouchEnd as EventListener);
+      // 슬라이더에서 이벤트 제거
+      if (currentSlider) {
+        currentSlider.removeEventListener('wheel', handleScroll);
+        currentSlider.removeEventListener('touchstart', handleTouchStart as EventListener);
+        currentSlider.removeEventListener('touchmove', handleTouchMove as EventListener);
+        currentSlider.removeEventListener('touchend', handleTouchEnd as EventListener);
       }
       
+      // 타임아웃 정리
       if (scrollTimeout.current) {
         clearTimeout(scrollTimeout.current);
-        scrollTimeout.current = null;
       }
     };
-    
-    // 이벤트 리스너 등록
-    addEventListeners();
-    
-    // 컴포넌트 언마운트 시 정리
-    return removeEventListeners;
-  }, [handleWheel, handleTouchEnd, handleTouchStart, handleTouchMove]);
+  }, [handleScroll, handleTouchEnd, handleTouchStart, handleTouchMove]);
 
   if (showEmptySlide) {
     return (
@@ -566,7 +530,6 @@ export default function ProfilePage() {
           <div className="instructions">
             <p className="mobile-instruction">스크롤하여 더보기</p>
             <p className="desktop-instruction">슬라이드를 넘기려면 스크롤하거나 화살표를 클릭하세요</p>
-            <p className="key-instructions">또는 키보드 방향키를 사용하세요</p>
           </div>
         </div>
       </div>
@@ -1029,14 +992,9 @@ export default function ProfilePage() {
           display: none;
         }
         
-        .desktop-instruction, .key-instructions {
+        .desktop-instruction {
           margin: 0;
           font-size: 12px;
-        }
-        
-        .key-instructions {
-          margin-top: 5px;
-          font-size: 10px;
         }
         
         @keyframes fadeInUp {
@@ -1137,7 +1095,7 @@ export default function ProfilePage() {
             letter-spacing: -1.5rem;
           }
 
-          .desktop-instruction, .key-instructions {
+          .desktop-instruction {
             display: none;
           }
 
