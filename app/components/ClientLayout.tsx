@@ -160,8 +160,9 @@ const NavMenu = styled.ul`
   
   @media (min-width: ${props => props.theme.breakpoints.lg}) {
     flex-direction: row;
-    gap: 2rem;
+    gap: 2.5rem;
     align-items: center;
+    margin-right: 2rem;
   }
   
   @media (max-width: ${props => props.theme.breakpoints.lg}) {
@@ -235,16 +236,20 @@ const SubMenu = styled.ul`
 
 const NavbarContainer = styled.div`
   padding: 0 2rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   
-  @media (min-width: 992px) {
-    padding: 0 3rem 0 4rem;
+  @media (min-width: ${props => props.theme.breakpoints.lg}) {
+    padding: 0 3rem;
   }
   
-  @media (max-width: 991px) {
+  @media (max-width: ${props => props.theme.breakpoints.md}) {
     padding: 0 1.5rem;
   }
   
-  @media (max-width: 480px) {
+  @media (max-width: ${props => props.theme.breakpoints.sm}) {
     padding: 0 1rem;
   }
 `;
@@ -289,6 +294,11 @@ const NavLink = styled.a`
     color: ${props => props.theme.colors.primary.yellow} !important;
   }
   
+  @media (min-width: ${props => props.theme.breakpoints.lg}) {
+    font-size: 1.2rem;
+    padding: 0.5rem;
+  }
+  
   @media (max-width: ${props => props.theme.breakpoints.lg}) {
     padding: 0.75rem 1.25rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -317,46 +327,67 @@ const SubMenuLink = styled.a`
   }
 `;
 
+// 메인 타이틀
+const MainTitle = styled.span`
+  font-size: 2.5rem;
+  font-family: ${props => props.theme.fonts.primary};
+  color: white;
+  white-space: nowrap;
+  
+  @media (max-width: ${props => props.theme.breakpoints.md}) {
+    font-size: 2.2rem;
+  }
+  
+  @media (max-width: ${props => props.theme.breakpoints.sm}) {
+    font-size: 1.9rem;
+  }
+`;
+
 // 서브타이틀
 const SubTitle = styled.span`
   display: block;
   font-family: ${props => props.theme.fonts.primary};
   color: white;
-  margin-bottom: 2px;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  font-weight: normal;
+  line-height: 1.2;
+  font-size: 1.3rem;
+  
+  @media (max-width: ${props => props.theme.breakpoints.md}) {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+  }
+  
+  @media (max-width: ${props => props.theme.breakpoints.sm}) {
+    font-size: 1.1rem;
+    margin-bottom: 3px;
+  }
 `;
 
 // 브랜드 로고 컨테이너
 const BrandContainer = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 400px;
   
   @media (max-width: ${props => props.theme.breakpoints.md}) {
     padding: 0.1rem 0;
+    max-width: none;
   }
 `;
 
 // 로고 컨테이너
 const LogoImageContainer = styled.div`
-  margin-right: 0.5rem;
+  margin-right: 0.7rem;
+  flex-shrink: 0;
   
   @media (max-width: ${props => props.theme.breakpoints.md}) {
-    margin-right: 0.3rem;
-  }
-`;
-
-// 메인 타이틀
-const MainTitle = styled.span`
-  font-size: 2.2rem;
-  font-family: ${props => props.theme.fonts.primary};
-  color: white;
-  
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
-    font-size: 1.8rem;
+    margin-right: 0.5rem;
   }
   
   @media (max-width: ${props => props.theme.breakpoints.sm}) {
-    font-size: 1.6rem;
+    margin-right: 0.4rem;
   }
 `;
 
@@ -512,17 +543,17 @@ export default function ClientLayout({
       <HeaderContainer className="sticky-header">
         <div className="container">
           <nav className="navbar navbar-expand-lg py-2">
-            <NavbarContainer className="container-fluid">
-              <Link href="/" className="navbar-brand">
+            <NavbarContainer className="container-fluid d-flex justify-content-between align-items-center">
+              <Link href="/" className="navbar-brand me-0">
                 <BrandContainer>
                   <SubTitle className="site-subtitle">사회대전환 연대회의 대통령 후보</SubTitle>
-                  <div className="d-flex align-items-center">
+                  <div className="d-flex align-items-center" style={{ flexWrap: 'nowrap', minWidth: '300px' }}>
                     <LogoImageContainer>
                       <Image 
                         src="/images/header.png"
                         alt="권영국 후보 로고" 
-                        width={220} 
-                        height={32}
+                        width={200} 
+                        height={30}
                         style={{ objectFit: 'contain' }}
                         priority
                       />
@@ -532,46 +563,48 @@ export default function ClientLayout({
                 </BrandContainer>
               </Link>
               
-              <MenuToggler 
-                className="menu-toggler navbar-toggler" 
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                <span className={`navbar-toggler-icon ${isMenuOpen ? 'open' : ''}`}></span>
-              </MenuToggler>
-              
-              <NavMenu className={`navbar-menu ${isMenuOpen ? 'show' : ''}`}>
-                <NavItem className={`profile-menu ${isProfileExpanded ? 'open' : ''}`}>
-                  <NavLink href="#" onClick={handleProfileToggle}>
-                    소개
-                    <i className={`bi bi-chevron-down ms-1 ${isProfileExpanded ? 'rotate-180' : ''}`}></i>
-                  </NavLink>
-                  <SubMenu className="dropdown-menu">
-                    <SubMenuItem><Link href="/profile" className="submenu-link">권영국 이야기</Link></SubMenuItem>
-                    <SubMenuItem><Link href="/profile/history" className="submenu-link">살아온 길</Link></SubMenuItem>
-                    <SubMenuItem><Link href="/profile/people" className="submenu-link">함께하는 사람들</Link></SubMenuItem>
-                  </SubMenu>
-                </NavItem>
-                <NavItem className={`policy-menu ${isPolicyExpanded ? 'open' : ''}`}>
-                  <NavLink href="#" onClick={handlePolicyToggle}>
-                    정책
-                    <i className={`bi bi-chevron-down ms-1 ${isPolicyExpanded ? 'rotate-180' : ''}`}></i>
-                  </NavLink>
-                  <SubMenu className="dropdown-menu">
-                    <SubMenuItem><Link href="/policies/carousel" className="submenu-link">10대 공약</Link></SubMenuItem>
-                    <SubMenuItem><Link href="/policies/scti" className="submenu-link">SCTI 테스트</Link></SubMenuItem>
-                    <SubMenuItem><Link href="/policies/gallery" className="submenu-link">정책 갤러리</Link></SubMenuItem>
-                  </SubMenu>
-                </NavItem>
-                <NavItem>
-                  <Link href="/posts" className="nav-link">뉴스</Link>
-                </NavItem>
-                <NavItem>
-                  <Link href="/events" className="nav-link">일정</Link>
-                </NavItem>
-                <NavItem>
-                  <Link href="/join" className="nav-link">함께하기</Link>
-                </NavItem>
-              </NavMenu>
+              <div className="d-flex align-items-center">
+                <MenuToggler 
+                  className="menu-toggler navbar-toggler" 
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
+                  <span className={`navbar-toggler-icon ${isMenuOpen ? 'open' : ''}`}></span>
+                </MenuToggler>
+                
+                <NavMenu className={`navbar-menu ${isMenuOpen ? 'show' : ''}`}>
+                  <NavItem className={`profile-menu ${isProfileExpanded ? 'open' : ''}`}>
+                    <NavLink href="#" onClick={handleProfileToggle}>
+                      소개
+                      <i className={`bi bi-chevron-down ms-1 ${isProfileExpanded ? 'rotate-180' : ''}`}></i>
+                    </NavLink>
+                    <SubMenu className="dropdown-menu">
+                      <SubMenuItem><Link href="/profile" className="submenu-link">권영국 이야기</Link></SubMenuItem>
+                      <SubMenuItem><Link href="/profile/history" className="submenu-link">살아온 길</Link></SubMenuItem>
+                      <SubMenuItem><Link href="/profile/people" className="submenu-link">함께하는 사람들</Link></SubMenuItem>
+                    </SubMenu>
+                  </NavItem>
+                  <NavItem className={`policy-menu ${isPolicyExpanded ? 'open' : ''}`}>
+                    <NavLink href="#" onClick={handlePolicyToggle}>
+                      정책
+                      <i className={`bi bi-chevron-down ms-1 ${isPolicyExpanded ? 'rotate-180' : ''}`}></i>
+                    </NavLink>
+                    <SubMenu className="dropdown-menu">
+                      <SubMenuItem><Link href="/policies/carousel" className="submenu-link">10대 공약</Link></SubMenuItem>
+                      <SubMenuItem><Link href="/policies/scti" className="submenu-link">SCTI 테스트</Link></SubMenuItem>
+                      <SubMenuItem><Link href="/policies/gallery" className="submenu-link">정책 갤러리</Link></SubMenuItem>
+                    </SubMenu>
+                  </NavItem>
+                  <NavItem>
+                    <Link href="/posts" className="nav-link">뉴스</Link>
+                  </NavItem>
+                  <NavItem>
+                    <Link href="/events" className="nav-link">일정</Link>
+                  </NavItem>
+                  <NavItem>
+                    <Link href="/join" className="nav-link">함께하기</Link>
+                  </NavItem>
+                </NavMenu>
+              </div>
             </NavbarContainer>
           </nav>
         </div>
