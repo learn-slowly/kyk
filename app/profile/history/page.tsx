@@ -37,30 +37,6 @@ const TimelineContent = styled(motion.div)<{ $isImportant: boolean, $isEven?: bo
   @media (max-width: 768px) {
     width: calc(100% - 45px);
   }
-
-  &::before {
-    content: '';
-    position: absolute;
-    width: ${props => props.$isImportant ? '16px' : '12px'};
-    height: ${props => props.$isImportant ? '16px' : '12px'};
-    background: ${props => props.$isImportant ? '#FF0000' : '#fff'};
-    border: 2px solid ${props => props.$isImportant ? '#FF0000' : '#ddd'};
-    border-radius: 50%;
-    top: 50%;
-    
-    ${props => props.$isImportant && `
-      box-shadow: 0 0 0 4px rgba(255, 0, 0, 0.2);
-    `}
-
-    @media (min-width: 769px) {
-      left: ${props => props.$isEven ? '-44px' : 'auto'};
-      right: ${props => props.$isEven ? 'auto' : '-44px'};
-    }
-
-    @media (max-width: 768px) {
-      left: -40px;
-    }
-  }
 `;
 
 const Year = styled.h3<{ $isImportant: boolean }>`
@@ -341,15 +317,19 @@ export default function HistoryPage() {
         margin: '0 auto',
         paddingTop: '2rem'
       }}>
-        <div style={{
-          position: 'absolute',
-          width: '2px',
-          background: 'linear-gradient(to bottom, #FF0000, #FFed00, #00a366)',
-          top: 0,
-          bottom: 0,
-          left: isMobile ? '30px' : '50%',
-          transform: isMobile ? 'none' : 'translateX(-50%)'
-        }}></div>
+        {/* 타임라인 중앙선을 완전히 새로 구현 */}
+        {React.createElement('div', {
+          style: {
+            position: 'absolute',
+            width: '4px',
+            background: 'linear-gradient(to bottom, #FF0000, #FFed00, #00a366)',
+            top: 0,
+            bottom: 0,
+            left: isMobile ? '30px' : '50%',
+            transform: isMobile ? 'none' : 'translateX(-50%)',
+            zIndex: 5
+          }
+        })}
         {timeline.map((item, index) => {
           const isImportant = importantYears.some(year => item.year.startsWith(year));
           return (
@@ -361,6 +341,23 @@ export default function HistoryPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
+              {/* 타임라인 마커 추가 */}
+              <div style={{
+                position: 'absolute',
+                width: isImportant ? '16px' : '12px',
+                height: isImportant ? '16px' : '12px',
+                background: isImportant ? '#FF0000' : '#fff',
+                border: `2px solid ${isImportant ? '#FF0000' : '#ddd'}`,
+                borderRadius: '50%',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                left: isMobile ? '22px' : (index % 2 === 0 ? 'auto' : '50%'),
+                right: isMobile ? 'auto' : (index % 2 === 0 ? '50%' : 'auto'),
+                marginLeft: !isMobile && index % 2 !== 0 ? '-8px' : 0,
+                marginRight: !isMobile && index % 2 === 0 ? '-8px' : 0,
+                zIndex: 10,
+                boxShadow: isImportant ? '0 0 0 4px rgba(255, 0, 0, 0.2)' : 'none'
+              }}></div>
               <TimelineContent
                 $isImportant={isImportant}
                 $isEven={index % 2 === 0}
