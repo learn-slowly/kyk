@@ -242,7 +242,9 @@ const NavbarContainer = styled.div`
   align-items: center;
   
   @media (min-width: ${props => props.theme.breakpoints.lg}) {
-    padding: 0 3rem;
+    padding: 0;
+    width: 90%;
+    margin: 0 auto;
   }
   
   @media (max-width: ${props => props.theme.breakpoints.md}) {
@@ -541,7 +543,7 @@ export default function ClientLayout({
       <GlobalStyles />
       <ClientBootstrap />
       <HeaderContainer className="sticky-header">
-        <div className="container">
+        <div className="container-fluid p-0" style={{ maxWidth: '100%' }}>
           <nav className="navbar navbar-expand-lg py-2">
             <NavbarContainer className="container-fluid d-flex justify-content-between align-items-center">
               <Link href="/" className="navbar-brand me-0">
