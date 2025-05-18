@@ -77,5 +77,16 @@ interface CustomTheme {
 }
 
 declare module 'styled-components' {
-  export interface DefaultTheme extends CustomTheme {}
+  // 빈 인터페이스 확장이 아닌 직접 인터페이스 정의
+  export interface DefaultTheme {
+    colors: CustomTheme['colors'];
+    fonts: CustomTheme['fonts'];
+    fontSizes: CustomTheme['fontSizes'];
+    fontWeights: CustomTheme['fontWeights'];
+    breakpoints: CustomTheme['breakpoints'];
+    spacing: CustomTheme['spacing'];
+    shadows: CustomTheme['shadows']; 
+    transitions: CustomTheme['transitions'];
+    zIndices: CustomTheme['zIndices'];
+  }
 } 
