@@ -1,69 +1,11 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
+import { motion, useScroll, useSpring } from 'framer-motion';
 
-const Container = styled.div`
-  padding: 2rem 1rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  min-height: 100vh;
-`;
-
-const Title = styled.h1`
-  font-size: 2.8rem;
-  font-weight: normal;
-  text-align: center;
-  margin-bottom: 3rem;
-  color: #333;
-  position: relative;
-  padding: 1rem;
-  z-index: 10;
-  font-family: 'GamtanRoad Gamtan', sans-serif;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 5px;
-    background: linear-gradient(to right, #FF0000, #FFed00, #00a366);
-  }
-  
-  @media (max-width: 768px) {
-    font-size: 2.2rem;
-    margin-bottom: 2rem;
-    
-    &::after {
-      width: 150px;
-    }
-  }
-`;
-
-const Timeline = styled.div`
-  position: relative;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding-top: 2rem;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    width: 2px;
-    background: linear-gradient(to bottom, #FF0000, #FFed00, #00a366);
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    
-    @media (max-width: 768px) {
-      left: 30px;
-    }
-  }
-`;
+// 기존 Container, Title, Timeline 컴포넌트 대신 글로벌 클래스 사용
+// 필요한 컴포넌트만 남기고 제거
 
 const TimelineItem = styled(motion.div)<{ $isEven: boolean }>`
   display: flex;
@@ -149,6 +91,26 @@ const importantYears = [
 
 export default function HistoryPage() {
   const ref = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    // 모바일 여부 확인
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // 초기 확인
+    checkIfMobile();
+    
+    // 리사이즈 이벤트 리스너 추가
+    window.addEventListener('resize', checkIfMobile);
+    
+    // 클린업 함수
+    return () => {
+      window.removeEventListener('resize', checkIfMobile);
+    };
+  }, []);
+  
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end end"]
@@ -344,8 +306,22 @@ export default function HistoryPage() {
   ];
 
   return (
-    <Container ref={ref}>
-      <Title>권영국의 살아온 길</Title>
+    <div className="page-container" ref={ref}>
+      <h1 className="page-title" style={{ 
+        position: 'relative',
+        paddingBottom: '1.5rem'
+      }}>
+        권영국 살아온 길
+        <span style={{
+          position: 'absolute',
+          bottom: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '200px',
+          height: '5px',
+          background: 'linear-gradient(to right, #FF0000, #FFed00, #00a366)'
+        }}></span>
+      </h1>
       <motion.div
         style={{
           position: 'fixed',
@@ -359,7 +335,21 @@ export default function HistoryPage() {
           zIndex: 100
         }}
       />
-      <Timeline>
+      <div className="timeline-container" style={{
+        position: 'relative',
+        maxWidth: '1000px',
+        margin: '0 auto',
+        paddingTop: '2rem'
+      }}>
+        <div style={{
+          position: 'absolute',
+          width: '2px',
+          background: 'linear-gradient(to bottom, #FF0000, #FFed00, #00a366)',
+          top: 0,
+          bottom: 0,
+          left: isMobile ? '30px' : '50%',
+          transform: isMobile ? 'none' : 'translateX(-50%)'
+        }}></div>
         {timeline.map((item, index) => {
           const isImportant = importantYears.some(year => item.year.startsWith(year));
           return (
@@ -383,7 +373,7 @@ export default function HistoryPage() {
             </TimelineItem>
           );
         })}
-      </Timeline>
-    </Container>
+      </div>
+    </div>
   );
 } 

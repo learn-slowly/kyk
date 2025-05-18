@@ -288,6 +288,74 @@ const GlobalStyles = createGlobalStyle`
       width: 100%;
     }
   }
+  
+  /* 페이지 컨테이너 스타일 */
+  .page-container {
+    padding: 2rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  
+  /* 페이지 타이틀 스타일 */
+  .page-title {
+    font-size: 2.8rem;
+    font-weight: normal;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #333;
+    position: relative;
+    padding: 1rem;
+    z-index: 10;
+    font-family: ${theme.fonts.primary};
+  }
+  
+  .page-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 5px;
+    background: ${theme.colors.gradient};
+  }
+  
+  @media (max-width: ${theme.breakpoints.md}) {
+    .page-title {
+      font-size: 2.2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .page-title::after {
+      width: 150px;
+    }
+  }
+  
+  /* 타임라인 컴포넌트 공통 스타일 */
+  .timeline-container {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-top: 2rem;
+  }
+  
+  .timeline-container::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    background: ${theme.colors.gradient};
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  @media (max-width: ${theme.breakpoints.md}) {
+    .timeline-container::after {
+      left: 30px;
+    }
+  }
 `;
 
 export default GlobalStyles; 
