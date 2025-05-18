@@ -84,6 +84,47 @@ const GlobalStyles = createGlobalStyle`
     transition: ${theme.transitions.fast};
   }
 
+  /* 링크 스타일 */
+  .nav-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: ${theme.colors.text.white} !important;
+    font-family: ${theme.fonts.primary};
+    font-size: ${theme.fontSizes.lg};
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: ${theme.transitions.fast};
+    
+    &:hover {
+      color: ${theme.colors.primary.yellow} !important;
+    }
+    
+    @media (max-width: ${theme.breakpoints.lg}) {
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .submenu-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: ${theme.colors.text.white} !important;
+    font-size: ${theme.fontSizes.sm};
+    text-decoration: none;
+    transition: ${theme.transitions.fast};
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: ${theme.colors.text.white} !important;
+    }
+    
+    @media (max-width: ${theme.breakpoints.lg}) {
+      padding: 0.75rem 2rem;
+      font-size: ${theme.fontSizes.md};
+    }
+  }
+
   /* 서브메뉴 스타일 */
   .navbar-nav .nav-item ul.dropdown-menu {
     display: none;

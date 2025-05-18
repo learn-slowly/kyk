@@ -153,223 +153,82 @@ const NavbarCollapse = styled.div`
 `;
 
 const NavMenu = styled.ul`
-  margin-left: auto;
-  width: 100%;
-  max-width: 240px;
-  padding: 0;
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  gap: 1rem;
-  align-items: center;
-
-  @media (min-width: 992px) {
-    max-width: none;
-    gap: 2.5rem;
-    margin-right: 1.5rem;
-  }
-
-  @media (max-width: 991px) {
-    flex-direction: column;
-    align-items: stretch;
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(10px);
-    border-radius: 8px;
-    margin-top: 1rem;
-    margin-right: 0.5rem;
-    margin-left: 0.5rem;
-    width: calc(100% - 1rem);
-    max-width: none;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  }
-
-  .nav-link {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    transition: all 0.2s ease;
-    font-size: 1.1rem !important;
-    font-weight: 500 !important;
-    color: rgba(255, 255, 255, 0.95) !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    white-space: nowrap;
-    border-radius: 4px;
-    gap: 0.35rem;
-
-    @media (min-width: 992px) {
-      padding: 0.5rem;
-      font-size: 1.3rem !important;
-      font-weight: 600 !important;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.15);
-        color: white !important;
-      }
-    }
-
-    @media (max-width: 991px) {
-      &:hover {
-        background: rgba(255, 255, 255, 0.15);
-        color: white !important;
-      }
-    }
-  }
-
-  .policy-arrow {
-    margin-left: 0.5rem;
-    font-size: 0.8em;
-    opacity: 0.8;
-    transition: transform 0.2s ease;
-
-    @media (min-width: 992px) {
-      font-size: 0.7em;
-      margin-left: 0.25rem;
-      margin-top: 2px;
-    }
-  }
-`;
-
-const SubMenu = styled.ul`
-  list-style: none;
-  padding: 0.5rem 0;
   margin: 0;
-  background: rgba(0, 0, 0, 0.3);
-  display: none;
-  width: 100%;
-  z-index: 1000;
-
-  @media (min-width: 992px) {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(8px);
-    border-radius: 3px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
-    min-width: 170px;
-    padding: 0.1rem;
-    width: auto;
+  padding: 0;
+  list-style: none;
+  
+  @media (min-width: ${props => props.theme.breakpoints.lg}) {
+    flex-direction: row;
+    gap: 2rem;
+    align-items: center;
   }
   
-  li {
-    margin: 0;
-    a, Link {
-      padding: 0.75rem 1.5rem !important;
-      font-size: 1rem !important;
-      font-weight: 400 !important;
-      color: rgba(255, 255, 255, 0.9) !important;
+  @media (max-width: ${props => props.theme.breakpoints.lg}) {
+    flex-direction: column;
+    background-color: ${props => props.theme.colors.background.overlay};
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 200px;
+    border-radius: 4px;
+    padding: 0.5rem 0;
+    box-shadow: ${props => props.theme.shadows.md};
+    display: none;
+    
+    &.show {
       display: block;
-      text-align: left;
-      text-decoration: none;
-
-      @media (min-width: 992px) {
-        padding: 0.3rem 0.7rem !important;
-        text-align: center;
-        font-size: 0.5rem !important;
-        font-weight: 100 !important;
-        font-family: 'Pretendard', sans-serif;
-        letter-spacing: 0.01em;
-        color: rgba(255, 255, 255, 0.6) !important;
-        transition: all 0.15s ease;
-        opacity: 0.9;
-      }
-
-      @media (max-width: 991px) {
-        padding: 0.75rem 2rem !important;
-        background-color: rgba(255,255,255,0.05);
-      }
-        
-      &:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: white !important;
-
-        @media (min-width: 992px) {
-          background: rgba(255, 255, 255, 0.05);
-          transform: translateY(-1px);
-          color: rgba(255, 255, 255, 0.95) !important;
-        }
-      }
     }
   }
 `;
 
 const NavItem = styled.li`
   position: relative;
-
-  .nav-link {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    transition: all 0.2s ease;
-    font-size: 1.1rem !important;
-    font-weight: 500 !important;
-    color: rgba(255, 255, 255, 0.95) !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    white-space: nowrap;
-    border-radius: 4px;
-    gap: 0.35rem;
-    cursor: pointer;
-
-    @media (min-width: 992px) {
-      padding: 0.5rem;
-      font-size: 1.3rem !important;
-      font-weight: 600 !important;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.15);
-        color: white !important;
-      }
-    }
-
-    @media (max-width: 991px) {
-      &:hover {
-        background: rgba(255, 255, 255, 0.15);
-        color: white !important;
-      }
-    }
-  }
-
-  &.policy-menu-open > ${SubMenu},
-  &.profile-menu-open > ${SubMenu},
-  &:hover > ${SubMenu} {
-    @media (min-width: 992px) {
-      display: flex !important;
-      flex-direction: row;
-      justify-content: center;
-      gap: 0.2rem;
-    }
-  }
   
-  &.policy-menu-open > ${SubMenu},
-  &.profile-menu-open > ${SubMenu} {
-    @media (max-width: 991px) {
-      display: block;
-    }
-  }
-
-  &.policy-menu-open .policy-arrow,
-  &.profile-menu-open .policy-arrow {
-    transform: rotate(180deg);
-    opacity: 1;
-  }
-  
-  @media (min-width: 992px) {
-    &:hover .policy-arrow {
-      transform: rotate(180deg);
-      opacity: 1;
-    }
-  }
-
-  @media (max-width: 991px) {
+  @media (max-width: ${props => props.theme.breakpoints.lg}) {
     width: 100%;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    &:last-child {
-      border-bottom: none;
+  }
+`;
+
+const SubMenu = styled.ul`
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: ${props => props.theme.colors.background.overlay};
+  min-width: 180px;
+  padding: 0.5rem 0;
+  border-radius: 4px;
+  box-shadow: ${props => props.theme.shadows.md};
+  list-style: none;
+  z-index: ${props => props.theme.zIndices.dropdown};
+  display: none;
+  backdrop-filter: blur(8px);
+  
+  ${NavItem}:hover & {
+    display: block;
+  }
+  
+  ${NavItem}.open & {
+    display: block;
+  }
+  
+  @media (max-width: ${props => props.theme.breakpoints.lg}) {
+    position: static;
+    transform: none;
+    min-width: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+    margin-top: 0;
+    
+    ${NavItem}:hover & {
+      display: none;
+    }
+    
+    ${NavItem}.open & {
+      display: block;
     }
   }
 `;
@@ -414,7 +273,9 @@ const MenuToggler = styled.button`
 `;
 
 const NavLink = styled.a`
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 0.5rem 1rem;
   color: ${props => props.theme.colors.text.white} !important;
   font-family: ${props => props.theme.fonts.primary};
@@ -642,9 +503,9 @@ export default function ClientLayout({
                     <i className={`bi bi-chevron-down ms-1 ${isProfileExpanded ? 'rotate-180' : ''}`}></i>
                   </NavLink>
                   <SubMenu className="dropdown-menu">
-                    <SubMenuItem><Link href="/profile" legacyBehavior><SubMenuLink href="#">권영국 이야기</SubMenuLink></Link></SubMenuItem>
-                    <SubMenuItem><Link href="/profile/history" legacyBehavior><SubMenuLink href="#">살아온 길</SubMenuLink></Link></SubMenuItem>
-                    <SubMenuItem><Link href="/profile/people" legacyBehavior><SubMenuLink href="#">함께하는 사람들</SubMenuLink></Link></SubMenuItem>
+                    <SubMenuItem><Link href="/profile" className="submenu-link">권영국 이야기</Link></SubMenuItem>
+                    <SubMenuItem><Link href="/profile/history" className="submenu-link">살아온 길</Link></SubMenuItem>
+                    <SubMenuItem><Link href="/profile/people" className="submenu-link">함께하는 사람들</Link></SubMenuItem>
                   </SubMenu>
                 </NavItem>
                 <NavItem className={`policy-menu ${isPolicyExpanded ? 'open' : ''}`}>
@@ -653,19 +514,19 @@ export default function ClientLayout({
                     <i className={`bi bi-chevron-down ms-1 ${isPolicyExpanded ? 'rotate-180' : ''}`}></i>
                   </NavLink>
                   <SubMenu className="dropdown-menu">
-                    <SubMenuItem><Link href="/policies/carousel" legacyBehavior><SubMenuLink href="#">10대 공약</SubMenuLink></Link></SubMenuItem>
-                    <SubMenuItem><Link href="/policies/scti" legacyBehavior><SubMenuLink href="#">SCTI 테스트</SubMenuLink></Link></SubMenuItem>
-                    <SubMenuItem><Link href="/policies/gallery" legacyBehavior><SubMenuLink href="#">정책 갤러리</SubMenuLink></Link></SubMenuItem>
+                    <SubMenuItem><Link href="/policies/carousel" className="submenu-link">10대 공약</Link></SubMenuItem>
+                    <SubMenuItem><Link href="/policies/scti" className="submenu-link">SCTI 테스트</Link></SubMenuItem>
+                    <SubMenuItem><Link href="/policies/gallery" className="submenu-link">정책 갤러리</Link></SubMenuItem>
                   </SubMenu>
                 </NavItem>
                 <NavItem>
-                  <Link href="/posts" legacyBehavior><NavLink href="#">뉴스</NavLink></Link>
+                  <Link href="/posts" className="nav-link">뉴스</Link>
                 </NavItem>
                 <NavItem>
-                  <Link href="/events" legacyBehavior><NavLink href="#">일정</NavLink></Link>
+                  <Link href="/events" className="nav-link">일정</Link>
                 </NavItem>
                 <NavItem>
-                  <Link href="/join" legacyBehavior><NavLink href="#">함께하기</NavLink></Link>
+                  <Link href="/join" className="nav-link">함께하기</Link>
                 </NavItem>
               </NavMenu>
             </NavbarContainer>
