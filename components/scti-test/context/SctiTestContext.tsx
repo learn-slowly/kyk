@@ -55,7 +55,7 @@ function sctiTestReducer(state: SctiTestState, action: SctiTestAction): SctiTest
     
     case 'ANSWER_QUESTION': {
       const existingResponseIndex = state.responses.findIndex(r => r.questionId === action.questionId);
-      let newResponses = [...state.responses];
+      const newResponses = [...state.responses];
       
       if (existingResponseIndex !== -1) {
         // 기존 응답 업데이트
