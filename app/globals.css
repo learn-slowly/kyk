@@ -1,17 +1,13 @@
+/**
+ * Tailwind CSS 기본 설정
+ * 실제 스타일은 app/styles/GlobalStyles.tsx에서 관리됩니다.
+ */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 255, 255, 255;
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
-}
-
+/* 폰트 설정 */
 @font-face {
   font-family: 'GamtanRoad Gamtan';
   font-weight: normal;

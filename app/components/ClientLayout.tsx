@@ -13,6 +13,7 @@ import StyledComponentsRegistry from '../lib/registry';
 import PolicyFooter from '@/app/components/PolicyFooter';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import GlobalStyles from '../styles/GlobalStyles';
 
 const HeaderLogo = styled(Image)`
   @media (max-width: 480px) {
@@ -389,6 +390,72 @@ const NavbarContainer = styled.div`
   }
 `;
 
+const HeaderContainer = styled.header`
+  background: ${props => props.theme.colors.gradient};
+`;
+
+const MenuToggler = styled.button`
+  padding: 0.25rem 0.5rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: ${props => props.theme.transitions.fast};
+
+  &:focus {
+    outline: none;
+  }
+  
+  @media (min-width: ${props => props.theme.breakpoints.lg}) {
+    display: none;
+  }
+`;
+
+const NavLink = styled.a`
+  display: block;
+  padding: 0.5rem 1rem;
+  color: ${props => props.theme.colors.text.white} !important;
+  font-family: ${props => props.theme.fonts.primary};
+  font-size: ${props => props.theme.fontSizes.lg};
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: ${props => props.theme.transitions.fast};
+  
+  &:hover {
+    color: ${props => props.theme.colors.primary.yellow} !important;
+  }
+  
+  @media (max-width: ${props => props.theme.breakpoints.lg}) {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+`;
+
+const SubMenuItem = styled.li`
+  width: 100%;
+`;
+
+const SubMenuLink = styled.a`
+  display: block;
+  padding: 0.5rem 1rem;
+  color: ${props => props.theme.colors.text.white} !important;
+  font-size: ${props => props.theme.fontSizes.sm};
+  text-decoration: none;
+  transition: ${props => props.theme.transitions.fast};
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  @media (max-width: ${props => props.theme.breakpoints.lg}) {
+    padding: 0.75rem 2rem;
+    font-size: ${props => props.theme.fontSizes.md};
+  }
+`;
+
 export default function ClientLayout({
   children,
 }: {
@@ -437,58 +504,31 @@ export default function ClientLayout({
     }
   }, [pathname, isDesktop]);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      const navbar = document.getElementById('navbarNav');
-      const toggler = document.querySelector('.navbar-toggler');
-      const policyMenu = document.querySelector('.policy-menu');
-      const target = event.target as Node;
-      
-      if (policyMenu && !policyMenu.contains(target)) {
-        setIsPolicyExpanded(false);
-      }
+  const handleOutsideClick = (e: MouseEvent) => {
+    const target = e.target as Node;
+    const profileMenu = document.querySelector('.profile-menu');
+    const policyMenu = document.querySelector('.policy-menu');
+    const navMenu = document.querySelector('.navbar-menu');
+    const toggler = document.querySelector('.menu-toggler');
 
-      const profileMenu = document.querySelector('.profile-menu');
-      if (profileMenu && !profileMenu.contains(target)) {
-        setIsProfileExpanded(false);
-      }
-
-      if (navbar?.classList.contains('show') && 
-          !navbar.contains(target) && 
-          !toggler?.contains(target)) {
-        if (typeof window !== 'undefined' && (window as any).bootstrap?.Collapse) {
-          const bsCollapse = new (window as any).bootstrap.Collapse(navbar);
-          bsCollapse.hide();
-          setIsMenuOpen(false);
-        } else {
-          navbar.classList.remove('show');
-          setIsMenuOpen(false);
-        }
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside, true);
-    document.addEventListener('touchstart', handleClickOutside, true);
-
-    return () => {
-      document.removeEventListener('click', handleClickOutside, true);
-      document.removeEventListener('touchstart', handleClickOutside, true);
-    };
-  }, []);
-
-  useEffect(() => {
-    const navbar = document.getElementById('navbarNav');
-    if (navbar) {
-      navbar.addEventListener('show.bs.collapse', () => setIsMenuOpen(true));
-      navbar.addEventListener('hide.bs.collapse', () => setIsMenuOpen(false));
+    if (profileMenu && !profileMenu.contains(target)) {
+      setIsProfileExpanded(false);
     }
-    return () => {
-      if (navbar) {
-        navbar.removeEventListener('show.bs.collapse', () => setIsMenuOpen(true));
-        navbar.removeEventListener('hide.bs.collapse', () => setIsMenuOpen(false));
-      }
-    };
-  }, []);
+
+    if (policyMenu && !policyMenu.contains(target)) {
+      setIsPolicyExpanded(false);
+    }
+
+    if (navMenu && toggler && isMenuOpen && 
+        !navMenu.contains(target) && !toggler.contains(target)) {
+      setIsMenuOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, [isMenuOpen]);
 
   const handleProfileToggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -562,96 +602,76 @@ export default function ClientLayout({
   }
 
   return (
-    <StyledComponentsRegistry>
+    <>
+      <GlobalStyles />
       <ClientBootstrap />
-      <header 
-        className="sticky-header shadow-sm"
-        style={{
-          background: 'linear-gradient(90deg, #FF0000 0%, #FFed00 50%, #00a366 100%)'
-        }}
-      >
-        <nav className="navbar navbar-expand-lg py-1">
-          <NavbarContainer className="container-fluid p-0">
-            <Link href="/" className="navbar-brand text-white pe-0" onClick={handleDirectLinkClick}>
-              <LogoContainer>
-                <div className="subtitle-container">
-                  <BrandText className="subtitle d-block brand-text">사회대전환 연대회의 대통령 후보</BrandText>
+      <HeaderContainer className="sticky-header">
+        <div className="container">
+          <nav className="navbar navbar-expand-lg py-2">
+            <NavbarContainer className="container-fluid">
+              <Link href="/" className="navbar-brand">
+                <div className="d-block">
+                  <span className="d-block text-white site-title small">사회대전환 연대회의 대통령 후보</span>
                 </div>
                 <div className="d-flex align-items-center">
-                  <div className="logo-container">
-                    <HeaderLogo 
+                  <div className="me-2">
+                    <Image 
                       src="/images/header.png"
-                      alt="민주노동당 권영국 후보 로고" 
-                      width={280} 
-                      height={40} 
-                      className="header-logo"
-                      style={{ marginRight: '4px', objectFit: 'contain' }}
+                      alt="권영국 후보 로고" 
+                      width={240} 
+                      height={35}
+                      style={{ objectFit: 'contain' }}
                       priority
                     />
                   </div>
-                  <BrandText className="brand-text">권영국</BrandText>
+                  <span className="fs-1 text-white site-title">권영국</span>
                 </div>
-              </LogoContainer>
-            </Link>
-            <NavbarToggler 
-              className="navbar-toggler" 
-              type="button" 
-              data-bs-toggle="collapse" 
-              data-bs-target="#navbarNav"
-              aria-controls="navbarNav" 
-              aria-expanded={isMenuOpen} 
-              aria-label="Toggle navigation"
-              style={{ borderColor: 'rgba(255,255,255,0.5)' }}
-              onClick={() => {
-                console.log('[NavbarToggler Clicked]');
-                setIsMenuOpen(!isMenuOpen);
-              }}
-            >
-              <MenuIcon className={isMenuOpen ? 'open' : ''}>
-                <span></span>
-                <span></span>
-                <span></span>
-              </MenuIcon>
-            </NavbarToggler>
-            <NavbarCollapse className="collapse navbar-collapse" id="navbarNav">
-              <NavMenu className="navbar-nav">
-                <li className="nav-item d-lg-none">
-                  <Link href="/" className="nav-link nav-button text-white fw-normal fs-5 site-title" onClick={handleDirectLinkClick}>처음으로</Link>
-                </li>
-                <NavItem 
-                  className={`nav-item profile-menu ${isProfileExpanded && isDesktop !== null ? 'profile-menu-open' : ''}`}
-                >
-                  <a href="#" className="nav-link nav-button text-white fw-normal fs-5 site-title" onClick={handleProfileToggle}>
+              </Link>
+              
+              <MenuToggler 
+                className="menu-toggler navbar-toggler" 
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                <span className={`navbar-toggler-icon ${isMenuOpen ? 'open' : ''}`}></span>
+              </MenuToggler>
+              
+              <NavMenu className={`navbar-menu ${isMenuOpen ? 'show' : ''}`}>
+                <NavItem className={`profile-menu ${isProfileExpanded ? 'open' : ''}`}>
+                  <NavLink href="#" onClick={handleProfileToggle}>
                     소개
-                    <i className={`bi bi-chevron-down policy-arrow ${isProfileExpanded && isDesktop !== null ? 'open' : ''}`}></i>
-                  </a>
-                  <SubMenu>
-                    <li><Link href="/profile" className="nav-link nav-button text-white fw-normal site-title" onClick={handleDirectLinkClick}>권영국 이야기</Link></li>
-                    <li><Link href="/profile/history" className="nav-link nav-button text-white fw-normal site-title" onClick={handleDirectLinkClick}>살아온 길</Link></li>
-                    <li><Link href="/profile/people" className="nav-link nav-button text-white fw-normal site-title" onClick={handleDirectLinkClick}>함께하는 사람들</Link></li>
+                    <i className={`bi bi-chevron-down ms-1 ${isProfileExpanded ? 'rotate-180' : ''}`}></i>
+                  </NavLink>
+                  <SubMenu className="dropdown-menu">
+                    <SubMenuItem><Link href="/profile" legacyBehavior><SubMenuLink href="#">권영국 이야기</SubMenuLink></Link></SubMenuItem>
+                    <SubMenuItem><Link href="/profile/history" legacyBehavior><SubMenuLink href="#">살아온 길</SubMenuLink></Link></SubMenuItem>
+                    <SubMenuItem><Link href="/profile/people" legacyBehavior><SubMenuLink href="#">함께하는 사람들</SubMenuLink></Link></SubMenuItem>
                   </SubMenu>
                 </NavItem>
-                <NavItem 
-                  className={`nav-item policy-menu ${isPolicyExpanded && isDesktop !== null ? 'policy-menu-open' : ''}`}
-                >
-                  <a href="#" className="nav-link nav-button text-white fw-normal fs-5 site-title" onClick={handlePolicyToggle}>
+                <NavItem className={`policy-menu ${isPolicyExpanded ? 'open' : ''}`}>
+                  <NavLink href="#" onClick={handlePolicyToggle}>
                     정책
-                    <i className={`bi bi-chevron-down policy-arrow ${isPolicyExpanded && isDesktop !== null ? 'open' : ''}`}></i>
-                  </a>
-                  <SubMenu>
-                    <li><Link href="/policies/carousel" className="nav-link nav-button text-white fw-normal site-title" onClick={handleDirectLinkClick}>10대 공약</Link></li>
-                    <li><Link href="/policies/scti" className="nav-link nav-button text-white fw-normal site-title" onClick={handleDirectLinkClick}>SCTI 테스트</Link></li>
-                    <li><Link href="/policies/gallery" className="nav-link nav-button text-white fw-normal site-title" onClick={handleDirectLinkClick}>정책 갤러리</Link></li>
+                    <i className={`bi bi-chevron-down ms-1 ${isPolicyExpanded ? 'rotate-180' : ''}`}></i>
+                  </NavLink>
+                  <SubMenu className="dropdown-menu">
+                    <SubMenuItem><Link href="/policies/carousel" legacyBehavior><SubMenuLink href="#">10대 공약</SubMenuLink></Link></SubMenuItem>
+                    <SubMenuItem><Link href="/policies/scti" legacyBehavior><SubMenuLink href="#">SCTI 테스트</SubMenuLink></Link></SubMenuItem>
+                    <SubMenuItem><Link href="/policies/gallery" legacyBehavior><SubMenuLink href="#">정책 갤러리</SubMenuLink></Link></SubMenuItem>
                   </SubMenu>
                 </NavItem>
-                <li className="nav-item"><Link href="/posts" className="nav-link nav-button text-white fw-normal fs-5 px-2 py-1 site-title" onClick={handleDirectLinkClick}>뉴스</Link></li>
-                <li className="nav-item"><Link href="/events" className="nav-link nav-button text-white fw-normal fs-5 px-2 py-1 site-title" onClick={handleDirectLinkClick}>일정</Link></li>
-                <li className="nav-item"><Link href="/join" className="nav-link nav-button text-white fw-normal fs-5 px-2 py-1 site-title" onClick={handleDirectLinkClick}>함께하기</Link></li>
+                <NavItem>
+                  <Link href="/posts" legacyBehavior><NavLink href="#">뉴스</NavLink></Link>
+                </NavItem>
+                <NavItem>
+                  <Link href="/events" legacyBehavior><NavLink href="#">일정</NavLink></Link>
+                </NavItem>
+                <NavItem>
+                  <Link href="/join" legacyBehavior><NavLink href="#">함께하기</NavLink></Link>
+                </NavItem>
               </NavMenu>
-            </NavbarCollapse>
-          </NavbarContainer>
-        </nav>
-      </header>
+            </NavbarContainer>
+          </nav>
+        </div>
+      </HeaderContainer>
       <div className="header-spacer"></div>
 
       <main>
@@ -660,6 +680,6 @@ export default function ClientLayout({
 
       <PolicyFooter />
       <Analytics />
-    </StyledComponentsRegistry>
+    </>
   );
 } 

@@ -1,6 +1,7 @@
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import ClientLayout from './components/ClientLayout'
+import Providers from './providers'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -44,6 +45,7 @@ export const metadata: Metadata = {
     description: '권영국 후보의 공식 홈페이지입니다.',
     images: ['/images/og-image.png'],
   },
+  metadataBase: new URL('https://kyk2025.com'),
 }
 
 export default function RootLayout({
@@ -54,7 +56,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={inter.className}>
-        <ClientLayout>{children}</ClientLayout>
+        <Providers>
+          <ClientLayout>{children}</ClientLayout>
+        </Providers>
       </body>
     </html>
   )
