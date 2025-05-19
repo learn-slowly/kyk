@@ -743,7 +743,7 @@ export default function GalleryPage() {
                           .height(800)
                           .fit('crop')
                           .crop('center')
-                          .quality(90)
+                          .quality(100)
                           .auto('format')
                           .url()}
                         alt={post.title}
@@ -847,7 +847,7 @@ export default function GalleryPage() {
                           .width(1200)
                           .height(1200)
                           .fit('max')
-                          .quality(95)
+                          .quality(100)
                           .auto('format')
                           .url()}
                         alt={`${selectedPost.title} - 이미지 ${index + 1}`}
