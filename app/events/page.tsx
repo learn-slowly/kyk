@@ -21,14 +21,14 @@ type Event = {
 
 export default async function EventsPage() {
   // 서버에서 데이터 가져오기
-  // 쿼리 단순화
+  // 필드명을 실제 데이터 구조에 맞게 수정
   const events = await client.fetch<Event[]>(
-    `*[_type == "event"] | order(start desc) {
+    `*[_type == "event"] | order(startDateTime desc) {
       _id,
       title,
       description,
-      start,
-      end,
+      "start": startDateTime,
+      "end": endDateTime,
       location,
       isImportant,
       category
