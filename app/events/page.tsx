@@ -21,18 +21,18 @@ type Event = {
 
 export default async function EventsPage() {
   // 서버에서 데이터 가져오기
-  // 필드명을 실제 데이터 구조에 맞게 수정
+  // 이전 데이터와 새 데이터 형식 모두 지원
   const events = await client.fetch<Event[]>(
-    `*[_type == "event"] | order(startDateTime desc) {
+    `*[_type == "event"] {
       _id,
       title,
       description,
-      "start": startDateTime,
-      "end": endDateTime,
+      "start": coalesce(startDateTime, start),
+      "end": coalesce(endDateTime, end),
       location,
       isImportant,
       category
-    }`,
+    } | order(start desc)`,
     {}, // params (현재는 빈 객체)
     { cache: 'no-store' } // 캐시 비활성화로 항상 최신 데이터를 가져옴
   );
