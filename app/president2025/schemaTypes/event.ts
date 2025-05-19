@@ -13,15 +13,25 @@ const eventSchema = defineType({
     },
     {
       name: 'startDateTime',
-      title: '시작 일시',
+      title: '시작 일시 (새 형식)',
       type: 'datetime',
-      validation: (rule) => rule.required(),
     },
     {
       name: 'endDateTime',
-      title: '종료 일시',
+      title: '종료 일시 (새 형식)',
       type: 'datetime',
-      validation: (rule) => rule.required(),
+    },
+    {
+      name: 'start',
+      title: '시작 일시 (이전 형식)',
+      type: 'datetime',
+      hidden: ({ document }) => !!document?.startDateTime,
+    },
+    {
+      name: 'end',
+      title: '종료 일시 (이전 형식)',
+      type: 'datetime',
+      hidden: ({ document }) => !!document?.endDateTime,
     },
     {
       name: 'location',
@@ -54,17 +64,19 @@ const eventSchema = defineType({
     select: {
       title: 'title',
       startDateTime: 'startDateTime',
+      startLegacy: 'start',
       location: 'location',
       isImportant: 'isImportant',
       category: 'category'
     },
     prepare(selection) {
-      const { title = '', startDateTime = '', location = '', isImportant = false, category = '' } = selection;
+      const { title = '', startDateTime, startLegacy, location = '', isImportant = false, category = '' } = selection;
       
+      const actualStartDate = startDateTime || startLegacy;
       let date = '날짜 미정';
-      if (startDateTime) {
+      if (actualStartDate) {
         try {
-          const dateObj = new Date(startDateTime);
+          const dateObj = new Date(actualStartDate);
           if (!isNaN(dateObj.getTime())) {
             date = dateObj.toLocaleDateString('ko-KR');
           }
