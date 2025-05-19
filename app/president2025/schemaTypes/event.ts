@@ -42,7 +42,8 @@ const eventSchema = defineType({
         list: [
           {title: '후보일정', value: 'candidate'},
           {title: '선거일정', value: 'election'},
-          {title: '미디어', value: 'media'}
+          {title: '미디어', value: 'media'},
+          {title: '유세일정', value: 'campaign'}
         ] 
       },
       initialValue: 'candidate'
@@ -75,7 +76,8 @@ const eventSchema = defineType({
       const categoryLabel = 
         category === 'candidate' ? '후보' :
         category === 'election' ? '선거' :
-        category === 'media' ? '미디어' : '';
+        category === 'media' ? '미디어' :
+        category === 'campaign' ? '유세일정' : '';
       
       return {
         title: isImportant ? `⭐ ${title}` : title,
