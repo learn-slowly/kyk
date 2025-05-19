@@ -1,4 +1,4 @@
-import { client } from '../lib/sanity';
+import { client, previewClient } from '../lib/sanity';
 import EventsClient from './EventsClient';
 
 // 메타데이터 추가
@@ -21,8 +21,9 @@ type Event = {
 
 export default async function EventsPage() {
   // 서버에서 데이터 가져오기
-  // CSV에서 가져온 데이터는 event 타입으로 저장되었으므로 쿼리에 맞게 수정
-  const events = await client.fetch<Event[]>(
+  // client 대신 previewClient 사용하여 초안 상태의 데이터도 가져오고
+  // cache: 'no-store' 설정으로 항상 최신 데이터를 가져옴
+  const events = await previewClient.fetch<Event[]>(
     `*[_type == "event"] | order(start asc) {
       _id,
       title,
@@ -34,7 +35,7 @@ export default async function EventsPage() {
       category
     }`,
     {}, // params (현재는 빈 객체)
-    { next: { revalidate: 10 } } // 10초마다 데이터 갱신 시도
+    { cache: 'no-store' } // 캐시 비활성화로 항상 최신 데이터를 가져옴
   );
 
   // 디버깅용 로그

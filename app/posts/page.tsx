@@ -59,7 +59,9 @@ export default async function PostsPage() {
       source,
       thumbnail,
       author
-    }`
+    }`,
+    {}, // params (빈 객체)
+    { cache: 'no-store' } // 캐시 비활성화로 항상 최신 데이터를 가져옴
   );
 
   console.log('Fetched posts:', posts.length, 'items');
