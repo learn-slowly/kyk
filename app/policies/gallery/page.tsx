@@ -738,7 +738,14 @@ export default function GalleryPage() {
                   {post.images.map((image, index) => (
                     <ImageItem key={index}>
                       <Image 
-                        src={urlForImage(image).width(500).height(500).fit('crop').crop('center').url()}
+                        src={urlForImage(image)
+                          .width(800)
+                          .height(800)
+                          .fit('crop')
+                          .crop('center')
+                          .quality(90)
+                          .auto('format')
+                          .url()}
                         alt={post.title}
                         width={500}
                         height={500}
@@ -836,7 +843,13 @@ export default function GalleryPage() {
                   {selectedPost.images.map((image, index) => (
                     <ModalImageWrapper key={index}>
                       <Image 
-                        src={urlForImage(image).width(500).height(500).fit('max').url()}
+                        src={urlForImage(image)
+                          .width(1200)
+                          .height(1200)
+                          .fit('max')
+                          .quality(95)
+                          .auto('format')
+                          .url()}
                         alt={`${selectedPost.title} - 이미지 ${index + 1}`}
                         width={500}
                         height={500}
