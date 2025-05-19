@@ -21,19 +21,17 @@ type Event = {
 
 export default async function EventsPage() {
   // 서버에서 데이터 가져오기
-  // client 사용하여 발행(Published) 상태의 데이터만 가져오고
-  // cache: 'no-store' 설정으로 항상 최신 데이터를 가져옴
-  // event와 schedule 타입 모두 가져오도록 수정
+  // 쿼리 단순화
   const events = await client.fetch<Event[]>(
-    `*[_type == "event" || _type == "schedule"] | order(start desc, date desc) {
+    `*[_type == "event"] | order(start desc) {
       _id,
       title,
-      "description": description,
-      "start": start != null ? start : date,
-      "end": end,
-      "location": location != null ? location : venue,
-      "isImportant": isImportant != null ? isImportant : isHighlighted,
-      "category": category
+      description,
+      start,
+      end,
+      location,
+      isImportant,
+      category
     }`,
     {}, // params (현재는 빈 객체)
     { cache: 'no-store' } // 캐시 비활성화로 항상 최신 데이터를 가져옴

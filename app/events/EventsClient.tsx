@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import { format } from 'date-fns';
 import ko from 'date-fns/locale/ko';
@@ -169,6 +169,18 @@ const categoryLabels = {
 };
 
 export default function EventsClient({ events }: { events: Event[] }) {
+  // 디버깅용 로그 추가
+  useEffect(() => {
+    console.log('EventsClient 컴포넌트에 전달된 이벤트:', events);
+    // 날짜 유효성 검사
+    events.forEach(event => {
+      const eventDate = new Date(event.start);
+      if (isNaN(eventDate.getTime())) {
+        console.error('유효하지 않은 날짜 형식:', event.start, '이벤트:', event.title);
+      }
+    });
+  }, [events]);
+
   const [viewMode, setViewMode] = useState<'list' | 'month'>('list');
   const [date, setDate] = useState<CalendarValue>(new Date());
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
