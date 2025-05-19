@@ -46,8 +46,8 @@ export type ClientPost = {
 };
 
 export default async function PostsPage() {
-  // 서버에서 데이터 가져오기 - previewClient를 사용해 항상 최신 데이터 가져오기
-  const posts = await previewClient.fetch<SanityPost[]>(
+  // 서버에서 데이터 가져오기 - client를 사용해 발행된 데이터만 가져오기
+  const posts = await client.fetch<SanityPost[]>(
     `*[_type == "post" || _type == "statement"] | order(publishedAt desc) {
       _id,
       title,

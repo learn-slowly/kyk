@@ -21,9 +21,9 @@ type Event = {
 
 export default async function EventsPage() {
   // 서버에서 데이터 가져오기
-  // client 대신 previewClient 사용하여 초안 상태의 데이터도 가져오고
+  // client 사용하여 발행(Published) 상태의 데이터만 가져오고
   // cache: 'no-store' 설정으로 항상 최신 데이터를 가져옴
-  const events = await previewClient.fetch<Event[]>(
+  const events = await client.fetch<Event[]>(
     `*[_type == "event"] | order(start asc) {
       _id,
       title,
