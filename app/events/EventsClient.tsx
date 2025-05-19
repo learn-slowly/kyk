@@ -258,15 +258,33 @@ export default function EventsClient({ events }: { events: Event[] }) {
     // 날짜 비교를 위해 년/월/일만 비교 (시간 정보 제거)
     const yearMonthDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     
-    // 달력 보기에서는 과거/미래 일정 모두 표시 (카테고리 필터만 적용)
-    const eventsToFilter = viewMode === 'month' 
-      ? events.filter(event => !event.category || selectedCategories.includes(event.category)) 
-      : filteredEvents;
+    // 달력 보기에서는 모든 이벤트를 표시하되 카테고리 필터만 적용
+    // 과거 일정도 달력에서는 보여줌
+    const eventsToFilter = events.filter(event => {
+      // 카테고리 필터 적용 (선택된 카테고리가 없으면 모두 표시)
+      return selectedCategories.length === 0 || 
+             !event.category || 
+             selectedCategories.includes(event.category);
+    });
     
     return eventsToFilter.filter(event => {
-      const eventDate = new Date(event.start);
-      const eventYearMonthDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
-      return yearMonthDay.getTime() === eventYearMonthDay.getTime();
+      try {
+        const eventDate = new Date(event.start);
+        // 날짜가 유효한지 확인
+        if (isNaN(eventDate.getTime())) {
+          console.error('Invalid date:', event.start, 'for event:', event.title);
+          return false;
+        }
+        const eventYearMonthDay = new Date(
+          eventDate.getFullYear(), 
+          eventDate.getMonth(), 
+          eventDate.getDate()
+        );
+        return yearMonthDay.getTime() === eventYearMonthDay.getTime();
+      } catch (error) {
+        console.error('Date parsing error:', error, 'for event:', event);
+        return false;
+      }
     });
   };
   
