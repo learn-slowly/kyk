@@ -32,7 +32,7 @@ export default async function EventsPage() {
       location,
       isImportant,
       category
-    } | order(start desc)`,
+    } | order(coalesce(startDateTime, start) desc)`,
     {}, // params (현재는 빈 객체)
     { cache: 'no-store' } // 캐시 비활성화로 항상 최신 데이터를 가져옴
   );

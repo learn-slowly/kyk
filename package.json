@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@sanity/client": "^7.1.0",
+    "@sanity/client": "^7.2.1",
     "@types/mustache": "^4.2.5",
     "@types/node": "^20",
     "@types/react": "^19",
