@@ -24,7 +24,7 @@ export default async function EventsPage() {
   // client 사용하여 발행(Published) 상태의 데이터만 가져오고
   // cache: 'no-store' 설정으로 항상 최신 데이터를 가져옴
   const events = await client.fetch<Event[]>(
-    `*[_type == "event"] | order(start asc) {
+    `*[_type == "event"] | order(start desc) {
       _id,
       title,
       description,
