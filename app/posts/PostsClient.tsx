@@ -337,9 +337,14 @@ export default function PostsClient({ posts }: { posts: ClientPost[] }) {
                         src={selectedPost.imageUrl || ''}
                         alt={selectedPost.title}
                         width={800}
-                        height={400}
+                        height={450}
                         className="img-fluid rounded-3"
-                        style={{ maxHeight: '400px' }}
+                        style={{ 
+                          maxHeight: '400px', 
+                          objectFit: 'contain',
+                          width: '100%',
+                          height: 'auto'
+                        }}
                       />
                       <div 
                         className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
