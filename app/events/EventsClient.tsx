@@ -139,7 +139,11 @@ const copyEventToClipboard = (event: Event) => {
     minute: '2-digit' 
   });
   
-  const text = `[권영국 후보 일정] ${event.title}\n📅 ${eventTime}\n📍 ${event.location}\n\n${event.description || ''}`;
+  const text = `[권영국 후보 일정] ${event.title}
+📅 ${eventTime}
+📍 ${event.location}
+
+${event.description || ''}`;
   
   navigator.clipboard.writeText(text)
     .then(() => {
