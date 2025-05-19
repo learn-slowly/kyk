@@ -60,7 +60,6 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.xn--3e0b8b410h.com'),
   verification: {
     google: 'google-site-verification-code', // 실제 구글 서치 콘솔 코드로 교체 필요
-    naver: 'naver-site-verification-code', // 실제 네이버 서치어드바이저 코드로 교체 필요
   },
   category: '정치',
 }

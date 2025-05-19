@@ -198,6 +198,7 @@ const CardDescription = styled.p`
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  white-space: pre-line;
   
   @media (max-width: 768px) {
     font-size: 0.9rem;
@@ -858,7 +859,12 @@ export default function GalleryPage() {
               </ModalImageContainer>
               
               <div style={{ marginTop: '1rem', color: 'white' }}>
-                <p style={{ fontSize: '1rem', lineHeight: '1.6', marginBottom: '1rem' }}>
+                <p style={{ 
+                  fontSize: '1rem', 
+                  lineHeight: '1.6', 
+                  marginBottom: '1rem',
+                  whiteSpace: 'pre-line'
+                }}>
                   {selectedPost.description}
                 </p>
                 
