@@ -97,8 +97,8 @@ npm run sanity:dev
 ```
 
 접속 URL:
-- 웹사이트: http://localhost:3000
-- Sanity Studio: http://localhost:3000/studio
+- 웹사이트: http://권영국.com
+- Sanity Studio: http://권영국.com/studio
 
 ## 배포
 
