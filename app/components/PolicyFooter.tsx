@@ -71,15 +71,22 @@ export default function PolicyFooter() {
             <h3 className="fs-4 mb-3" style={{ fontFamily: 'GamtanRoad Gamtan, sans-serif' }}>
               사회대전환 연대회의 대통령 후보
             </h3>
-            <div className="d-flex align-items-center mb-3">
-              <Image 
-                src="/images/header.png" 
-                alt="민주노동당 권영국 후보 푸터 로고" 
-                width={220} 
-                height={32} 
-                style={{ marginRight: '8px' }} 
-              />
-              <span className="fs-1" style={{ fontFamily: 'GamtanRoad Gamtan, sans-serif' }}>권영국</span>
+            <div className="d-flex align-items-center mb-3" style={{ gap: '12px' }}>
+              <div style={{ flex: '0 0 auto', maxWidth: '180px' }}>
+                <Image 
+                  src="/images/header.png" 
+                  alt="민주노동당 권영국 후보 푸터 로고" 
+                  width={180}
+                  height={26}
+                  style={{ 
+                    width: '100%',
+                    height: 'auto',
+                  }} 
+                />
+              </div>
+              <div style={{ flex: '1 1 auto', whiteSpace: 'nowrap' }}>
+                <span className="fs-1" style={{ fontFamily: 'GamtanRoad Gamtan, sans-serif' }}>권영국</span>
+              </div>
             </div>
           </div>
           <div className="col-lg-6">
