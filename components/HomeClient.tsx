@@ -188,9 +188,10 @@ export default function HomeClient() {
         const bigMessageSection = document.querySelector('.big-message');
         if (bigMessageSection) {
           // 히어로 섹션보다 훨씬 늦게 시작하도록 조정
-          // 계수를 1.5에서 0.8로 줄여서 더 천천히 진행되도록 함
-          const messageProgress = Math.max(0, Math.min(1, (1 - opacity - 0.25) * 0.8));
+          // 계수를 1.5에서 1.2로 줄여서 더 천천히 진행되도록 함
+          const messageProgress = Math.max(0, Math.min(1, (1 - opacity - 0.25) * 1.2));
           const translateY = 120 * (1 - messageProgress);
+
           
           (bigMessageSection as HTMLElement).style.opacity = messageProgress.toString();
           (bigMessageSection as HTMLElement).style.transform = `translateY(${translateY}px)`;
@@ -402,7 +403,7 @@ export default function HomeClient() {
       <section className="big-message" style={{
         opacity: 0,
         transform: 'translateY(100px)',
-        transition: 'opacity 6s cubic-bezier(0.16, 1, 0.3, 1), transform 6s cubic-bezier(0.16, 1, 0.3, 1)',
+        transition: 'opacity 4s cubic-bezier(0.16, 1, 0.3, 1), transform 4s cubic-bezier(0.16, 1, 0.3, 1)',
         paddingTop: '5vh', // 위 여백 줄여서 이전 섹션과 가까워지게
         position: 'relative',
         zIndex: 2,
@@ -576,22 +577,26 @@ export default function HomeClient() {
       </section>
 
       {/* 새로운 Call to Action 섹션 - 이미지 참조 */}
-      <section>
+      <section className="progress-section">
         <div>
           <div className="cta-banner">
-            <h2 className="cta-description">간절히 기다렸던 <span className="scribble-bg">윤석열 파면</span> 이후 많은 시민들은 소중한 일상으로 되돌아갔습니다. 그러나 저는 그럴 수 없었습니다.</h2>
-            
-            <p className="cta-highlight">
-            돌아가야 할 일상이 <span className="red-alert-text">계엄</span>과 다름없는 시민들이 여전히
-            <BlackBoxReveal>광장에, 고공에, 거리에</BlackBoxReveal>
-            {' '}남아있음을 알기에
-            </p>
+            <div className="cta-highlight-container">
+              <div className="cta-description">
+                <h2 className="cta-description">간절히 기다렸던 <span className="scribble-bg">윤석열 파면</span> 이후 많은 시민들은 소중한 일상으로 되돌아갔습니다. 그러나 저는 그럴 수 없었습니다.</h2>
+                
+                <p className="cta-highlight">
+                돌아가야 할 일상이 <span className="red-alert-text">계엄</span>과 다름없는 시민들이 여전히&nbsp;
+                <BlackBoxReveal>광장에, 고공에, 거리에</BlackBoxReveal>
+                {' '}남아있음을 알기에
+                </p>
+              </div> 
+            </div>
             
             <div className="cta-highlight-container">
               <div className="cta-description">
                 <p style={{ textAlign: "left" }}>정권교체를 향한 민심은 이미 압도적입니다. 그러나 <BlackBoxReveal>정권교체만으로는 부족합니다.</BlackBoxReveal>
                 {' '}이번에야말로 정권교체와 함께 <span style={{whiteSpace: "nowrap"}}><span className="red-box">사회</span><span className="yellow-box">대</span><span className="green-box">전환</span></span>, 그리고 정치개혁을 반드시 이뤄내야 합니다.</p>
-                <p>사회분열의 원인인 불평등과 차별을 해소해야 합니다. 탄핵세력의 부활과 내란세력 존속의 근원인 낡은 기득권 정치를 깨끗이 해체해야 합니다. 그래야 다시는 윤석열 같은 헌정파괴 세력이 대한민국 정치를 함부로 넘볼 수 없게 될 것입니다. 그렇게 양극단 진영정치로 갈라진 대한민국을 광장을 닮은 <span className="red-box">다</span><span className="yellow-box">양</span><span className="green-box">성</span>의 정치로 치유하고 통합해야 합니다. 이것이 바로 우리가 꿈꾸는 진정한 정치교체이자 <span className="red-alert-text">내란청산</span>입니다. </p>
+                <p>사회분열의 원인인 불평등과 차별을 해소해야 합니다. 탄핵세력의 부활과 내란세력 존속의 근원인 낡은 기득권 정치를 깨끗이 해체해야 합니다. 그래야 다시는 윤석열 같은 헌정파괴 세력이 대한민국 정치를 함부로 넘볼 수 없게 될 것입니다. 그렇게 양극단 진영정치로 갈라진 대한민국을 광장을 닮은 <span className="red-box">다</span><span className="yellow-box">양</span><span className="green-box">성</span>의 정치로 치유하고 통합해야 합니다.<br/> 이것이 바로 우리가 꿈꾸는 진정한 정치교체이자 <span className="red-alert-text">내란청산</span>입니다. </p>
                 </div>
             </div>
             <div className="cta-highlight-container">
@@ -599,15 +604,24 @@ export default function HomeClient() {
                
                <div className="text-with-image">
                  <div className="progressive-text">
-                   싸우는 노동자가 이를 악물고 고공에 오르는 세상을 바꾸어
-                   모든 고공농성 노동자가 땅으로 내려올 수 있게 하는 것이 <span className="pastel-hl-red">진보</span>입니다.
-                   여성이 여성이라는 이유로 다치고 죽어가는 세상을 바꾸어
-                   모든 여성이 안전하게 살아갈 수 있게 하는 것이  <span className="pastel-hl-purple">진보</span>입니다.
-                   성소수자, 장애인, 이주민을 차별하고 억압하는 세상을 바꾸어
-                   모든 사회적 소수자가 존재하는 그대로 존중받게 하는 것이 <span className="pastel-hl-yellow">진보</span>입니다.
-                   말로는 기후위기를 이야기하지만
-                   화석연료 중독을 끊어내지 못하는 세상을 바꾸어
-                   지구온도 상승을 기어코 멈추어내는 것이 <span className="pastel-hl-green">진보</span>입니다.
+                   <p>
+                     싸우는 노동자가 이를 악물고 고공에 오르는 세상을 바꾸어
+                     모든 고공농성 노동자가 땅으로 내려올 수 있게 하는 것이 <span className="pastel-hl-red">진보</span>입니다.
+                   </p>
+                   
+                  <p>
+                     여성이 여성이라는 이유로 다치고 죽어가는 세상을 바꾸어
+                     모든 여성이 안전하게 살아갈 수 있게 하는 것이  <span className="pastel-hl-purple">진보</span>입니다.
+                  </p>
+                   <p>
+                     성소수자, 장애인, 이주민을 차별하고 억압하는 세상을 바꾸어
+                     모든 사회적 소수자가 존재하는 그대로 존중받게 하는 것이 <span className="pastel-hl-yellow">진보</span>입니다.
+                   </p>
+                   <p>
+                     말로는 기후위기를 이야기하지만
+                     화석연료 중독을 끊어내지 못하는 세상을 바꾸어
+                     지구온도 상승을 기어코 멈추어내는 것이 <span className="pastel-hl-green">진보</span>입니다.
+                   </p>
                  </div>
                  <div className="updown-image">
                    <Image
@@ -615,19 +629,19 @@ export default function HomeClient() {
                      alt="거꾸로 선 사람"
                      width={200}
                      height={370}
-                     style={{ objectFit: "contain" }}
+                     style={{ padding:"2vh 0", objectFit: "cover", objectPosition: "center", height: "100%"}}
                    />
                  </div>
                </div>
               </div>
             </div>
-            <div className="cta-highlight-container">
+            <div className="cta-highlight-container last-container">
               <div className="cta-highlight-80">
-                <h2 className="cta-highlight">우리가 지켜야 할 시민들의 <span className="pastel-hl-yellow">삶</span>이 있습니다. 우리가 마주하고 싶은 <span className="pastel-hl-red">변화된 세상</span>을 향한 <span className="pastel-hl-green">꿈</span>이 있습니다.</h2>
+                <h2 className="cta-highlight">우리가 지켜야 할 시민들의 <span className="pastel-hl-yellow">삶</span>이 있습니다.<br/>우리가 마주하고 싶은<span className="pastel-hl-red">변화된 세상</span>을 향한 <span className="pastel-hl-green">꿈</span>이 있습니다.</h2>
               </div>
-            </div>
-            <div className="dream-text cta-highlight-80">
-              <p>그 꿈이 이루질 때까지는 언제나 불가능해 보입니다. 그러나 꿈을 꾸는 자에게만 그 꿈이 현실이 될 것입니다.</p>
+              <div className="dream-text cta-highlight-80">
+                <p>그 꿈이 이루질 때까지는 언제나 불가능해 보입니다. 그러나 꿈을 꾸는 자에게만 그 꿈이 현실이 될 것입니다.</p>
+              </div>
             </div>
           </div>
         </section>
@@ -644,8 +658,8 @@ export default function HomeClient() {
       {/* 최종 CTA 섹션 */}
       <section className="cta-section">
         <div className="container">
-          <h2 className="scroll-reveal interactive-text">차별없는 나라, 우리를 지키는 진보대통령!</h2>
-          <h2 className="scroll-reveal interactive-text thin-text">권영국과 함께 꿈을 현실로 만들어 갑시다</h2>
+          <h2 className="scroll-reveal interactive-text thin-text">차별없는 나라, 우리를 지키는 진보대통령!</h2>
+          <h2 className="scroll-reveal interactive-text ">권영국과 함께 꿈을 현실로 만들어 갑시다</h2>
         </div>
         
         {/* 애니메이션 원 */}
@@ -761,8 +775,8 @@ export default function HomeClient() {
           color: #0b365f;
           position: relative;
           display: inline-block;
-          transition: transform 2.5s cubic-bezier(0.23, 1, 0.32, 1);
-          animation: slowAppear 10s ease forwards;
+          transition: transform 1.6s cubic-bezier(0.23, 1, 0.32, 1);
+          animation: slowAppear 4s ease forwards;
           opacity: 0;
         }
         
@@ -892,10 +906,13 @@ export default function HomeClient() {
         .big-message {
           padding: 5vh 0;
           position: relative;
+          display: flex;
+          justify-content:center;
+          align-items:center;
         }
         
         .big-text {
-          font-size: 4.5rem;
+          font-size: 3.5rem;
           font-weight: 700;
           line-height: 1.3;
           margin-bottom: 5vh;
@@ -941,19 +958,21 @@ export default function HomeClient() {
         
         /* CTA 섹션 */
         .cta-section {
-          padding: 15vh 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          height: 60vh;
           text-align: center;
           background: linear-gradient(45deg, #FF0000, #FFed00, #00a366);
-          margin-top: 10vh;
+          margin-top: 5vh;
           position: relative;
           overflow: hidden;
         }
         
         .cta-section h2 {
           font-size: 3.5rem;
-          font-weight: 400;
+          font-weight: 700;
           color: white;
-          margin-bottom: 3rem;
           line-height: 1.2;
           position: relative;
           z-index: 1;
@@ -1165,25 +1184,37 @@ export default function HomeClient() {
         .cta-description {
           font-size: 1.4rem;
           line-height: 1.6;
-          margin-bottom: 5vh;
           text-align: justify;
           font-family: "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif";
+        }
+        h2.cta-description {
+          margin-bottom: 4vh;
         }
         
         .cta-highlight-container {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          border-top: 1px solid #000;
-          padding-top: 5vh;
-          margin-top: 2vh;
+          padding: 5.5vh 0;
           position: relative;
         }
-        
+        .cta-highlight-container ~ .cta-highlight-container {
+          border-top: 1px solid #000;
+        }
+        .cta-highlight-container.last-container {
+          display: block;
+        }
+        .cta-highlight-container.last-container .cta-highlight {
+          text-align: center !important;
+        }
+        .cta-highlight-container p ~ p {
+          margin-top: 2rem;
+        }
+
         .cta-highlight {
           font-size: 2rem;
           font-weight: 700;
-          line-height: 1.2;
+          line-height: 1.4;
           text-align: left;
           max-width: 100%;
           font-family: "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif";
@@ -1214,8 +1245,8 @@ export default function HomeClient() {
         }
 
         .shaking-text {
+          flex: 48%;
           display: block;
-          width: 100%;
           font-size: 3.2rem;
           font-weight: 900;
           color: transparent;
@@ -1223,12 +1254,12 @@ export default function HomeClient() {
           text-stroke: 1px #555;
           text-align: center;
           margin: 3rem auto;
-          padding: 1.5rem;
           border-radius: 8px;
           /* animation: shake 3s cubic-bezier(.36,.07,.19,.97) infinite; */
           transform-origin: center;
           letter-spacing: -0.03em;
           font-family: "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif";
+          word-break: keep-all;
         }
 
         /* 텍스트와 이미지 배치 스타일 */
@@ -1240,20 +1271,21 @@ export default function HomeClient() {
         }
         
         .progressive-text {
-          flex: 1;
-          white-space: pre-line;
           line-height: 1.8;
-          font-size: 1.2rem;
+          font-size: 1.3rem;
+          word-break: keep-all;
+          margin-left: 1.5rem;
+          line-height: 1.6;
         }
         
         .updown-image {
-          flex: 0 0 300px;
           margin-left: 2rem;
+          align-self: stretch;
           position: relative;
         }
         
         .dream-text {
-          margin: 2.5rem 0;
+          margin: 2rem 0;
           font-size: 1.4rem;
           line-height: 1.7;
           font-style: italic;
@@ -1279,12 +1311,12 @@ export default function HomeClient() {
           }
           
           .big-text, .big-text-right {
-            font-size: 2.5rem;
+            font-size: 2.3rem;
             max-width: 100%;
           }
           
           .cta-section h2 {
-            font-size: 2.5rem;
+            font-size: 2.3rem;
           }
           
           .cursor-effect {
@@ -1340,6 +1372,10 @@ export default function HomeClient() {
           .text-with-image {
             flex-direction: column;
           }
+
+          .progress-section .cta-highlight-container {
+            flex-direction: column;
+          }
           
           .updown-image {
             margin-left: 0;
@@ -1350,9 +1386,9 @@ export default function HomeClient() {
           }
           
           .shaking-text {
-            font-size: 2.2rem;
-            margin: 2rem auto;
+            font-size: 2rem;
             padding: 1rem;
+            margin: 0;
           }
           
           .cta-highlight {
@@ -1365,6 +1401,10 @@ export default function HomeClient() {
           
           .schedule-cards {
             grid-template-columns: 1fr;
+          }
+
+          .cta-highlight-container.last-container {
+            word-break: keep-all;
           }
           
           /* 모바일에서 그라데이션 텍스트 크기 조정 */
@@ -1461,7 +1501,7 @@ export default function HomeClient() {
 
         /* 얇은 글꼴 스타일 */
         .thin-text {
-          font-weight: 300 !important;
+          font-weight: 500 !important;
           letter-spacing: 0.02em;
           font-family: "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif";
         }
