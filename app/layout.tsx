@@ -24,8 +24,6 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: '/favicon.ico' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
     ],
     apple: [
       { url: '/apple-touch-icon.png' },
@@ -61,6 +59,9 @@ export const metadata: Metadata = {
   verification: {
     google: 'google-site-verification-code', // 실제 구글 서치 콘솔 코드로 교체 필요
   },
+  other: {
+    'naver-site-verification': 'naver-site-verification-code', // 실제 네이버 서치어드바이저 코드로 교체 필요
+  },
   category: '정치',
 }
 
@@ -71,10 +72,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <head>
-        <meta name="google-site-verification" content="google-site-verification-code" /> {/* 구글 서치 콘솔 */}
-        <meta name="naver-site-verification" content="naver-site-verification-code" /> {/* 네이버 서치어드바이저 */}
-      </head>
       <body className={inter.className}>
         <Providers>
           <ClientLayout>{children}</ClientLayout>
