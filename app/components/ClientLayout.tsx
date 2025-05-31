@@ -430,11 +430,14 @@ export default function ClientLayout({
     console.log(`[Page Change Effect] Path: ${pathname}, IsDesktop: ${isDesktop}`);
     setIsMenuOpen(false);
     
-    if (typeof window !== 'undefined' && (window as BootstrapWindow).bootstrap?.Collapse) {
-      const navbar = document.getElementById('navbarNav');
-      if (navbar && navbar.classList.contains('show')) {
-        const bsCollapse = new (window as BootstrapWindow).bootstrap.Collapse(navbar);
-        bsCollapse.hide();
+    if (typeof window !== 'undefined') {
+      const bootstrapWindow = window as BootstrapWindow;
+      if (bootstrapWindow.bootstrap && bootstrapWindow.bootstrap.Collapse) {
+        const navbar = document.getElementById('navbarNav');
+        if (navbar && navbar.classList.contains('show')) {
+          const bsCollapse = new bootstrapWindow.bootstrap.Collapse(navbar);
+          bsCollapse.hide();
+        }
       }
     }
     
@@ -496,11 +499,14 @@ export default function ClientLayout({
     setIsPolicyExpanded(false);
     setIsProfileExpanded(false);
     
-    if (typeof window !== 'undefined' && (window as BootstrapWindow).bootstrap?.Collapse) {
-      const navbar = document.getElementById('navbarNav');
-      if (navbar && navbar.classList.contains('show')) {
-        const bsCollapse = new (window as BootstrapWindow).bootstrap.Collapse(navbar);
-        bsCollapse.hide();
+    if (typeof window !== 'undefined') {
+      const bootstrapWindow = window as BootstrapWindow;
+      if (bootstrapWindow.bootstrap && bootstrapWindow.bootstrap.Collapse) {
+        const navbar = document.getElementById('navbarNav');
+        if (navbar && navbar.classList.contains('show')) {
+          const bsCollapse = new bootstrapWindow.bootstrap.Collapse(navbar);
+          bsCollapse.hide();
+        }
       }
     }
   };
