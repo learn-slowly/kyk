@@ -20,7 +20,16 @@ interface CardProps {
 }
 
 // blockContent를 문자열로 변환하는 함수
-const blockContentToString = (content: any): string => {
+interface BlockContent {
+  _type?: string;
+  children?: Array<{
+    text?: string;
+    [key: string]: unknown;
+  }>;
+  [key: string]: unknown;
+}
+
+const blockContentToString = (content: BlockContent | BlockContent[] | string | null | undefined): string => {
   if (!content) return '';
   if (typeof content === 'string') return content;
   if (Array.isArray(content)) {
@@ -31,7 +40,7 @@ const blockContentToString = (content: any): string => {
         if (block._type === 'block') {
           if (!block.children) return '';
           return block.children
-            .map((child: any) => {
+            .map((child) => {
               if (!child) return '';
               if (typeof child === 'string') return child;
               return child.text || '';

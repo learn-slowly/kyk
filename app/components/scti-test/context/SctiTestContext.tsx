@@ -4,9 +4,7 @@ import React, { createContext, useReducer, useContext, ReactNode, useCallback, u
 import { 
   SctiTestState, 
   SctiTestAction, 
-  SctiTestContextType,
-  UserResponse,
-  TestResult
+  SctiTestContextType
 } from '../types';
 import { characters as charactersData } from '@/app/data/scti/characters';
 import { questions as questionsData } from '@/app/data/scti/questions';

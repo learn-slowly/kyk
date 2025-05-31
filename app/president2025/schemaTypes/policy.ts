@@ -1,4 +1,10 @@
-export default {
+interface Rule {
+  required: () => Rule;
+  min: (value: number) => Rule;
+  max: (value: number) => Rule;
+}
+
+const policy = {
   name: 'policy',
   title: '정책',
   type: 'document',
@@ -7,13 +13,13 @@ export default {
       name: 'title',
       title: '정책 제목',
       type: 'string',
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule: Rule) => Rule.required(),
     },
     {
       name: 'description',
       title: '간단 설명',
       type: 'text',
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule: Rule) => Rule.required(),
     },
     {
       name: 'color',
@@ -65,13 +71,13 @@ export default {
         layout: 'radio',
         direction: 'horizontal',
       },
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule: Rule) => Rule.required(),
     },
     {
       name: 'order',
       title: '순서',
       type: 'number',
-      validation: (Rule: any) => Rule.required().min(1).max(10),
+      validation: (Rule: Rule) => Rule.required().min(1).max(10),
     },
     {
       name: 'detailPolicies',
@@ -85,13 +91,13 @@ export default {
               name: 'title',
               title: '세부 정책 제목',
               type: 'string',
-              validation: (Rule: any) => Rule.required(),
+              validation: (Rule: Rule) => Rule.required(),
             },
             {
               name: 'description',
               title: '세부 내용',
               type: 'blockContent',
-              validation: (Rule: any) => Rule.required(),
+              validation: (Rule: Rule) => Rule.required(),
             },
             {
               name: 'image',
@@ -104,7 +110,7 @@ export default {
           ],
         },
       ],
-      validation: (Rule: any) => Rule.required().min(1),
+      validation: (Rule: Rule) => Rule.required().min(1),
     },
   ],
   preview: {
@@ -113,4 +119,6 @@ export default {
       subtitle: 'description',
     },
   },
-} 
+};
+
+export default policy; 

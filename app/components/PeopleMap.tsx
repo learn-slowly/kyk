@@ -316,10 +316,29 @@ const FlowContainer = styled.div`
   }
 `;
 
+// 타입 정의 추가
+interface PersonData {
+  id: string;
+  name: string;
+  role: string;
+  description?: string;
+  quote?: string;
+  image: string;
+  position: { x: number; y: number };
+  relations: string[];
+  isCandidate: boolean;
+  visible?: boolean;
+}
+
+interface ReactFlowInstanceType {
+  setCenter: (x: number, y: number, options?: { zoom?: number; duration?: number }) => void;
+  fitView: (options?: { padding?: number; duration?: number }) => void;
+}
+
 // 커스텀 노드 컴포넌트
-const PersonNode = ({ data }: { data: any }) => {
+const PersonNode = ({ data }: { data: PersonData }) => {
   return (
-    <NodeCard $isCandidate={data.isCandidate} $isVisible={data.visible}>
+    <NodeCard $isCandidate={data.isCandidate} $isVisible={data.visible !== false}>
       <ImageContainer>
         <Image
           src={data.image}
@@ -397,7 +416,7 @@ const fallbackPeople = [
 ];
 
 // 노드와 엣지 생성 함수
-const createNodesAndEdges = (people: any[]) => {
+const createNodesAndEdges = (people: PersonData[]) => {
   const nodes = people.map(person => ({
     id: person.id,
     type: 'person',
@@ -425,8 +444,8 @@ const createNodesAndEdges = (people: any[]) => {
 
 // 메인 관계도 컴포넌트
 const PeopleMap = () => {
-  const [cssLoaded, setCssLoaded] = useState(true);
-  const [peopleData, setPeopleData] = useState<any[]>([]);
+  const [cssLoaded] = useState(true);
+  const [peopleData, setPeopleData] = useState<PersonData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
@@ -437,9 +456,9 @@ const PeopleMap = () => {
   
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [selectedPerson, setSelectedPerson] = useState<any | null>(null);
+  const [selectedPerson, setSelectedPerson] = useState<PersonData | null>(null);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
-  const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstanceType | null>(null);
   
   // 모바일 환경 감지
   useEffect(() => {
@@ -456,7 +475,7 @@ const PeopleMap = () => {
   }, []);
   
   // ReactFlow 인스턴스 초기화 함수
-  const onInit = useCallback((instance: any) => {
+  const onInit = useCallback((instance: ReactFlowInstanceType) => {
     setReactFlowInstance(instance);
     console.log('ReactFlow 초기화 완료', isMobile ? '(모바일)' : '(데스크톱)');
     
@@ -566,7 +585,7 @@ const PeopleMap = () => {
       setShowOverview(false);
       
       // 노드 데이터 설정
-      setSelectedPerson(node.data);
+      setSelectedPerson(node.data as PersonData);
       
       // 클릭된 노드로 확대 이동 (Prezi 효과)
       const zoomLevel = 1.8;  // 확대 레벨

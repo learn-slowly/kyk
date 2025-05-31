@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { set, PatchEvent } from 'sanity'
 import { Box, Card, Stack, Text, Button, Flex } from '@sanity/ui'
 import { useClient } from 'sanity'
+import Image from 'next/image'
 import ReactFlow, {
   Background,
   Controls,
@@ -58,13 +59,16 @@ const PersonNode: React.FC<{ data: PersonNodeData }> = ({ data }) => {
               overflow: 'hidden',
               marginRight: '10px',
               background: '#eee',
-              flexShrink: 0
+              flexShrink: 0,
+              position: 'relative'
             }}
           >
-            <img 
+            <Image 
               src={data.photo} 
               alt={data.name} 
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+              fill
+              style={{ objectFit: 'cover' }}
+              sizes="40px"
             />
           </div>
         )}

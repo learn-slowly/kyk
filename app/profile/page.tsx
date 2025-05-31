@@ -102,16 +102,21 @@ export default function ProfilePage() {
 
   // 다음 이미지로 이동
   const nextSlide = useCallback(() => {
-    console.log("Next slide called, current index:", currentIndex);
-    if (currentIndex === slides.length - 1) {
-      console.log("Setting showEmptySlide to true");
-      setShowEmptySlide(true);
-    } else {
+    console.log("Next slide called");
+    setShowEmptySlide((prev) => {
+      if (!prev && currentIndex === slides.length - 1) {
+        console.log("Moving to empty slide");
+        return true;
+      }
+      return prev;
+    });
+    
+    if (!showEmptySlide && currentIndex < slides.length - 1) {
       console.log("Incrementing current index");
       setCurrentIndex(prevIndex => (prevIndex + 1) % slides.length);
     }
     setAnimationKey(prev => prev + 1);
-  }, [currentIndex, slides.length]);
+  }, [currentIndex, showEmptySlide]);
 
   // 이전 이미지로 이동
   const prevSlide = useCallback(() => {
@@ -125,7 +130,7 @@ export default function ProfilePage() {
       setCurrentIndex(prevIndex => (prevIndex - 1 + slides.length) % slides.length);
     }
     setAnimationKey(prev => prev + 1);
-  }, [showEmptySlide, slides.length]);
+  }, [showEmptySlide]);
 
   // 특정 이미지로 이동
   const goToSlide = useCallback((index: number) => {

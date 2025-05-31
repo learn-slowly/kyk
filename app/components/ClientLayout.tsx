@@ -9,9 +9,8 @@ import '../styles.css';
 import ClientBootstrap from './ClientBootstrap';
 import { usePathname } from 'next/navigation';
 import { Analytics } from '@vercel/analytics/react';
-import StyledComponentsRegistry from '../lib/registry';
 import PolicyFooter from '@/app/components/PolicyFooter';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import GlobalStyles from '../styles/GlobalStyles';
 
@@ -158,23 +157,23 @@ const NavMenu = styled.ul`
   padding: 0;
   list-style: none;
   
-  @media (min-width: ${props => props.theme.breakpoints.lg}) {
+  @media (min-width: ${(props: { theme: { breakpoints: { lg: string } } }) => props.theme.breakpoints.lg}) {
     flex-direction: row;
     gap: 2.5rem;
     align-items: center;
     margin-right: 2rem;
   }
   
-  @media (max-width: ${props => props.theme.breakpoints.lg}) {
+  @media (max-width: ${(props: { theme: { breakpoints: { lg: string } } }) => props.theme.breakpoints.lg}) {
     flex-direction: column;
-    background-color: ${props => props.theme.colors.background.overlay};
+    background-color: ${(props: { theme: { colors: { background: { overlay: string } } } }) => props.theme.colors.background.overlay};
     position: absolute;
     top: 100%;
     right: 0;
     width: 200px;
     border-radius: 4px;
     padding: 0.5rem 0;
-    box-shadow: ${props => props.theme.shadows.md};
+    box-shadow: ${(props: { theme: { shadows: { md: string } } }) => props.theme.shadows.md};
     display: none;
     
     &.show {
@@ -186,7 +185,7 @@ const NavMenu = styled.ul`
 const NavItem = styled.li`
   position: relative;
   
-  @media (max-width: ${props => props.theme.breakpoints.lg}) {
+  @media (max-width: ${(props: { theme: { breakpoints: { lg: string } } }) => props.theme.breakpoints.lg}) {
     width: 100%;
   }
 `;
@@ -196,13 +195,13 @@ const SubMenu = styled.ul`
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: ${props => props.theme.colors.background.overlay};
+  background-color: ${(props: { theme: { colors: { background: { overlay: string } } } }) => props.theme.colors.background.overlay};
   min-width: 180px;
   padding: 0.5rem 0;
   border-radius: 4px;
-  box-shadow: ${props => props.theme.shadows.md};
+  box-shadow: ${(props: { theme: { shadows: { md: string } } }) => props.theme.shadows.md};
   list-style: none;
-  z-index: ${props => props.theme.zIndices.dropdown};
+  z-index: ${(props: { theme: { zIndices: { dropdown: number } } }) => props.theme.zIndices.dropdown};
   display: none;
   backdrop-filter: blur(8px);
   
@@ -214,7 +213,7 @@ const SubMenu = styled.ul`
     display: block;
   }
   
-  @media (max-width: ${props => props.theme.breakpoints.lg}) {
+  @media (max-width: ${(props: { theme: { breakpoints: { lg: string } } }) => props.theme.breakpoints.lg}) {
     position: static;
     transform: none;
     min-width: 100%;
@@ -241,23 +240,23 @@ const NavbarContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   
-  @media (min-width: ${props => props.theme.breakpoints.lg}) {
+  @media (min-width: ${(props: { theme: { breakpoints: { lg: string } } }) => props.theme.breakpoints.lg}) {
     padding: 0;
     width: 90%;
     margin: 0 auto;
   }
   
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
+  @media (max-width: ${(props: { theme: { breakpoints: { md: string } } }) => props.theme.breakpoints.md}) {
     padding: 0 1.5rem;
   }
   
-  @media (max-width: ${props => props.theme.breakpoints.sm}) {
+  @media (max-width: ${(props: { theme: { breakpoints: { sm: string } } }) => props.theme.breakpoints.sm}) {
     padding: 0 1rem;
   }
 `;
 
 const HeaderContainer = styled.header`
-  background: ${props => props.theme.colors.gradient};
+  background: ${(props: { theme: { colors: { gradient: string } } }) => props.theme.colors.gradient};
 `;
 
 const MenuToggler = styled.button`
@@ -268,13 +267,13 @@ const MenuToggler = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: ${props => props.theme.transitions.fast};
+  transition: ${(props: { theme: { transitions: { fast: string } } }) => props.theme.transitions.fast};
 
   &:focus {
     outline: none;
   }
   
-  @media (min-width: ${props => props.theme.breakpoints.lg}) {
+  @media (min-width: ${(props: { theme: { breakpoints: { lg: string } } }) => props.theme.breakpoints.lg}) {
     display: none;
   }
 `;
@@ -284,24 +283,24 @@ const NavLink = styled.a`
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 1rem;
-  color: ${props => props.theme.colors.text.white} !important;
-  font-family: ${props => props.theme.fonts.primary};
-  font-size: ${props => props.theme.fontSizes.lg};
+  color: ${(props: { theme: { colors: { text: { white: string } } } }) => props.theme.colors.text.white} !important;
+  font-family: ${(props: { theme: { fonts: { primary: string } } }) => props.theme.fonts.primary};
+  font-size: ${(props: { theme: { fontSizes: { lg: string } } }) => props.theme.fontSizes.lg};
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
-  transition: ${props => props.theme.transitions.fast};
+  transition: ${(props: { theme: { transitions: { fast: string } } }) => props.theme.transitions.fast};
   
   &:hover {
-    color: ${props => props.theme.colors.primary.yellow} !important;
+    color: ${(props: { theme: { colors: { primary: { yellow: string } } } }) => props.theme.colors.primary.yellow} !important;
   }
   
-  @media (min-width: ${props => props.theme.breakpoints.lg}) {
+  @media (min-width: ${(props: { theme: { breakpoints: { lg: string } } }) => props.theme.breakpoints.lg}) {
     font-size: 1.2rem;
     padding: 0.5rem;
   }
   
-  @media (max-width: ${props => props.theme.breakpoints.lg}) {
+  @media (max-width: ${(props: { theme: { breakpoints: { lg: string } } }) => props.theme.breakpoints.lg}) {
     padding: 0.75rem 1.25rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
@@ -314,33 +313,33 @@ const SubMenuItem = styled.li`
 const SubMenuLink = styled.a`
   display: block;
   padding: 0.5rem 1rem;
-  color: ${props => props.theme.colors.text.white} !important;
-  font-size: ${props => props.theme.fontSizes.sm};
+  color: ${(props: { theme: { colors: { text: { white: string } } } }) => props.theme.colors.text.white} !important;
+  font-size: ${(props: { theme: { fontSizes: { sm: string } } }) => props.theme.fontSizes.sm};
   text-decoration: none;
-  transition: ${props => props.theme.transitions.fast};
+  transition: ${(props: { theme: { transitions: { fast: string } } }) => props.theme.transitions.fast};
   
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
   }
   
-  @media (max-width: ${props => props.theme.breakpoints.lg}) {
+  @media (max-width: ${(props: { theme: { breakpoints: { lg: string } } }) => props.theme.breakpoints.lg}) {
     padding: 0.75rem 2rem;
-    font-size: ${props => props.theme.fontSizes.md};
+    font-size: ${(props: { theme: { fontSizes: { md: string } } }) => props.theme.fontSizes.md};
   }
 `;
 
 // 메인 타이틀
 const MainTitle = styled.span`
   font-size: 2.5rem;
-  font-family: ${props => props.theme.fonts.primary};
+  font-family: ${(props: { theme: { fonts: { primary: string } } }) => props.theme.fonts.primary};
   color: white;
   white-space: nowrap;
   
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
+  @media (max-width: ${(props: { theme: { breakpoints: { md: string } } }) => props.theme.breakpoints.md}) {
     font-size: 2.2rem;
   }
   
-  @media (max-width: ${props => props.theme.breakpoints.sm}) {
+  @media (max-width: ${(props: { theme: { breakpoints: { sm: string } } }) => props.theme.breakpoints.sm}) {
     font-size: 1.9rem;
   }
 `;
@@ -348,7 +347,7 @@ const MainTitle = styled.span`
 // 서브타이틀
 const SubTitle = styled.span`
   display: block;
-  font-family: ${props => props.theme.fonts.primary};
+  font-family: ${(props: { theme: { fonts: { primary: string } } }) => props.theme.fonts.primary};
   color: white;
   margin-bottom: 5px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
@@ -356,12 +355,12 @@ const SubTitle = styled.span`
   line-height: 1.2;
   font-size: 1.3rem;
   
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
+  @media (max-width: ${(props: { theme: { breakpoints: { md: string } } }) => props.theme.breakpoints.md}) {
     font-size: 1.2rem;
     margin-bottom: 4px;
   }
   
-  @media (max-width: ${props => props.theme.breakpoints.sm}) {
+  @media (max-width: ${(props: { theme: { breakpoints: { sm: string } } }) => props.theme.breakpoints.sm}) {
     font-size: 1.1rem;
     margin-bottom: 3px;
   }
@@ -373,7 +372,7 @@ const BrandContainer = styled.div`
   flex-direction: column;
   max-width: 400px;
   
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
+  @media (max-width: ${(props: { theme: { breakpoints: { md: string } } }) => props.theme.breakpoints.md}) {
     padding: 0.1rem 0;
     max-width: none;
   }
@@ -384,14 +383,22 @@ const LogoImageContainer = styled.div`
   margin-right: 0.7rem;
   flex-shrink: 0;
   
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
+  @media (max-width: ${(props: { theme: { breakpoints: { md: string } } }) => props.theme.breakpoints.md}) {
     margin-right: 0.5rem;
   }
   
-  @media (max-width: ${props => props.theme.breakpoints.sm}) {
+  @media (max-width: ${(props: { theme: { breakpoints: { sm: string } } }) => props.theme.breakpoints.sm}) {
     margin-right: 0.4rem;
   }
 `;
+
+interface BootstrapWindow extends Window {
+  bootstrap?: {
+    Collapse: {
+      new (element: HTMLElement): { hide: () => void };
+    };
+  };
+}
 
 export default function ClientLayout({
   children,
@@ -423,10 +430,10 @@ export default function ClientLayout({
     console.log(`[Page Change Effect] Path: ${pathname}, IsDesktop: ${isDesktop}`);
     setIsMenuOpen(false);
     
-    if (typeof window !== 'undefined' && (window as any).bootstrap?.Collapse) {
+    if (typeof window !== 'undefined' && (window as BootstrapWindow).bootstrap?.Collapse) {
       const navbar = document.getElementById('navbarNav');
       if (navbar && navbar.classList.contains('show')) {
-        const bsCollapse = new (window as any).bootstrap.Collapse(navbar);
+        const bsCollapse = new (window as BootstrapWindow).bootstrap.Collapse(navbar);
         bsCollapse.hide();
       }
     }
@@ -441,7 +448,7 @@ export default function ClientLayout({
     }
   }, [pathname, isDesktop]);
 
-  const handleOutsideClick = (e: MouseEvent) => {
+  const handleOutsideClick = useCallback((e: MouseEvent) => {
     const target = e.target as Node;
     const profileMenu = document.querySelector('.profile-menu');
     const policyMenu = document.querySelector('.policy-menu');
@@ -460,12 +467,12 @@ export default function ClientLayout({
         !navMenu.contains(target) && !toggler.contains(target)) {
       setIsMenuOpen(false);
     }
-  };
+  }, [isMenuOpen]);
 
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick);
     return () => document.removeEventListener('click', handleOutsideClick);
-  }, [isMenuOpen]);
+  }, [handleOutsideClick]);
 
   const handleProfileToggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -489,10 +496,10 @@ export default function ClientLayout({
     setIsPolicyExpanded(false);
     setIsProfileExpanded(false);
     
-    if (typeof window !== 'undefined' && (window as any).bootstrap?.Collapse) {
+    if (typeof window !== 'undefined' && (window as BootstrapWindow).bootstrap?.Collapse) {
       const navbar = document.getElementById('navbarNav');
       if (navbar && navbar.classList.contains('show')) {
-        const bsCollapse = new (window as any).bootstrap.Collapse(navbar);
+        const bsCollapse = new (window as BootstrapWindow).bootstrap.Collapse(navbar);
         bsCollapse.hide();
       }
     }

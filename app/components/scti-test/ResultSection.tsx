@@ -6,6 +6,37 @@ import { PolicyCharacter } from './types';
 import { characters as charactersData } from '@/app/data/scti/characters'; // 전체 캐릭터 데이터 import
 import Script from 'next/script'; // next/script import
 
+// Kakao SDK 타입 정의
+interface KakaoSDK {
+  init: (appKey: string) => void;
+  isInitialized: () => boolean;
+  Share?: {
+    sendDefault: (settings: {
+      objectType: string;
+      content: {
+        title: string;
+        description: string;
+        imageUrl: string;
+        link: {
+          mobileWebUrl: string;
+          webUrl: string;
+        };
+      };
+      buttons?: Array<{
+        title: string;
+        link: {
+          mobileWebUrl: string;
+          webUrl: string;
+        };
+      }>;
+    }) => void;
+  };
+}
+
+interface WindowWithKakao extends Window {
+  Kakao?: KakaoSDK;
+}
+
 // CharacterProfile 수정: useSctiTest 호출 제거, 필요한 값 props로 받기
 interface CharacterProfileProps {
   character: PolicyCharacter | undefined;
@@ -137,7 +168,7 @@ const SharingOptions: React.FC = () => {
   const shareText = `나의 SCTI 결과: ${primaryChar?.name || '멋진 사회변화가'} 유형! ${primaryChar?.slogan || '당신의 유형도 알아보세요!'}`;
 
   const handleKakaoShare = () => {
-    const Kakao = (window as any).Kakao;
+    const Kakao = (window as WindowWithKakao).Kakao;
     if (!Kakao || !Kakao.isInitialized || !Kakao.Share || !Kakao.Share.sendDefault) {
       alert('카카오 SDK가 올바르게 로드되지 않았거나 기능이 없습니다. 잠시 후 다시 시도해주세요.');
       return;
@@ -246,7 +277,7 @@ export default function ResultSection() {
         crossOrigin="anonymous"
         onLoad={() => {
           console.log('Kakao SDK <Script> onLoad triggered (v2.7.5).');
-          const Kakao = (window as any).Kakao;
+          const Kakao = (window as WindowWithKakao).Kakao;
           if (Kakao && typeof Kakao.init === 'function') {
             if (!Kakao.isInitialized()) {
               try {
