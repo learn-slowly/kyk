@@ -71,10 +71,6 @@ export default function SimplePDFViewer({ file }: SimplePDFViewerProps) {
     setPages(pages);
   };
 
-  const onPageChange = (page: number) => {
-    setPage(page);
-  };
-
   const handlePrevious = () => {
     if (page > 1) {
       setPage(page - 1);
@@ -94,7 +90,6 @@ export default function SimplePDFViewer({ file }: SimplePDFViewerProps) {
           file={file}
           page={page}
           onDocumentComplete={onDocumentComplete}
-          onPageChange={onPageChange}
         />
       </PDFContainer>
       
