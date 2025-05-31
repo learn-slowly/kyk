@@ -14,7 +14,7 @@ const Container = styled.div`
   justify-content: center;
   position: relative;
   overflow: hidden;
-  padding: 40px 20px 120px 20px;
+  padding: 20px 20px 100px 20px;
   box-sizing: border-box;
 `;
 
@@ -23,7 +23,8 @@ const FlipBookContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 140px); /* 컨트롤 영역을 위한 공간 확보 */
+  overflow: hidden;
 `;
 
 const Page = styled.div`
@@ -42,6 +43,20 @@ const PageContent = styled.img`
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+`;
+
+const MobilePage = styled.div`
+  background-color: white;
+  width: 90%;
+  max-width: 600px;
+  height: calc(100vh - 180px);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
 `;
 
 const Controls = styled.div`
@@ -115,6 +130,56 @@ export default function PDFPageFlip({ file, startPage = 1 }: PDFPageFlipProps) {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [pages, setPages] = useState<PageData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [dimensions, setDimensions] = useState({ width: 600, height: 800 });
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    const calculateDimensions = () => {
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+      
+      if (window.innerWidth <= 768) {
+        // 모바일: 화면의 90% 너비 사용
+        setDimensions({
+          width: Math.min(screenWidth * 0.9, 500),
+          height: (screenHeight - 180) * 0.9
+        });
+      } else {
+        // PC: 화면 높이에 맞춰서 조정
+        const maxHeight = (screenHeight - 140) * 0.8; // 화면 높이의 80%
+        const maxWidth = screenWidth * 0.4; // 한 페이지가 화면 너비의 40%
+        const aspectRatio = 210 / 297; // A4 비율
+        
+        if (maxHeight * aspectRatio > maxWidth) {
+          // 너비 기준으로 조정
+          setDimensions({
+            width: maxWidth,
+            height: maxWidth / aspectRatio
+          });
+        } else {
+          // 높이 기준으로 조정
+          setDimensions({
+            width: maxHeight * aspectRatio,
+            height: maxHeight
+          });
+        }
+      }
+    };
+    
+    checkMobile();
+    calculateDimensions();
+    window.addEventListener('resize', checkMobile);
+    window.addEventListener('resize', calculateDimensions);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('resize', calculateDimensions);
+    };
+  }, []);
 
   useEffect(() => {
     // PDF.js를 사용해서 각 페이지를 이미지로 변환
@@ -139,7 +204,7 @@ export default function PDFPageFlip({ file, startPage = 1 }: PDFPageFlipProps) {
         for (let i = 1; i <= numPages; i++) {
           pagePromises.push(
             pdf.getPage(i).then(async (page: any) => {
-              const scale = 2.0;
+              const scale = isMobile ? 1.5 : 2.0; // 모바일에서는 스케일 줄임
               const viewport = page.getViewport({ scale });
               
               const canvas = document.createElement('canvas');
@@ -180,14 +245,22 @@ export default function PDFPageFlip({ file, startPage = 1 }: PDFPageFlipProps) {
         script.parentNode.removeChild(script);
       }
     };
-  }, [file]);
+  }, [file, isMobile]);
 
   const goToPrevPage = () => {
-    flipBook.current?.pageFlip().flipPrev();
+    if (isMobile) {
+      setCurrentPage(prev => Math.max(0, prev - 1));
+    } else {
+      flipBook.current?.pageFlip().flipPrev();
+    }
   };
 
   const goToNextPage = () => {
-    flipBook.current?.pageFlip().flipNext();
+    if (isMobile) {
+      setCurrentPage(prev => Math.min(totalPages - 1, prev + 1));
+    } else {
+      flipBook.current?.pageFlip().flipNext();
+    }
   };
 
   const onFlip = (e: any) => {
@@ -202,7 +275,7 @@ export default function PDFPageFlip({ file, startPage = 1 }: PDFPageFlipProps) {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, []);
+  }, [isMobile, totalPages]);
 
   if (loading) {
     return (
@@ -223,39 +296,50 @@ export default function PDFPageFlip({ file, startPage = 1 }: PDFPageFlipProps) {
   return (
     <Container>
       <FlipBookContainer>
-        <HTMLFlipBook
-          ref={flipBook}
-          width={600}
-          height={800}
-          minWidth={300}
-          maxWidth={1000}
-          minHeight={400}
-          maxHeight={1200}
-          maxShadowOpacity={0.5}
-          showCover={true}
-          mobileScrollSupport={true}
-          onFlip={onFlip}
-          className="flipbook"
-          style={{}}
-          startPage={startPage - 1}
-          size="stretch"
-          drawShadow={true}
-          flippingTime={1000}
-          usePortrait={false}
-          startZIndex={0}
-          autoSize={true}
-          clickEventForward={true}
-          useMouseEvents={true}
-          swipeDistance={30}
-          showPageCorners={true}
-          disableFlipByClick={false}
-        >
-          {pages.map((page) => (
-            <Page key={page.pageNumber}>
-              <PageContent src={page.src} alt={`Page ${page.pageNumber}`} />
-            </Page>
-          ))}
-        </HTMLFlipBook>
+        {isMobile ? (
+          // 모바일: 한 페이지만 표시
+          <MobilePage>
+            <PageContent 
+              src={pages[currentPage]?.src} 
+              alt={`Page ${currentPage + 1}`} 
+            />
+          </MobilePage>
+        ) : (
+          // PC: 플립북 표시
+          <HTMLFlipBook
+            ref={flipBook}
+            width={dimensions.width}
+            height={dimensions.height}
+            minWidth={300}
+            maxWidth={1000}
+            minHeight={400}
+            maxHeight={1200}
+            maxShadowOpacity={0.5}
+            showCover={true}
+            mobileScrollSupport={false}
+            onFlip={onFlip}
+            className="flipbook"
+            style={{}}
+            startPage={currentPage}
+            size="fixed"
+            drawShadow={true}
+            flippingTime={1000}
+            usePortrait={false}
+            startZIndex={0}
+            autoSize={false}
+            clickEventForward={true}
+            useMouseEvents={true}
+            swipeDistance={30}
+            showPageCorners={true}
+            disableFlipByClick={false}
+          >
+            {pages.map((page) => (
+              <Page key={page.pageNumber}>
+                <PageContent src={page.src} alt={`Page ${page.pageNumber}`} />
+              </Page>
+            ))}
+          </HTMLFlipBook>
+        )}
       </FlipBookContainer>
 
       <Controls>
