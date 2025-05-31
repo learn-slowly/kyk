@@ -18,7 +18,8 @@ const Container = styled.div`
   box-sizing: border-box;
   
   @media (max-width: 768px) {
-    padding: 15px 15px 70px 15px;
+    padding: 10px 10px 70px 10px;
+    justify-content: flex-start;
   }
 `;
 
@@ -27,11 +28,12 @@ const FlipBookContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: calc(100vh - 120px); /* 컨트롤 영역을 위한 공간 확보 */
+  height: calc(100vh - 100px); /* 컨트롤 영역을 위한 공간 확보 */
   overflow: hidden;
   
   @media (max-width: 768px) {
-    height: calc(100vh - 100px);
+    height: auto;
+    margin-top: 20px; /* 상단으로 올리기 */
   }
 `;
 
@@ -55,9 +57,10 @@ const PageContent = styled.img`
 
 const MobilePage = styled.div`
   background-color: white;
-  width: 90%;
+  width: calc(100vw - 20px);
   max-width: 600px;
-  height: calc(100vh - 120px);
+  height: auto;
+  aspect-ratio: 210 / 297; /* A4 비율 유지 */
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -176,27 +179,32 @@ export default function PDFPageFlip({ file, startPage = 1 }: PDFPageFlipProps) {
       const screenHeight = window.innerHeight;
       
       if (window.innerWidth <= 768) {
-        // 모바일: 화면의 90% 너비 사용
+        // 모바일: 화면 너비에 맞춰서 크기 설정
+        const width = screenWidth - 20;
+        const aspectRatio = 210 / 297; // A4 비율
         setDimensions({
-          width: Math.min(screenWidth * 0.9, 500),
-          height: (screenHeight - 120) * 0.9
+          width: width,
+          height: width / aspectRatio
         });
       } else {
-        // PC: 화면 높이에 맞춰서 조정
-        const maxHeight = (screenHeight - 120) * 0.8; // 화면 높이의 80%
-        const maxWidth = screenWidth * 0.4; // 한 페이지가 화면 너비의 40%
+        // PC: 화면 높이에 꽉 차게 조정
+        const maxHeight = screenHeight - 100; // 컨트롤 영역 제외
         const aspectRatio = 210 / 297; // A4 비율
         
-        if (maxHeight * aspectRatio > maxWidth) {
-          // 너비 기준으로 조정
+        // 두 페이지를 나란히 표시하므로 한 페이지의 너비 계산
+        const pageWidth = maxHeight * aspectRatio;
+        const totalWidth = pageWidth * 2; // 두 페이지 합계
+        
+        // 화면 너비를 초과하지 않도록 조정
+        if (totalWidth > screenWidth * 0.95) {
+          const adjustedWidth = (screenWidth * 0.95) / 2;
           setDimensions({
-            width: maxWidth,
-            height: maxWidth / aspectRatio
+            width: adjustedWidth,
+            height: adjustedWidth / aspectRatio
           });
         } else {
-          // 높이 기준으로 조정
           setDimensions({
-            width: maxHeight * aspectRatio,
+            width: pageWidth,
             height: maxHeight
           });
         }
