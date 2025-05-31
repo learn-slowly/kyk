@@ -605,6 +605,7 @@ export default function ClientLayout({
                     </NavLink>
                     <SubMenu className="dropdown-menu">
                       <SubMenuItem><Link href="/policies/carousel" className="submenu-link">10대 공약</Link></SubMenuItem>
+                      <SubMenuItem><Link href="/pdf-flipbook" className="submenu-link">정책공약집</Link></SubMenuItem>
                       <SubMenuItem><Link href="/policies/scti" className="submenu-link">SCTI 테스트</Link></SubMenuItem>
                       <SubMenuItem><Link href="/policies/gallery" className="submenu-link">정책 갤러리</Link></SubMenuItem>
                     </SubMenu>
