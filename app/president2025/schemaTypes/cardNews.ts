@@ -56,6 +56,12 @@ const cardNewsSchema = defineType({
         layout: 'tags',
       },
     },
+    {
+      name: 'link',
+      title: '관련 링크',
+      type: 'url',
+      description: '정책 관련 외부 링크 (선택사항)',
+    },
   ],
   preview: {
     select: {

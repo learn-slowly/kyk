@@ -236,6 +236,68 @@ const DateText = styled.p`
   left: 1.5rem;
 `;
 
+const LinkIcon = styled.a`
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.625rem;
+  gap: 4px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+  }
+  
+  &:before {
+    content: '🔗';
+    font-size: 12px;
+  }
+  
+  &:after {
+    content: '링크';
+    font-size: 11px;
+    font-weight: 500;
+  }
+`;
+
+const LinkButton = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 1rem;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+  }
+  
+  &:after {
+    content: '→';
+    font-size: 1rem;
+  }
+`;
+
 // 모달 컴포넌트 스타일
 const ModalOverlay = styled(motion.div)`
   position: fixed;
@@ -468,6 +530,7 @@ interface CardNews {
   }[];
   publishedAt: string;
   tags: string[];
+  link?: string;
 }
 
 export default function GalleryPage() {
@@ -512,13 +575,15 @@ export default function GalleryPage() {
         description,
         images,
         publishedAt,
-        tags
+        tags,
+        link
       }`;
       
       // previewClient를 사용하여 항상 최신 데이터 가져오기
       const result = await previewClient.fetch(query);
       setCardNews(result);
       console.log('데이터 로드 완료:', result.length, '개의 게시물');
+      console.log('첫 번째 게시물 데이터:', result[0]); // 링크 필드 확인용
     } catch (error) {
       console.error("카드뉴스 로딩 오류:", error);
     } finally {
@@ -805,6 +870,14 @@ export default function GalleryPage() {
                     day: 'numeric'
                   })}
                 </DateText>
+                {post.link && (
+                  <LinkIcon 
+                    href={post.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                )}
               </CardContent>
             </Card>
           );
@@ -896,6 +969,17 @@ export default function GalleryPage() {
                     day: 'numeric'
                   })}
                 </DateText>
+                
+                {selectedPost.link && (
+                  <LinkButton 
+                    href={selectedPost.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    자세히 보기
+                  </LinkButton>
+                )}
               </div>
             </ModalBody>
           </ModalContent>
