@@ -20,8 +20,8 @@ const PDFFlipBook = dynamic(() => import('@/app/components/PDFFlipBook'), {
 });
 
 export default function PDFFlipBookPage() {
-  // PDF 파일 경로
-  const pdfFile = '/sample.pdf'; // public 폴더에 sample.pdf 파일을 넣어주세요
+  // PDF 파일 경로 - zip.pdf 사용
+  const pdfFile = '/zip.pdf';
   
   // 외부 PDF 사용 예시:
   // const pdfFile = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';

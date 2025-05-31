@@ -21,9 +21,7 @@ const PDFBookViewer = dynamic(() => import('@/app/components/PDFBookViewer'), {
 
 export default function PDFViewerPage() {
   // PDF 파일 경로 설정
-  // 1. public 폴더에 있는 PDF: '/sample.pdf'
-  // 2. 외부 URL: 'https://example.com/document.pdf'
-  const pdfFile = '/sample.pdf'; // public 폴더에 sample.pdf 파일을 넣어주세요
+  const pdfFile = '/zip.pdf'; // public 폴더의 zip.pdf 파일 사용
 
   return (
     <PageContainer style={{ padding: 0 }}>
