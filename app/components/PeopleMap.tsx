@@ -714,7 +714,7 @@ const PeopleMap = () => {
         zoomOnPinch={true}
         panOnScroll={!isMobile}
         panOnDrag={true}
-        onLoad={onInit}
+        onInit={onInit}
         nodesDraggable={!isMobile}
         minZoom={isMobile ? 0.5 : 0.2}
         maxZoom={4}
