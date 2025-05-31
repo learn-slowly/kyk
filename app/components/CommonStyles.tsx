@@ -30,4 +30,17 @@ export const PageTitle = styled.h1`
       width: 150px;
     }
   }
+`;
+
+// 페이지 컨테이너 스타일
+export const PageContainer = styled.div`
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+  
+  @media (max-width: 768px) {
+    padding: 0;
+  }
 `; 
