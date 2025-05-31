@@ -7,7 +7,10 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
 // PDF.js worker 설정
-pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
+if (typeof window !== 'undefined') {
+  pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
+  console.log('PDF.js worker path:', pdfjs.GlobalWorkerOptions.workerSrc);
+}
 
 const ViewerContainer = styled.div`
   width: 100%;
@@ -19,13 +22,15 @@ const ViewerContainer = styled.div`
   background-color: #1a1a1a;
   position: relative;
   overflow: hidden;
+  padding-bottom: 100px;
+  box-sizing: border-box;
 `;
 
 const BookContainer = styled.div`
   position: relative;
   width: 90%;
   max-width: 1200px;
-  height: 80vh;
+  height: calc(80vh - 100px); /* 컨트롤을 위한 공간 확보 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -90,8 +95,8 @@ const PageContent = styled.div`
 `;
 
 const Controls = styled.div`
-  position: absolute;
-  bottom: 40px;
+  position: fixed;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -101,6 +106,7 @@ const Controls = styled.div`
   padding: 15px 30px;
   border-radius: 50px;
   backdrop-filter: blur(10px);
+  z-index: 100;
 `;
 
 const Button = styled.button`

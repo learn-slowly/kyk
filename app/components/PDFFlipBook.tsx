@@ -8,7 +8,10 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // PDF.js worker 설정
-pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
+if (typeof window !== 'undefined') {
+  pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
+  console.log('PDF.js worker path:', pdfjs.GlobalWorkerOptions.workerSrc);
+}
 
 const Container = styled.div`
   width: 100%;
@@ -20,13 +23,15 @@ const Container = styled.div`
   justify-content: center;
   position: relative;
   overflow: hidden;
+  padding-bottom: 100px;
+  box-sizing: border-box;
 `;
 
 const BookWrapper = styled.div`
   position: relative;
   width: 90%;
   max-width: 1400px;
-  height: 80vh;
+  height: calc(80vh - 100px); /* 컨트롤을 위한 공간 확보 */
   perspective: 3000px;
   transform-style: preserve-3d;
 `;
@@ -77,8 +82,10 @@ const PageFace = styled.div<{ $face: 'front' | 'back' }>`
 `;
 
 const Controls = styled.div`
-  position: absolute;
-  bottom: 40px;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   gap: 30px;
   align-items: center;
@@ -86,6 +93,7 @@ const Controls = styled.div`
   padding: 20px 40px;
   border-radius: 60px;
   backdrop-filter: blur(10px);
+  z-index: 100;
 `;
 
 const NavButton = styled.button`

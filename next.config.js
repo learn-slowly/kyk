@@ -1,3 +1,5 @@
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ['react-pdf', 'pdfjs-dist'],
@@ -20,11 +22,22 @@ const nextConfig = {
   },
   reactStrictMode: true,
   webpack: (config, { isServer }) => {
+    // pdfjs-dist를 위한 설정
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'pdfjs-dist/build/pdf.worker.min.js': path.join(
+        process.cwd(),
+        'public/pdf.worker.min.js'
+      ),
+    };
+
     // canvas 모듈 처리 (서버 사이드에서는 무시)
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
         canvas: false,
+        fs: false,
+        path: false,
       };
     }
 
