@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ['react-pdf', 'pdfjs-dist'],
   compiler: {
     styledComponents: true,
   },
@@ -18,7 +19,15 @@ const nextConfig = {
     formats: ['image/webp'],
   },
   reactStrictMode: true,
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
+    // canvas 모듈 처리 (서버 사이드에서는 무시)
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        canvas: false,
+      };
+    }
+
     config.ignoreWarnings = [
       { message: /.*export .* was not found in.*/ }
     ];

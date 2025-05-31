@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
 
 // PDF.js worker 설정
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 const Container = styled.div`
   width: 100%;
@@ -133,6 +133,22 @@ const TouchArea = styled.div<{ $side: 'left' | 'right' }>`
   background: transparent;
 `;
 
+const LoadingMessage = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  font-size: 24px;
+`;
+
+const LoadingIcon = styled(motion.div)`
+  display: inline-block;
+  margin-bottom: 20px;
+  font-size: 48px;
+`;
+
 interface PDFFlipBookProps {
   file: string;
   startPage?: number;
@@ -143,6 +159,7 @@ export default function PDFFlipBook({ file, startPage = 1 }: PDFFlipBookProps) {
   const [currentPage, setCurrentPage] = useState(startPage);
   const [isFlipping, setIsFlipping] = useState(false);
   const [scale, setScale] = useState(1);
+  const [error, setError] = useState<string | null>(null);
   
   // 페이지 상태 관리
   const [leftPage, setLeftPage] = useState(currentPage);
@@ -164,6 +181,12 @@ export default function PDFFlipBook({ file, startPage = 1 }: PDFFlipBookProps) {
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
+    setError(null);
+  };
+
+  const onDocumentLoadError = (error: Error) => {
+    console.error('PDF 로드 에러:', error);
+    setError(`PDF 파일을 불러올 수 없습니다: ${error.message}`);
   };
 
   const flipForward = () => {
@@ -222,7 +245,31 @@ export default function PDFFlipBook({ file, startPage = 1 }: PDFFlipBookProps) {
       <Document
         file={file}
         onLoadSuccess={onDocumentLoadSuccess}
-        loading={<div style={{ color: 'white' }}>PDF를 불러오는 중...</div>}
+        onLoadError={onDocumentLoadError}
+        loading={
+          <LoadingMessage>
+            <LoadingIcon
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            >
+              ⏳
+            </LoadingIcon>
+            PDF를 불러오는 중...
+          </LoadingMessage>
+        }
+        error={
+          <LoadingMessage>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ marginBottom: '20px', fontSize: '48px' }}>⚠️</div>
+              <div style={{ fontSize: '24px', marginBottom: '10px' }}>
+                {error || 'PDF 파일을 불러올 수 없습니다.'}
+              </div>
+              <div style={{ fontSize: '16px', opacity: 0.7 }}>
+                파일 경로: {file}
+              </div>
+            </div>
+          </LoadingMessage>
+        }
       >
         <BookWrapper>
           <Book>

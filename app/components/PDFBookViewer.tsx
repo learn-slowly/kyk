@@ -3,11 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import styled from 'styled-components';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 
 // PDF.js worker 설정
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 const ViewerContainer = styled.div`
   width: 100%;
@@ -156,6 +156,7 @@ export default function PDFBookViewer({ file, startPage = 1 }: PDFBookViewerProp
   const [loading, setLoading] = useState(true);
   const [scale, setScale] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -183,6 +184,13 @@ export default function PDFBookViewer({ file, startPage = 1 }: PDFBookViewerProp
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
+    setLoading(false);
+    setError(null);
+  };
+
+  const onDocumentLoadError = (error: Error) => {
+    console.error('PDF 로드 에러:', error);
+    setError(`PDF 파일을 불러올 수 없습니다: ${error.message}`);
     setLoading(false);
   };
 
@@ -230,7 +238,19 @@ export default function PDFBookViewer({ file, startPage = 1 }: PDFBookViewerProp
       <Document
         file={file}
         onLoadSuccess={onDocumentLoadSuccess}
+        onLoadError={onDocumentLoadError}
         loading={<LoadingOverlay>PDF를 불러오는 중...</LoadingOverlay>}
+        error={
+          <LoadingOverlay>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ marginBottom: '20px', fontSize: '24px' }}>⚠️</div>
+              <div>{error || 'PDF 파일을 불러올 수 없습니다.'}</div>
+              <div style={{ marginTop: '10px', fontSize: '14px', opacity: 0.7 }}>
+                파일 경로: {file}
+              </div>
+            </div>
+          </LoadingOverlay>
+        }
       >
         <BookContainer>
           {/* 왼쪽 페이지 */}
