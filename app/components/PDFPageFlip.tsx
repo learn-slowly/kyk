@@ -220,7 +220,7 @@ export default function PDFPageFlip({ file, startPage = 1 }: PDFPageFlipProps) {
       try {
         if (typeof window === 'undefined') return;
         
-        // @ts-ignore - PDF.js global object
+        // @ts-expect-error - PDF.js global object
         const pdfjsLib = window.pdfjsLib;
         if (!pdfjsLib) {
           console.error('PDF.js가 로드되지 않았습니다');
