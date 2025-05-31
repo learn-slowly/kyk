@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import HTMLFlipBook from 'react-pageflip';
 import styled from 'styled-components';
 
@@ -150,8 +150,15 @@ interface PageData {
   pageNumber: number;
 }
 
+interface FlipBookInstance {
+  pageFlip: () => {
+    flipPrev: () => void;
+    flipNext: () => void;
+  };
+}
+
 export default function PDFPageFlip({ file, startPage = 1 }: PDFPageFlipProps) {
-  const flipBook = useRef<any>(null);
+  const flipBook = useRef<FlipBookInstance | null>(null);
   const [currentPage, setCurrentPage] = useState(startPage - 1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [pages, setPages] = useState<PageData[]>([]);
@@ -213,7 +220,8 @@ export default function PDFPageFlip({ file, startPage = 1 }: PDFPageFlipProps) {
       try {
         if (typeof window === 'undefined') return;
         
-        const pdfjsLib = (window as any).pdfjsLib;
+        // @ts-ignore - PDF.js global object
+        const pdfjsLib = window.pdfjsLib;
         if (!pdfjsLib) {
           console.error('PDF.js가 로드되지 않았습니다');
           return;
@@ -229,8 +237,17 @@ export default function PDFPageFlip({ file, startPage = 1 }: PDFPageFlipProps) {
         const pagePromises = [];
         for (let i = 1; i <= numPages; i++) {
           pagePromises.push(
-            pdf.getPage(i).then(async (page: any) => {
-              const scale = isMobile ? 1.5 : 2.0; // 모바일에서는 스케일 줄임
+            pdf.getPage(i).then(async (page: {
+              getViewport: (params: { scale: number }) => {
+                height: number;
+                width: number;
+              };
+              render: (params: {
+                canvasContext: CanvasRenderingContext2D | null;
+                viewport: { height: number; width: number };
+              }) => { promise: Promise<void> };
+            }) => {
+              const scale = isMobile ? 1.5 : 2.0;
               const viewport = page.getViewport({ scale });
               
               const canvas = document.createElement('canvas');
@@ -273,23 +290,23 @@ export default function PDFPageFlip({ file, startPage = 1 }: PDFPageFlipProps) {
     };
   }, [file, isMobile]);
 
-  const goToPrevPage = () => {
+  const goToPrevPage = useCallback(() => {
     if (isMobile) {
       setCurrentPage(prev => Math.max(0, prev - 1));
     } else {
       flipBook.current?.pageFlip().flipPrev();
     }
-  };
+  }, [isMobile]);
 
-  const goToNextPage = () => {
+  const goToNextPage = useCallback(() => {
     if (isMobile) {
       setCurrentPage(prev => Math.min(totalPages - 1, prev + 1));
     } else {
       flipBook.current?.pageFlip().flipNext();
     }
-  };
+  }, [isMobile, totalPages]);
 
-  const onFlip = (e: any) => {
+  const onFlip = (e: { data: number }) => {
     setCurrentPage(e.data);
   };
 
@@ -301,7 +318,7 @@ export default function PDFPageFlip({ file, startPage = 1 }: PDFPageFlipProps) {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [isMobile, totalPages]);
+  }, [goToPrevPage, goToNextPage]);
 
   if (loading) {
     return (

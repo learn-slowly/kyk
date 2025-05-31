@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Document, Page } from 'react-pdf';
-import { pdfjs } from 'react-pdf';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Document, Page, pdfjs } from 'react-pdf';
 import styled from 'styled-components';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -157,7 +156,6 @@ interface PDFBookViewerProps {
 export default function PDFBookViewer({ file, startPage = 1 }: PDFBookViewerProps) {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(startPage);
-  const [loading, setLoading] = useState(true);
   const [scale, setScale] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -188,27 +186,25 @@ export default function PDFBookViewer({ file, startPage = 1 }: PDFBookViewerProp
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
-    setLoading(false);
     setError(null);
   };
 
   const onDocumentLoadError = (error: Error) => {
     console.error('PDF 로드 에러:', error);
     setError(`PDF 파일을 불러올 수 없습니다: ${error.message}`);
-    setLoading(false);
   };
 
-  const goToPrevPage = () => {
+  const goToPrevPage = useCallback(() => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - (isMobile ? 1 : 2));
     }
-  };
+  }, [currentPage, isMobile]);
 
-  const goToNextPage = () => {
+  const goToNextPage = useCallback(() => {
     if (numPages && currentPage < numPages) {
       setCurrentPage(currentPage + (isMobile ? 1 : 2));
     }
-  };
+  }, [currentPage, numPages, isMobile]);
 
   // 키보드 네비게이션
   useEffect(() => {
@@ -222,7 +218,7 @@ export default function PDFBookViewer({ file, startPage = 1 }: PDFBookViewerProp
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [currentPage, numPages]);
+  }, [goToPrevPage, goToNextPage]);
 
   const renderPage = (pageNumber: number) => {
     if (!numPages || pageNumber > numPages || pageNumber < 1) return null;

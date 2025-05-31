@@ -1,23 +1,17 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import * as reactPdf from 'react-pdf';
+import 'react-pdf/dist/cjs/Page/AnnotationLayer.css';
+import 'react-pdf/dist/cjs/Page/TextLayer.css';
 
-// Dynamic import for react-pdf
-let Document: any;
-let Page: any;
-let pdfjs: any;
+const { Document, Page, pdfjs } = reactPdf;
 
-if (typeof window !== 'undefined') {
-  const reactPdf = require('react-pdf');
-  Document = reactPdf.Document;
-  Page = reactPdf.Page;
-  pdfjs = reactPdf.pdfjs;
+// PDF.js worker 설정
+if (typeof window !== 'undefined' && pdfjs) {
   pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
-  
-  require('react-pdf/dist/cjs/Page/AnnotationLayer.css');
-  require('react-pdf/dist/cjs/Page/TextLayer.css');
 }
 
 const Container = styled.div`
@@ -94,24 +88,30 @@ const Controls = styled.div`
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 30px;
+  gap: 20px;
   align-items: center;
   background: rgba(0, 0, 0, 0.8);
-  padding: 20px 40px;
-  border-radius: 60px;
+  padding: 12px 24px;
+  border-radius: 40px;
   backdrop-filter: blur(10px);
   z-index: 100;
+  
+  @media (max-width: 768px) {
+    gap: 15px;
+    padding: 8px 16px;
+    bottom: 15px;
+  }
 `;
 
 const NavButton = styled.button`
   background: transparent;
   border: 2px solid white;
   color: white;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 18px;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
@@ -127,14 +127,26 @@ const NavButton = styled.button`
     opacity: 0.3;
     cursor: not-allowed;
   }
+  
+  @media (max-width: 768px) {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+    border-width: 1.5px;
+  }
 `;
 
 const PageIndicator = styled.div`
   color: white;
-  font-size: 18px;
-  min-width: 120px;
+  font-size: 16px;
+  min-width: 100px;
   text-align: center;
   font-weight: 300;
+  
+  @media (max-width: 768px) {
+    font-size: 14px;
+    min-width: 80px;
+  }
 `;
 
 const TouchArea = styled.div<{ $side: 'left' | 'right' }>`
@@ -175,19 +187,17 @@ export default function PDFFlipBook({ file, startPage = 1 }: PDFFlipBookProps) {
   const [isFlipping, setIsFlipping] = useState(false);
   const [scale, setScale] = useState(1);
   const [error, setError] = useState<string | null>(null);
-  const [isReady, setIsReady] = useState(false);
   
   // 페이지 상태 관리
   const [leftPage, setLeftPage] = useState(currentPage);
   const [rightPage, setRightPage] = useState(currentPage + 1);
   const [flipDirection, setFlipDirection] = useState<'forward' | 'backward'>('forward');
 
+  // currentPage가 변경될 때 leftPage와 rightPage 동기화
   useEffect(() => {
-    // react-pdf가 로드되었는지 확인
-    if (Document && Page) {
-      setIsReady(true);
-    }
-  }, []);
+    setLeftPage(currentPage);
+    setRightPage(currentPage + 1);
+  }, [currentPage]);
 
   useEffect(() => {
     const updateScale = () => {
@@ -212,7 +222,7 @@ export default function PDFFlipBook({ file, startPage = 1 }: PDFFlipBookProps) {
     setError(`PDF 파일을 불러올 수 없습니다: ${error.message}`);
   };
 
-  const flipForward = () => {
+  const flipForward = useCallback(() => {
     if (!numPages || currentPage >= numPages - 1 || isFlipping) return;
     
     setIsFlipping(true);
@@ -220,13 +230,11 @@ export default function PDFFlipBook({ file, startPage = 1 }: PDFFlipBookProps) {
     
     setTimeout(() => {
       setCurrentPage(prev => prev + 2);
-      setLeftPage(currentPage + 2);
-      setRightPage(currentPage + 3);
       setIsFlipping(false);
     }, 600);
-  };
+  }, [numPages, currentPage, isFlipping]);
 
-  const flipBackward = () => {
+  const flipBackward = useCallback(() => {
     if (currentPage <= 1 || isFlipping) return;
     
     setIsFlipping(true);
@@ -234,11 +242,9 @@ export default function PDFFlipBook({ file, startPage = 1 }: PDFFlipBookProps) {
     
     setTimeout(() => {
       setCurrentPage(prev => prev - 2);
-      setLeftPage(currentPage - 2);
-      setRightPage(currentPage - 1);
       setIsFlipping(false);
     }, 600);
-  };
+  }, [currentPage, isFlipping]);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -248,7 +254,7 @@ export default function PDFFlipBook({ file, startPage = 1 }: PDFFlipBookProps) {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [currentPage, isFlipping]);
+  }, [flipBackward, flipForward]);
 
   const pageVariants = {
     initial: {
@@ -262,22 +268,6 @@ export default function PDFFlipBook({ file, startPage = 1 }: PDFFlipBookProps) {
       }
     }
   };
-
-  if (!isReady || !Document || !Page) {
-    return (
-      <Container>
-        <LoadingMessage>
-          <LoadingIcon
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          >
-            ⏳
-          </LoadingIcon>
-          PDF 뷰어를 초기화하는 중...
-        </LoadingMessage>
-      </Container>
-    );
-  }
 
   return (
     <Container>
