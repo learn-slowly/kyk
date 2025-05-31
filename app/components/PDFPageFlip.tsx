@@ -14,8 +14,12 @@ const Container = styled.div`
   justify-content: center;
   position: relative;
   overflow: hidden;
-  padding: 20px 20px 100px 20px;
+  padding: 20px 20px 80px 20px;
   box-sizing: border-box;
+  
+  @media (max-width: 768px) {
+    padding: 15px 15px 70px 15px;
+  }
 `;
 
 const FlipBookContainer = styled.div`
@@ -23,8 +27,12 @@ const FlipBookContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: calc(100vh - 140px); /* 컨트롤 영역을 위한 공간 확보 */
+  height: calc(100vh - 120px); /* 컨트롤 영역을 위한 공간 확보 */
   overflow: hidden;
+  
+  @media (max-width: 768px) {
+    height: calc(100vh - 100px);
+  }
 `;
 
 const Page = styled.div`
@@ -49,7 +57,7 @@ const MobilePage = styled.div`
   background-color: white;
   width: 90%;
   max-width: 600px;
-  height: calc(100vh - 180px);
+  height: calc(100vh - 120px);
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -65,24 +73,30 @@ const Controls = styled.div`
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 30px;
+  gap: 20px;
   align-items: center;
   background: rgba(0, 0, 0, 0.8);
-  padding: 20px 40px;
-  border-radius: 60px;
+  padding: 12px 24px;
+  border-radius: 40px;
   backdrop-filter: blur(10px);
   z-index: 100;
+  
+  @media (max-width: 768px) {
+    gap: 15px;
+    padding: 8px 16px;
+    bottom: 15px;
+  }
 `;
 
 const NavButton = styled.button`
   background: transparent;
   border: 2px solid white;
   color: white;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 18px;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
@@ -98,14 +112,26 @@ const NavButton = styled.button`
     opacity: 0.3;
     cursor: not-allowed;
   }
+  
+  @media (max-width: 768px) {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+    border-width: 1.5px;
+  }
 `;
 
 const PageIndicator = styled.div`
   color: white;
-  font-size: 18px;
-  min-width: 120px;
+  font-size: 16px;
+  min-width: 100px;
   text-align: center;
   font-weight: 300;
+  
+  @media (max-width: 768px) {
+    font-size: 14px;
+    min-width: 80px;
+  }
 `;
 
 const LoadingMessage = styled.div`
@@ -146,11 +172,11 @@ export default function PDFPageFlip({ file, startPage = 1 }: PDFPageFlipProps) {
         // 모바일: 화면의 90% 너비 사용
         setDimensions({
           width: Math.min(screenWidth * 0.9, 500),
-          height: (screenHeight - 180) * 0.9
+          height: (screenHeight - 120) * 0.9
         });
       } else {
         // PC: 화면 높이에 맞춰서 조정
-        const maxHeight = (screenHeight - 140) * 0.8; // 화면 높이의 80%
+        const maxHeight = (screenHeight - 120) * 0.8; // 화면 높이의 80%
         const maxWidth = screenWidth * 0.4; // 한 페이지가 화면 너비의 40%
         const aspectRatio = 210 / 297; // A4 비율
         
