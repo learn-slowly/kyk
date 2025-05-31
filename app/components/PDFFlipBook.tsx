@@ -1,16 +1,23 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-import 'react-pdf/dist/Page/TextLayer.css';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// PDF.js worker 설정
+// Dynamic import for react-pdf
+let Document: any;
+let Page: any;
+let pdfjs: any;
+
 if (typeof window !== 'undefined') {
+  const reactPdf = require('react-pdf');
+  Document = reactPdf.Document;
+  Page = reactPdf.Page;
+  pdfjs = reactPdf.pdfjs;
   pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
-  console.log('PDF.js worker path:', pdfjs.GlobalWorkerOptions.workerSrc);
+  
+  require('react-pdf/dist/cjs/Page/AnnotationLayer.css');
+  require('react-pdf/dist/cjs/Page/TextLayer.css');
 }
 
 const Container = styled.div`
@@ -168,11 +175,19 @@ export default function PDFFlipBook({ file, startPage = 1 }: PDFFlipBookProps) {
   const [isFlipping, setIsFlipping] = useState(false);
   const [scale, setScale] = useState(1);
   const [error, setError] = useState<string | null>(null);
+  const [isReady, setIsReady] = useState(false);
   
   // 페이지 상태 관리
   const [leftPage, setLeftPage] = useState(currentPage);
   const [rightPage, setRightPage] = useState(currentPage + 1);
   const [flipDirection, setFlipDirection] = useState<'forward' | 'backward'>('forward');
+
+  useEffect(() => {
+    // react-pdf가 로드되었는지 확인
+    if (Document && Page) {
+      setIsReady(true);
+    }
+  }, []);
 
   useEffect(() => {
     const updateScale = () => {
@@ -247,6 +262,22 @@ export default function PDFFlipBook({ file, startPage = 1 }: PDFFlipBookProps) {
       }
     }
   };
+
+  if (!isReady || !Document || !Page) {
+    return (
+      <Container>
+        <LoadingMessage>
+          <LoadingIcon
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          >
+            ⏳
+          </LoadingIcon>
+          PDF 뷰어를 초기화하는 중...
+        </LoadingMessage>
+      </Container>
+    );
+  }
 
   return (
     <Container>

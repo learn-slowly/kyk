@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { PageContainer } from '@/app/components/CommonStyles';
 
 // PDF 뷰어는 클라이언트 사이드에서만 작동하므로 dynamic import 사용
-const PDFBookViewer = dynamic(() => import('@/app/components/PDFBookViewer'), {
+const SimplePDFViewer = dynamic(() => import('@/app/components/SimplePDFViewer'), {
   ssr: false,
   loading: () => (
     <div style={{ 
@@ -27,7 +27,7 @@ export default function PDFViewerPage() {
 
   return (
     <PageContainer style={{ padding: 0 }}>
-      <PDFBookViewer file={pdfFile} startPage={1} />
+      <SimplePDFViewer file={pdfFile} />
     </PageContainer>
   );
 } 

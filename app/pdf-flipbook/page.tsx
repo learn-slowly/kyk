@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { PageContainer } from '@/app/components/CommonStyles';
 
 // PDF 플립북은 클라이언트 사이드에서만 작동
-const PDFFlipBook = dynamic(() => import('@/app/components/PDFFlipBook'), {
+const PDFPageFlip = dynamic(() => import('@/app/components/PDFPageFlip'), {
   ssr: false,
   loading: () => (
     <div style={{ 
@@ -30,7 +30,7 @@ export default function PDFFlipBookPage() {
 
   return (
     <PageContainer style={{ padding: 0 }}>
-      <PDFFlipBook file={pdfFile} startPage={1} />
+      <PDFPageFlip file={pdfFile} startPage={1} />
     </PageContainer>
   );
 } 

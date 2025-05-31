@@ -22,14 +22,18 @@ const nextConfig = {
   },
   reactStrictMode: true,
   webpack: (config, { isServer }) => {
-    // pdfjs-dist를 위한 설정
+    // react-pdf를 위한 설정
     config.resolve.alias = {
       ...config.resolve.alias,
-      'pdfjs-dist/build/pdf.worker.min.js': path.join(
-        process.cwd(),
-        'public/pdf.worker.min.js'
-      ),
+      canvas: false,
     };
+
+    // ESM 모듈 처리
+    config.module.rules.push({
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: 'javascript/auto',
+    });
 
     // canvas 모듈 처리 (서버 사이드에서는 무시)
     if (!isServer) {
@@ -38,6 +42,8 @@ const nextConfig = {
         canvas: false,
         fs: false,
         path: false,
+        stream: false,
+        crypto: false,
       };
     }
 
