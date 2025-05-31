@@ -29,7 +29,7 @@ interface BlockContent {
   [key: string]: unknown;
 }
 
-const blockContentToString = (content: BlockContent | BlockContent[] | string | null | undefined): string => {
+const blockContentToString = (content: BlockContent | BlockContent[] | string | null | undefined | unknown): string => {
   if (!content) return '';
   if (typeof content === 'string') return content;
   if (Array.isArray(content)) {
@@ -37,9 +37,10 @@ const blockContentToString = (content: BlockContent | BlockContent[] | string | 
       .map(block => {
         if (!block) return '';
         if (typeof block === 'string') return block;
-        if (block._type === 'block') {
-          if (!block.children) return '';
-          return block.children
+        if (typeof block === 'object' && block !== null && '_type' in block && block._type === 'block') {
+          const blockObj = block as BlockContent;
+          if (!blockObj.children) return '';
+          return blockObj.children
             .map((child) => {
               if (!child) return '';
               if (typeof child === 'string') return child;
